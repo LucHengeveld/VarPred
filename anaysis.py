@@ -1,4 +1,6 @@
 import vcf
+import pickle
+import os
 
 
 def read():
@@ -30,7 +32,7 @@ def read():
                 file_dictionary[int(entry.ID)].append(entry.INFO[column])
             except KeyError:
                 file_dictionary[int(entry.ID)].append("N/A")
-
+    pickle.dump(file_dictionary, open("file_dictionary.p", "wb"))
     return file_dictionary
 
 
@@ -68,6 +70,10 @@ def analysis(data_dictionary):
 
 
 if __name__ == '__main__':
-    fd = read()
+    if os.path.isfile("file_dictionary.p"):
+        print("yup")
+        fd = pickle.load(open("file_dictionary.p", "rb"))
+    else:
+        fd = read()
     # write_csv(fd)
     analysis(fd)
