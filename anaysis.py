@@ -1,5 +1,5 @@
 import vcf
-
+import pandas as pd
 
 def read():
     """
@@ -30,7 +30,6 @@ def read():
                 file_dictionary[int(entry.ID)].append(entry.INFO[column])
             except KeyError:
                 file_dictionary[int(entry.ID)].append("N/A")
-
     return file_dictionary
 
 
@@ -49,6 +48,7 @@ def write_csv(file_dictionary):
             for value in file_dictionary[key]:
                 file.write(f"{value}\t")
             file.write("\n")
+    file.close()
 
 
 def count_illness(data_dictionary):
@@ -62,12 +62,18 @@ def count_illness(data_dictionary):
     illnesses = sorted(illnesses.items(), key=lambda x: x[1], reverse=True)
     print(illnesses)
 
+def get_OMIM_name(data_dictionary):
+    df = pd.read_csv('OMIM_names.txt', sep='\t')
+    print(df.head())
+
 
 def analysis(data_dictionary):
     count_illness(data_dictionary)
+    get_OMIM_name(data_dictionary)
 
 
 if __name__ == '__main__':
     fd = read()
     # write_csv(fd)
+
     analysis(fd)
