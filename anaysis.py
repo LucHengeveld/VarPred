@@ -43,7 +43,7 @@ def write_csv(file_dictionary):
                        "AF_TGP", "ALLELEID", "CLNDN", "CLNDNINCL", "CLNDISDB",
                        "CLNDISDBINCL", "CLNHGVS", "CLNREVSTAT", "CLNSIG",
                        "CLNSIGCONF", "CLNSIGINCL", "CLNVC", "CLNVCSO", "CLNVI",
-                       "DBVARID", "GENEINFO", "MC", "ORIGIN", "RS", "SSR"]
+                       "DBVARID", "GENEINFO", "MC", "ORIGIN", "RS", "SSR", "OMIM"]
         for value in column_list:
             file.write(f"{value}\t")
         file.write("\n")
@@ -67,13 +67,35 @@ def count_illness(data_dictionary):
     print(illnesses)
 
 def get_OMIM_name(data_dictionary):
-    df = pd.read_csv('OMIM_names.txt', sep='\t')
-    print(df.head())
+    df = pd.read_csv('OMIM_names.txt')
+    print(df["MIM Number"])
+    keys_list = df["MIM Number"]
+    values_list = df["Preferred Title; symbol"]
+    zip_iterator = zip(keys_list, values_list)
+    a_dictionary = dict(zip_iterator)
+ 
+    for entry in data_dictionary:
+        id_column = data_dictionary[entry][10]
+        for id in id_column:
+            if id is not None and "OMIM" in id:
+                omim_str = id.split('|')[0]
+                omim_id = omim_str.replace("OMIM:", "")
+                try:
+                    dname = a_dictionary[omim_id]
+                except KeyError:
+                    dname = 'N/A'
+            else:
+                dname = 'N/A'
+        data_dictionary[entry].append(dname)
+        
+    return data_dictionary
+            
+            
 
 
 def analysis(data_dictionary):
     count_illness(data_dictionary)
-    get_OMIM_name(data_dictionary)
+    #get_OMIM_name(data_dictionary)
 
 
 if __name__ == '__main__':
@@ -82,6 +104,8 @@ if __name__ == '__main__':
         fd = pickle.load(open("file_dictionary.p", "rb"))
     else:
         fd = read()
-    # write_csv(fd)
 
-    analysis(fd)
+    fd = get_OMIM_name(fd)
+    
+    #write_csv(fd)
+    #analysis(fd)
