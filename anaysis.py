@@ -159,7 +159,7 @@ if __name__ == '__main__':
     if os.path.isfile("file_dictionary.p"):
         print("Pickle found, loading pickle...")
         fd = pickle.load(open("file_dictionary.p", "rb"))
-        print("Picle parsed and loaded...")
+        print("Pickle parsed and loaded...")
     else:
         print("No pickle found, parsing data...")
         fd = read()
