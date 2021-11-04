@@ -22,14 +22,21 @@ def get_input():
 
         # Check if the file extension is ".vcf"
         if vcf_file_name.endswith(".vcf"):
+
             # Saves the file and calls the function verify_vcf to verify
             # the format in the entered file.
             vcf_file.save(vcf_file_name)
             correct_vcf = verify_vcf(vcf_file_name)
             if correct_vcf:
+
+                vcf_list = vcf_to_list(vcf_file_name)
+                for i in range(len(vcf_list)):
+                    print(vcf_list[i])
+
                 # Returns the results page
                 return render_template('results.html',
                                        vcf_file_name=vcf_file_name)
+
             else:
                 # Returns an error if the file format is incorrect.
                 return render_template('home.html',
@@ -65,11 +72,34 @@ def verify_vcf(vcf_file_name):
     with open(vcf_file_name) as file:
         for line in file:
             if line == "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n":
-                print(line)
                 correct_vcf = True
                 break
+    file.close()
+
     # Returns the boolean
     return correct_vcf
+
+
+def vcf_to_list(vcf_file_name):
+    """
+    Saves the mutations in the vcf file to a list.
+    :param vcf_file_name: Name of the entered vcf file
+    :return vcf_list: List with the structure [CHROM, POS, ID, REF, ALT, QUAL,
+    FILTER, INFO]
+    """
+    
+    # Creates an empty list
+    vcf_list = []
+
+    # Saves the mutation information in a list
+    with open(vcf_file_name) as file:
+        for line in file:
+            if not line.startswith("#"):
+                vcf_list.append(line.split("\t"))
+    file.close()
+
+    # Returns the list
+    return vcf_list
 
 
 @app.route('/info.html', methods=["POST", "GET"])
