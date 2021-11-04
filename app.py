@@ -8,20 +8,25 @@ app = Flask(__name__)
 def get_input():
     if request.method == 'POST':
 
-        try:
-            vcf_file = request.files["vcf_file"]
-            vcf_file_name = vcf_file.filename
-            vcf_file.save(vcf_file_name)
-        except:
-            return render_template('home.html',
-                                   vcf_file_name="No file selected.")
+        vcf_file = request.files["vcf_file"]
+        vcf_file_name = vcf_file.filename
 
-        return render_template('results.html',
-                               vcf_file_name=vcf_file_name)
+        if vcf_file_name.endswith(".vcf"):
+            vcf_file.save(vcf_file_name)
+            return render_template('results.html',
+                                   vcf_file_name=vcf_file_name)
+
+        elif vcf_file_name != "":
+            return render_template('home.html', errormsg="Entered file has the"
+                            " wrong file extension. Please enter a .vcf file")
+
+        else:
+            return render_template('home.html', errormsg="No file "
+                                                              "selected.")
 
     else:
         return render_template('home.html',
-                               vcf_file_name="")
+                               errormsg="")
 
 
 @app.route('/info.html', methods=["POST", "GET"])
