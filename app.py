@@ -30,8 +30,6 @@ def get_input():
             if correct_vcf:
 
                 vcf_list = vcf_to_list(vcf_file_name)
-                for i in range(len(vcf_list)):
-                    print(vcf_list[i])
 
                 # Returns the results page
                 return render_template('results.html',
