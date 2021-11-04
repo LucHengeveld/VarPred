@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/.idea/Data Science Project.iml" filepath="$PROJECT_DIR$/.idea/Data Science Project.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/.idea/Check-de-Test.iml" filepath="$PROJECT_DIR$/.idea/Check-de-Test.iml" />
+>>>>>>> dev
     </modules>
   </component>
 </project>
