@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link href="../static/style.css" rel="stylesheet" type="text/css">
+        <TITLE>Home</TITLE>
+    </head>
+
+    <body>
+    <img src="../pictures/VarPred_logo.png" alt="VarPred" class="center">
+    <br>
+        <ul>
+            <li><a class="active" href="home.html">Home</a></li>
+            <li><a href="info.html">Info</a></li>
+        </ul>
+    <br>
+        <form action="{{ url_for("get_input") }}" method="POST" enctype="multipart/form-data">
+            <label>Enter the VCF file below:<br><br>
+                <input type="file" name="vcf_file" accept=".vcf" />
+            </label><br><br>
+            <button name="resultbutton" type="submit">Calculate results</button>
+            <br><br>
+            {{ vcf_file_name }}
+
+        </form>
+    </body>
+</html>
