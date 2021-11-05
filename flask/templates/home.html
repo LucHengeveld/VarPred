@@ -10,23 +10,21 @@
     <img src="../pictures/VarPred_logo.png" alt="VarPred" class="right">
     <div class="header">
         <a href="home.html" class="logo"> <img src="../pictures/VarPred_logo.png" alt="VarPred" class="top_left"></a>
+        <a href="info.html">Info</a>
     </div>
 
-    <br>
+    <br><br>
 
-    <br>
     <div class="tekst">
-<h2>Hi</h2>
+        <h2>Enter the VCF file below:</h2>
+        <form action="{{ url_for('get_input') }}" method="POST" enctype="multipart/form-data">
+            <input type="file" name="vcf_file" accept=".vcf" />
+            <br><br>
+            <button name="resultbutton" type="submit">Calculate results</button>
+            <br><br>
+            {{ errormsg }}
+        </form>
     </div>
-<!--        <form action="{{ url_for("get_input") }}" method="POST" enctype="multipart/form-data">-->
-<!--            <label>Enter the VCF file below:<br><br>-->
-<!--                <input type="file" name="vcf_file" accept=".vcf" />-->
-<!--            </label><br><br>-->
-<!--            <button name="resultbutton" type="submit">Calculate results</button>-->
-<!--            <br><br>-->
-<!--            {{ vcf_file_name }}-->
-
-<!--        </form>-->
 
     <script>
         function myFunction(x) {
