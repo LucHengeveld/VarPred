@@ -28,11 +28,17 @@ def get_input():
             # the format in the entered file.
             vcf_file.save(vcf_file_name)
             correct_vcf = verify_vcf(vcf_file_name)
+
             if correct_vcf:
 
+                # Calls the function vcf_to_list
                 vcf_list = vcf_to_list(vcf_file_name)
 
+                # Calls the function create_ID_list
                 ID_list = create_ID_list(vcf_list)
+
+                # Calls the function compare_dataset
+                results = compare_dataset(ID_list)
 
                 # Returns the results page
                 return render_template('results.html',
@@ -104,10 +110,44 @@ def vcf_to_list(vcf_file_name):
 
 
 def create_ID_list(vcf_list):
+    """
+    This functions retrieves all ID's from the entered vcf file and adds it to
+    a list.
+    :param vcf_list: List with the structure [CHROM, POS, ID, REF, ALT, QUAL,
+    FILTER, INFO]
+    :return: ID_list: List with all the ID's out of the vcf_list
+    """
+    # Creates an empty list
     ID_list = []
+
+    # Loops through the vcf list and saves the ID's to the ID_list
     for i in vcf_list:
         ID_list.append(int(i[2]))
+
+    # Returns the ID_list
     return ID_list
+
+
+def compare_dataset(ID_list):
+    """
+    Compares the ID_list to the ID's in the Mongo database.
+    :param ID_list: List with all the ID's out of the vcf_list
+    :return results: List with data of the found mutations
+    """
+    # Connect to the local database
+    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    mydb = myclient["varpred"]
+    mycol = mydb["variant"]
+
+    # Create an empty list
+    results = []
+
+    # Saves the results in a list
+    for simularity in mycol.find({"ID": {"$in": ID_list}}):
+        results.append(simularity)
+
+    # Return the results list
+    return results
 
 
 @app.route('/info.html', methods=["POST", "GET"])
