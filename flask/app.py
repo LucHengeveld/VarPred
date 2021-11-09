@@ -31,6 +31,8 @@ def get_input():
 
                 vcf_list = vcf_to_list(vcf_file_name)
 
+                ID_list = create_ID_list(vcf_list)
+
                 # Returns the results page
                 return render_template('results.html',
                                        vcf_file_name=vcf_file_name)
@@ -38,18 +40,18 @@ def get_input():
             else:
                 # Returns an error if the file format is incorrect.
                 return render_template('home.html',
-                                errormsg="Entered file has the wrong format")
+                                       errormsg="Entered file has the wrong format")
 
         elif vcf_file_name != "":
             # Returns an error if a file with the wrong file extension
             # is entered on the webapplication.
             return render_template('home.html', errormsg="Entered file has the"
-                            " wrong file extension. Please enter a .vcf file")
+                                                         " wrong file extension. Please enter a .vcf file")
 
         else:
             # Returns an error if no file is selected.
             return render_template('home.html', errormsg="No file "
-                                                              "selected.")
+                                                         "selected.")
 
     else:
         # Returns the standard home page.
@@ -85,7 +87,7 @@ def vcf_to_list(vcf_file_name):
     :return vcf_list: List with the structure [CHROM, POS, ID, REF, ALT, QUAL,
     FILTER, INFO]
     """
-    
+
     # Creates an empty list
     vcf_list = []
 
@@ -98,6 +100,13 @@ def vcf_to_list(vcf_file_name):
 
     # Returns the list
     return vcf_list
+
+
+def create_ID_list(vcf_list):
+    ID_list = []
+    for i in vcf_list:
+        ID_list.append(int(i[2]))
+    return ID_list
 
 
 @app.route('/info.html', methods=["POST", "GET"])
@@ -114,4 +123,4 @@ def info():
 
 
 if __name__ == '__main__':
-    app.run(debug = True, host='0.0.0.0', port=5000)
+    app.run()
