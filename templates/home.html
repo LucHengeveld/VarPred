@@ -1,38 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link href="../static/style.css" rel="stylesheet" type="text/css">
-    <TITLE>Home</TITLE>
-</head>
 
-<body>
+{% extends 'header.html' %}
+{% block content %}
+<!--    <body>-->
+<!--    <nav class="navbar navbar-light bg-light">-->
+<!--        <div class="container">-->
+<!--            <a class="navbar-brand" href="home.html">-->
+<!--                <img src="../pictures/VarPred_logo.png" alt="VarPred" width="175" height="150">-->
+<!--            </a>-->
+<!--        </div>-->
+<!--    </nav>-->
 
-<img src="../pictures/VarPred_logo.png" alt="VarPred" class="right">
-<div class="header">
-    <a href="home.html" class="logo"> <img src="../pictures/VarPred_logo.png" alt="VarPred" class="top_left"></a>
-    <a href="info.html">Info</a>
-</div>
 
-<br><br>
+<!--    <img src="../pictures/VarPred_logo.png" alt="VarPred" class="right">-->
+    <div class="header">
+        <a href="home.html" class="logo"> <img src="../pictures/VarPred_logo.png" alt="VarPred" class="top_left"></a>
+        <a href="info.html">Info</a>
+    </div>
 
-<div class="tekst">
-    <h2>Enter the VCF file below:</h2>
-    <form action="{{ url_for('get_input') }}" method="POST" enctype="multipart/form-data">
-        <input type="file" name="vcf_file" accept=".vcf"/>
-        <br><br>
-        <button name="resultbutton" type="submit">Calculate results</button>
-        <br><br>
-        <p style="color:#FF0000">
-            {{ errormsg }}
-        </p>
-    </form>
-</div>
+    <br><br>
 
-<script>
-    function myFunction(x) {
-        x.classList.toggle("change");
-    }
-</script>
+    <br>
+    <div class="border"><div class="home_text">
+    <h2>Acurate voorspelling van uw clinical signifcance?</h2>
+        <br>
+        <p>Klik op de knop om uw VCF-bestand door te sturen naar ons, waardoor wij binnen 30 seconden uw resultaten beschikbaar hebben.</p>
+        <button class="button"><a href="info.html" class="home_text_button"><span>Voorspel </span></button>
+    </div></div>
+<!--        <form action="{{ url_for("get_input") }}" method="POST" enctype="multipart/form-data">-->
+<!--            <label>Enter the VCF file below:<br><br>-->
+<!--                <input type="file" name="vcf_file" accept=".vcf" />-->
+<!--            </label><br><br>-->
+<!--            <button name="resultbutton" type="submit">Calculate results</button>-->
+<!--            <br><br>-->
+<!--            {{ errormsg }}-->
 
-</body>
+<!--        </form>-->
+
+<!--    <script>-->
+<!--        function myFunction(x) {-->
+<!--            x.classList.toggle("change");-->
+<!--        }-->
+<!--    </script>-->
+
+
+    </body>
+{% endblock %}
 </html>
