@@ -3,6 +3,18 @@ services:
     web:
         build: .
         ports:
-            - "127.0.0.1:5000:5000"
+            - "5000:5000"
         volumes:
-            - .:/code 
+            - .:/code
+        links: 
+            - mongodb
+
+    mongodb:
+      image: mongo
+      ports:
+        - "27017:27017"
+
+    mongo-seed:
+      build: ./database
+      links:
+        - mongodb
