@@ -186,5 +186,17 @@ def contact():
     # Returns the info page
     return render_template('contact.html')
 
+@app.route('/aboutvarpred.html', methods=["POST", "GET"])
+def whoarewe():
+    """
+    This function shows the info page when the user selects it in the
+    menu bar on the webapplication. The info page contains information
+    about the application
+
+    :return render template: shows the info.html page to the user
+    """
+    # Returns the info page
+    return render_template('aboutvarpred.html')
+
 if __name__ == '__main__':
     app.run()
