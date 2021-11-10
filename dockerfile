@@ -3,4 +3,4 @@ ADD . /code
 WORKDIR /code
 RUN pip install -r requirements.txt
 EXPOSE 5000
-CMD python flask/app_test_config.py 
+CMD python app_test.py 
