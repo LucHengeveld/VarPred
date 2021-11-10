@@ -9,7 +9,8 @@ def open_tsv(location):
 
 
 def filter_data(data):
-    return data[(data.CLNREVSTAT == "reviewed by expert panel") | (data.CLNREVSTAT == "practice guideline")]
+    return data[(data.CLNREVSTAT == "reviewed by expert panel") |
+                (data.CLNREVSTAT == "practice guideline")]
 
 
 def write_tsv(data):
