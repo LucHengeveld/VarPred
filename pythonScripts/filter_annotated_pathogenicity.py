@@ -1,6 +1,3 @@
-# reviewed by expert panel & practice guideline in kolom 14
-
-
 import pandas as pd
 
 
@@ -14,7 +11,7 @@ def filter_data(data):
 
 
 def write_tsv(data):
-    data.to_csv("ML data.tsv", sep="\t")
+    data.to_csv("ML data.tsv", sep="\t", index=False)
 
 
 if __name__ == '__main__':

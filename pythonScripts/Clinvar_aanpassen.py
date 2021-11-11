@@ -11,7 +11,7 @@ def read_file():
                    "CLNVCSO", "CLNVI", "DBVARID", "GENEINFO", "MC", "ORIGIN",
                    "RS", "SSR"]
     file_dictionary = dict()
-    file = vcf.Reader(open("clinvar.vcf"))
+    file = vcf.Reader(open("../clinvar.vcf"))
 
     for entry in file:
         file_dictionary[int(entry.ID)] = list()
@@ -53,7 +53,7 @@ def change_dict(file_dictionary):
 
 
 def write_file(file_dictionary):
-    with open("results_new.tsv", "w") as file:
+    with open("results_temp.tsv", "w") as file:
         column_list = ["ID", "CHROM", "POS", "REF", "ALT", "AF_ESP", "AF_EXAC",
                        "AF_TGP", "ALLELEID", "CLNDN", "CLNDNINCL", "CLNDISDB",
                        "CLNDISDBINCL", "CLNHGVS", "CLNREVSTAT", "CLNSIG",
@@ -68,6 +68,11 @@ def write_file(file_dictionary):
             for value in file_dictionary[key]:
                 file.write(f"{value}\t")
             file.write("\n")
+    with open("results_temp.tsv", "r") as file1:
+        with open("results_new.tsv", "w") as file2:
+            for line in file1:
+                file2.write(line.replace("\t\n", "\n"))
+    os.remove("results_temp.tsv")
     file.close()
 
 
