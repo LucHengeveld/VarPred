@@ -1,48 +1,38 @@
-
 {% extends 'header.html' %}
 {% block content %}
-<!--    <body>-->
-<!--    <nav class="navbar navbar-light bg-light">-->
-<!--        <div class="container">-->
-<!--            <a class="navbar-brand" href="home.html">-->
-<!--                <img src="../pictures/VarPred_logo.png" alt="VarPred" width="175" height="150">-->
-<!--            </a>-->
-<!--        </div>-->
-<!--    </nav>-->
-
-
-<!--    <img src="../pictures/VarPred_logo.png" alt="VarPred" class="right">-->
-    <div class="header">
-        <a href="home.html" class="logo"> <img src="../pictures/VarPred_logo.png" alt="VarPred" class="top_left"></a>
-        <a href="info.html">Info</a>
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="../static/laan-van-scheut-nijmegen-1500x1000.jpg" class="d-block w-100" alt="...">
     </div>
-
-    <br><br>
-
+    <div class="carousel-item">
+      <img src="../static/werk.jpg" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="../static/computer_clinical_significance.jpg" class="d-block w-100" alt="...">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
     <br>
-    <div class="border"><div class="home_text">
-    <h2>Acurate voorspelling van uw clinical signifcance?</h2>
+    <div class="container"><div class="home_text">
+    <h2>Accurate prediction of your clinical signifcance?</h2>
         <br>
-        <p>Klik op de knop om uw VCF-bestand door te sturen naar ons, waardoor wij binnen 30 seconden uw resultaten beschikbaar hebben.</p>
-        <button class="button"><a href="info.html" class="home_text_button"><span>Voorspel </span></button>
+        <p>Click the button to forward your VCF file to us and we'll have your results available within 30 seconds.</p>
+        <button class="btn btn-secondary btn-lg"><a href="info.html" class="home_text_button"><span>Predict</span></button>
     </div></div>
-<!--        <form action="{{ url_for("get_input") }}" method="POST" enctype="multipart/form-data">-->
-<!--            <label>Enter the VCF file below:<br><br>-->
-<!--                <input type="file" name="vcf_file" accept=".vcf" />-->
-<!--            </label><br><br>-->
-<!--            <button name="resultbutton" type="submit">Calculate results</button>-->
-<!--            <br><br>-->
-<!--            {{ errormsg }}-->
-
-<!--        </form>-->
-
-<!--    <script>-->
-<!--        function myFunction(x) {-->
-<!--            x.classList.toggle("change");-->
-<!--        }-->
-<!--    </script>-->
 
 
-    </body>
 {% endblock %}
-</html>
