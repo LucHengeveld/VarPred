@@ -18,5 +18,5 @@ def write_tsv(data):
 
 
 if __name__ == '__main__':
-    filter = filter_data(open_tsv("results_new.tsv"))
-    write_tsv(filter)
+    subset = filter_data(open_tsv("results_new.tsv"))
+    write_tsv(subset)
