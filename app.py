@@ -54,12 +54,12 @@ def get_input():
             # Returns an error if a file with the wrong file extension
             # is entered on the webapplication.
             return render_template('calculate.html', errormsg="Entered file has the"
-                             " wrong file extension. Please enter a .vcf file")
+                                                              " wrong file extension. Please enter a .vcf file")
 
         else:
             # Returns an error if no file is selected.
             return render_template('calculate.html', errormsg="No file "
-                                                         "selected.")
+                                                              "selected.")
 
     else:
         # Returns the standard home page.
@@ -121,13 +121,17 @@ def create_compare_list(vcf_list):
     # Creates empty lists
     chrom_list = []
     pos_list = []
+    ref_list = []
+    alt_list = []
 
     # Loops through the vcf_list and saves the chromosome numbers and
     # positions to a 2D list with the structure [chrom_list, pos_list]
     for i in vcf_list:
         chrom_list.append(str(i[0]))
         pos_list.append(int(i[1]))
-    compare_list = [chrom_list, pos_list]
+        ref_list.append(str(i[3]))
+        alt_list.append(str(i[4]))
+    compare_list = [chrom_list, pos_list, ref_list, alt_list]
 
     # Returns the compare_list
     return compare_list
@@ -151,7 +155,9 @@ def compare_dataset(compare_list):
 
     # Saves the results in a list
     for simularity in mycol.find({"$and": [{"CHROM": {"$in": compare_list[0]}},
-                                        {"POS": {"$in": compare_list[1]}}]}):
+                                           {"POS": {"$in": compare_list[1]}},
+                                           {"REF": {"$in": compare_list[2]}},
+                                           {"ALT": {"$in": compare_list[3]}}]}):
         results.append(simularity)
 
     for i in results:
@@ -172,6 +178,7 @@ def info():
     # Returns the info page
     return render_template('calculate.html')
 
+
 @app.route('/disclaimer.html', methods=["POST", "GET"])
 def disclaimer():
     """
@@ -183,6 +190,7 @@ def disclaimer():
     """
     # Returns the info page
     return render_template('disclaimer.html')
+
 
 @app.route('/contact.html', methods=["POST", "GET"])
 def contact():
@@ -196,6 +204,7 @@ def contact():
     # Returns the info page
     return render_template('contact.html')
 
+
 @app.route('/aboutvarpred.html', methods=["POST", "GET"])
 def whoarewe():
     """
@@ -207,6 +216,7 @@ def whoarewe():
     """
     # Returns the info page
     return render_template('aboutvarpred.html')
+
 
 if __name__ == '__main__':
     app.run()
