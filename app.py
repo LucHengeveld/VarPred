@@ -34,36 +34,36 @@ def get_input():
                 # Calls the function vcf_to_list
                 vcf_list = vcf_to_list(vcf_file_name)
 
-                # Calls the function create_ID_list
-                ID_list = create_ID_list(vcf_list)
+                # Calls the function create_compare_list
+                compare_list = create_compare_list(vcf_list)
 
                 # Calls the function compare_dataset
-                results = compare_dataset(ID_list)
+                results = compare_dataset(compare_list)
 
                 # Returns the results page
                 return render_template('results.html',
-                                       vcf_file_name=vcf_file_name)
+                                       results=results)
 
             else:
                 # Returns an error if the file format is incorrect.
-                return render_template('home.html',
-                                       errormsg="Entered file has the wrong format")
+                return render_template('calculate.html',
+                                       errormsg="Entered file has the wrong "
+                                                "format")
 
         elif vcf_file_name != "":
             # Returns an error if a file with the wrong file extension
             # is entered on the webapplication.
-            return render_template('home.html', errormsg="Entered file has the"
-                                                         " wrong file extension. Please enter a .vcf file")
+            return render_template('calculate.html', errormsg="Entered file has the"
+                             " wrong file extension. Please enter a .vcf file")
 
         else:
             # Returns an error if no file is selected.
-            return render_template('home.html', errormsg="No file "
+            return render_template('calculate.html', errormsg="No file "
                                                          "selected.")
 
     else:
         # Returns the standard home page.
-        return render_template('home.html',
-                               errormsg="")
+        return render_template('home.html')
 
 
 def verify_vcf(vcf_file_name):
@@ -109,29 +109,36 @@ def vcf_to_list(vcf_file_name):
     return vcf_list
 
 
-def create_ID_list(vcf_list):
+def create_compare_list(vcf_list):
     """
-    This functions retrieves all ID's from the entered vcf file and adds it to
-    a list.
+    This functions retrieves all chromosome numbers and positions from the
+    entered vcf file and adds it to a list.
     :param vcf_list: List with the structure [CHROM, POS, ID, REF, ALT, QUAL,
     FILTER, INFO]
-    :return: ID_list: List with all the ID's out of the vcf_list
+    :return: compare_list: List with all the the chromosome numbers and
+    # positions out of the vcf_list
     """
-    # Creates an empty list
-    ID_list = []
+    # Creates empty lists
+    chrom_list = []
+    pos_list = []
 
-    # Loops through the vcf list and saves the ID's to the ID_list
+    # Loops through the vcf_list and saves the chromosome numbers and
+    # positions to a 2D list with the structure [chrom_list, pos_list]
     for i in vcf_list:
-        ID_list.append(int(i[2]))
+        chrom_list.append(str(i[0]))
+        pos_list.append(int(i[1]))
+    compare_list = [chrom_list, pos_list]
 
-    # Returns the ID_list
-    return ID_list
+    # Returns the compare_list
+    return compare_list
 
 
-def compare_dataset(ID_list):
+def compare_dataset(compare_list):
     """
-    Compares the ID_list to the ID's in the Mongo database.
-    :param ID_list: List with all the ID's out of the vcf_list
+    Compares the compare_list to the chromosome numbers and positions in the
+    Mongo database.
+    :param compare_list: List with all the chromosome numbers and positions out
+     of the vcf_list
     :return results: List with data of the found mutations
     """
     # Connect to the local database
@@ -143,24 +150,27 @@ def compare_dataset(ID_list):
     results = []
 
     # Saves the results in a list
-    for simularity in mycol.find({"ID": {"$in": ID_list}}):
+    for simularity in mycol.find({"$and": [{"CHROM": {"$in": compare_list[0]}},
+                                        {"POS": {"$in": compare_list[1]}}]}):
         results.append(simularity)
 
+    for i in results:
+        print(i)
     # Return the results list
     return results
 
 
-@app.route('/info.html', methods=["POST", "GET"])
+@app.route('/calculate.html', methods=["POST", "GET"])
 def info():
     """
     This function shows the info page when the user selects it in the
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the info.html page to the user
+    :return render template: shows the calculate.html page to the user
     """
     # Returns the info page
-    return render_template('info.html')
+    return render_template('calculate.html')
 
 @app.route('/disclaimer.html', methods=["POST", "GET"])
 def disclaimer():
@@ -169,7 +179,7 @@ def disclaimer():
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the info.html page to the user
+    :return render template: shows the calculate.html page to the user
     """
     # Returns the info page
     return render_template('disclaimer.html')
@@ -181,7 +191,7 @@ def contact():
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the info.html page to the user
+    :return render template: shows the calculate.html page to the user
     """
     # Returns the info page
     return render_template('contact.html')
@@ -193,7 +203,7 @@ def whoarewe():
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the info.html page to the user
+    :return render template: shows the calculate.html page to the user
     """
     # Returns the info page
     return render_template('aboutvarpred.html')
