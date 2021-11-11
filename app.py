@@ -42,29 +42,28 @@ def get_input():
 
                 # Returns the results page
                 return render_template('results.html',
-                                       vcf_file_name=vcf_file_name)
+                                       results=results)
 
             else:
                 # Returns an error if the file format is incorrect.
-                return render_template('home.html',
+                return render_template('calculate.html',
                                        errormsg="Entered file has the wrong "
                                                 "format")
 
         elif vcf_file_name != "":
             # Returns an error if a file with the wrong file extension
             # is entered on the webapplication.
-            return render_template('home.html', errormsg="Entered file has the"
+            return render_template('calculate.html', errormsg="Entered file has the"
                              " wrong file extension. Please enter a .vcf file")
 
         else:
             # Returns an error if no file is selected.
-            return render_template('home.html', errormsg="No file "
+            return render_template('calculate.html', errormsg="No file "
                                                          "selected.")
 
     else:
         # Returns the standard home page.
-        return render_template('home.html',
-                               errormsg="")
+        return render_template('home.html')
 
 
 def verify_vcf(vcf_file_name):
@@ -161,17 +160,17 @@ def compare_dataset(compare_list):
     return results
 
 
-@app.route('/info.html', methods=["POST", "GET"])
+@app.route('/calculate.html', methods=["POST", "GET"])
 def info():
     """
     This function shows the info page when the user selects it in the
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the info.html page to the user
+    :return render template: shows the calculate.html page to the user
     """
     # Returns the info page
-    return render_template('info.html')
+    return render_template('calculate.html')
 
 @app.route('/disclaimer.html', methods=["POST", "GET"])
 def disclaimer():
@@ -180,7 +179,7 @@ def disclaimer():
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the info.html page to the user
+    :return render template: shows the calculate.html page to the user
     """
     # Returns the info page
     return render_template('disclaimer.html')
@@ -192,7 +191,7 @@ def contact():
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the info.html page to the user
+    :return render template: shows the calculate.html page to the user
     """
     # Returns the info page
     return render_template('contact.html')
@@ -204,7 +203,7 @@ def whoarewe():
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the info.html page to the user
+    :return render template: shows the calculate.html page to the user
     """
     # Returns the info page
     return render_template('aboutvarpred.html')
