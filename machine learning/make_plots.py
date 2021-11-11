@@ -10,7 +10,7 @@ import numpy as np
 def makeplots(prediction, probability, y_test):
     # confusion matrix
     cm = confusion_matrix(y_test, prediction)
-    tn, fp, fn, tp = confusion_matrix(y_test, prediction).ravel()
+    tn, fp, fn, tp, qw, wq, fsda, sdfa, fds = confusion_matrix(y_test, prediction).ravel()
 
     print("FPR: " + str(fp / (fp + tn)))
     print("FNR: " + str(fn / (fn + tp)))

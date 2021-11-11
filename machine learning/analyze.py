@@ -12,9 +12,9 @@ from make_plots import makeplots
 sns.set()
 
 # age;sex;cp;trestbps;chol;fbs;restecg;thalach;exang;oldpeak;slope;ca;thal;target'
-df = pd.read_csv('ML data.tsv', sep='\t')
+df = pd.read_csv('ML data.txt', sep='\t')
 
-X = df.iloc[:,:-1]
+X = df.iloc[:, [27, 28]]
 y = df['CLNSIG']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=27)
 
