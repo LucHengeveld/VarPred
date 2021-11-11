@@ -12,7 +12,7 @@ from make_plots import makeplots
 sns.set()
 
 # age;sex;cp;trestbps;chol;fbs;restecg;thalach;exang;oldpeak;slope;ca;thal;target'
-df = pd.read_csv('MLfile', sep=';')
+df = pd.read_csv('ML data.tsv', sep='\t')
 
 X = df.iloc[:,:-1]
 y = df['CLNSIG']
