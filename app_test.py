@@ -139,6 +139,7 @@ def compare_dataset(ID_list):
     mydb = myclient["varpred"]
     mycol = mydb["variant"]
     print(mycol)
+
     # Create an empty list
     results = []
 
@@ -162,6 +163,41 @@ def info():
     # Returns the info page
     return render_template('info.html')
 
+@app.route('/disclaimer.html', methods=["POST", "GET"])
+def disclaimer():
+    """
+    This function shows the info page when the user selects it in the
+    menu bar on the webapplication. The info page contains information
+    about the application
+
+    :return render template: shows the info.html page to the user
+    """
+    # Returns the info page
+    return render_template('disclaimer.html')
+
+@app.route('/contact.html', methods=["POST", "GET"])
+def contact():
+    """
+    This function shows the info page when the user selects it in the
+    menu bar on the webapplication. The info page contains information
+    about the application
+
+    :return render template: shows the info.html page to the user
+    """
+    # Returns the info page
+    return render_template('contact.html')
+
+@app.route('/aboutvarpred.html', methods=["POST", "GET"])
+def whoarewe():
+    """
+    This function shows the info page when the user selects it in the
+    menu bar on the webapplication. The info page contains information
+    about the application
+
+    :return render template: shows the info.html page to the user
+    """
+    # Returns the info page
+    return render_template('aboutvarpred.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
