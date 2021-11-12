@@ -1,5 +1,6 @@
 from matplotlib.pyplot import get_current_fig_manager
 import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
 import os
 
 
@@ -9,12 +10,13 @@ def open_tsv(location):
 
 def filter_data(data):
     return data[((data.CLNREVSTAT == "reviewed by expert panel") |
-                (data.CLNREVSTAT == "practice guideline")) &
+                 (data.CLNREVSTAT == "practice guideline")) &
                 (data.CLNSIG != "Uncertain significance")]
 
 
 def write_tsv(data, name):
     data.to_csv(name, sep="\t", index=False)
+
 
 def getGenes(data):
     gene_list = data['GENEINFO']
@@ -28,10 +30,35 @@ def getGenes(data):
     return data
 
 
+def one_hot_encoding(data, column):
+    mutation_types = set(data[column].tolist())
+    ohe = pd.get_dummies(data[column], prefix=column)
+    for mutation_type in mutation_types:
+        col = column + "_" + mutation_type
+        data[col] = ohe[col]
+    return data
+
+
+def data_aanpassen(data):
+    print(data.AF_ESP)
+    columns = ["AF_ESP", "AF_EXAC", "AF_TGP", "RS"]
+    for column in columns:
+        temp = list()
+        col = data[column].isnull()
+        print(col)
+        for cell in col:
+            if cell:
+                temp.append(0)
+            else:
+                temp.append(1)
+        data[column] = temp
+    return data
+
 
 if __name__ == '__main__':
-    #subset = filter_data(open_tsv("results_new.tsv"))
-    print(os.getcwd())
-    subset = open_tsv("pythonScripts/ML data.txt")
+    subset = filter_data(open_tsv("results_new.tsv"))
+    # subset = open_tsv("pythonScripts/ML data.txt")
     subset = getGenes(subset)
-    write_tsv(subset, 'ML data fgenes.tsv')
+    subset = data_aanpassen(subset)
+    subset = one_hot_encoding(subset, "CLNVC")
+    write_tsv(subset, "ML data.tsv")

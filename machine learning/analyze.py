@@ -8,15 +8,24 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from make_plots import makeplots
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import roc_curve
+from sklearn.metrics import auc
+from mlxtend.plotting import plot_confusion_matrix
+import matplotlib.pyplot as plt
+import numpy as np
 
 sns.set()
 
 # age;sex;cp;trestbps;chol;fbs;restecg;thalach;exang;oldpeak;slope;ca;thal;target'
 df = pd.read_csv('ML data.txt', sep='\t')
 
-X = df.iloc[:, [27, 28]]
+X = df.iloc[:, [2, 27, 28]]
 y = df['CLNSIG']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=27)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20,
+                                                    random_state=27)
 
 
 # Linear Discriminant analysis
@@ -26,8 +35,18 @@ lda = LinearDiscriminantAnalysis()
 lda.fit(X_train, y_train)
 lda_prediction = lda.predict(X_test)
 lda_pred_proba = lda.predict_proba(X_test)[:, 1]
-makeplots(lda_prediction,lda_pred_proba, y_test)
+# makeplots(lda_prediction,lda_pred_proba, y_test)
+cm = confusion_matrix(y_test, lda_prediction)
+tn, fp, fn, tp, qw, wq, fsda, sdfa, fds = confusion_matrix(y_test, lda_prediction).ravel()
 
+# print("FPR: " + str(fp / (fp + tn)))
+# print("FNR: " + str(fn / (fn + tp)))
+# print("Specificity: " + str(tn / (fp + tn)))
+# print("Sensitivity: " + str(tp / (tp + fn)))
+fig, ax = plot_confusion_matrix(conf_mat=cm)
+plt.rcParams['font.size'] = 20
+plt.title("LDA")
+plt.show()
 # Decision tree classifier
 #
 #
