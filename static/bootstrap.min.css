@@ -11670,3 +11670,12 @@ textarea.form-control-lg {
 .container-adjustment-about{
     margin-top: 10%;
 }
+
+input[type=text]{
+    width: 30%;
+}
+
+.container-adjustment-contact {
+    text-align: center;
+    margin-top: 5%;
+}
