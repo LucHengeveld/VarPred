@@ -11663,12 +11663,10 @@ textarea.form-control-lg {
     text-align: center;
 }
 
-.container-adjustment-about-title {
-    margin-right: 30%;
-    margin-left: 10%;
+.container-adjustment-about {
+    margin: 5%;
 }
 
-.container-adjustment-about {
-    margin-right: 30%;
-    margin-left: 10%;
+.container-adjustment-about-text{
+    margin-top: 10%;
 }
