@@ -34,9 +34,26 @@ def one_hot_encoding(data, column):
     mutation_types = set(data[column].tolist())
     ohe = pd.get_dummies(data[column], prefix=column)
     for mutation_type in mutation_types:
-        col = column + "_" + mutation_type
+        col = column + "_" + str(mutation_type)
         data[col] = ohe[col]
     return data
+
+
+def clin_sig(data):
+    types = list(set(data["CLNSIG"].tolist()))
+    print(types)
+    # ['Pathogenic', 'drug response', 'Pathogenic, drug response',
+    # 'Likely pathogenic', 'Likely benign', 'Benign',
+    # 'Conflicting interpretations of pathogenicity',
+    # 'Pathogenic/Likely pathogenic, drug response']
+    sig_list = data['CLNSIG']
+    numerical_sig_list = []
+    for sig in sig_list:
+        sig_num = types.index(sig)
+        numerical_sig_list.append(sig_num)
+    data['CLNSIG NUM'] = numerical_sig_list
+    return data
+
 
 
 def data_aanpassen(data):
@@ -56,9 +73,13 @@ def data_aanpassen(data):
 
 
 if __name__ == '__main__':
-    subset = filter_data(open_tsv("results_new.tsv"))
+    dataset = open_tsv("results_new.tsv")
+    subset = filter_data(dataset)
     # subset = open_tsv("pythonScripts/ML data.txt")
+    subset = clin_sig(subset)
     subset = getGenes(subset)
     subset = data_aanpassen(subset)
     subset = one_hot_encoding(subset, "CLNVC")
+    subset = one_hot_encoding(subset, "GENECODE")
+    subset = one_hot_encoding(subset, "CHROM")
     write_tsv(subset, "ML data.tsv")
