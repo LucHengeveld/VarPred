@@ -11657,8 +11657,18 @@ textarea.form-control-lg {
     margin: center;
 }
 
-.container-adjustment {
+.container-adjustment-info {
     background: #DDDDDD;
     margin-top: 5%;
     text-align: center;
+}
+
+.container-adjustment-about-title {
+    margin-right: 30%;
+    margin-left: 10%;
+}
+
+.container-adjustment-about {
+    margin-right: 30%;
+    margin-left: 10%;
 }
