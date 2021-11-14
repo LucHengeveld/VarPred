@@ -53,8 +53,9 @@ def get_input():
         elif vcf_file_name != "":
             # Returns an error if a file with the wrong file extension
             # is entered on the webapplication.
-            return render_template('calculate.html', errormsg="Entered file has the"
-                                                              " wrong file extension. Please enter a .vcf file")
+            return render_template('calculate.html',
+                                   errormsg="Entered file has the"
+                                            " wrong file extension. Please enter a .vcf file")
 
         else:
             # Returns an error if no file is selected.
@@ -127,10 +128,10 @@ def create_compare_list(vcf_list):
     # Loops through the vcf_list and saves the chromosome numbers and
     # positions to a 2D list with the structure [chrom_list, pos_list]
     for i in vcf_list:
-        chrom_list.append(str(i[0]))
-        pos_list.append(int(i[1]))
-        ref_list.append(str(i[3]))
-        alt_list.append(str(i[4]))
+        chrom_list.append(i[0])
+        pos_list.append(i[1])
+        ref_list.append(i[3])
+        alt_list.append(i[4])
     compare_list = [chrom_list, pos_list, ref_list, alt_list]
 
     # Returns the compare_list
@@ -156,8 +157,9 @@ def compare_dataset(compare_list):
     # Saves the results in a list
     for simularity in mycol.find({"$and": [{"CHROM": {"$in": compare_list[0]}},
                                            {"POS": {"$in": compare_list[1]}},
-                                           {"REF": {"$in": compare_list[2]}},
-                                           {"ALT": {"$in": compare_list[3]}}]}):
+                                           {"REF": {"$in": compare_list[2]}}, {
+                                               "ALT": {
+                                                   "$in": compare_list[3]}}]}):
         results.append(simularity)
 
     for i in results:
