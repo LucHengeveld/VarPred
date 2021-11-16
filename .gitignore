@@ -2,3 +2,4 @@
 *.vcf
 .idea/
 *.cfg
+*.json
