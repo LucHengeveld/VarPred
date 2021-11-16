@@ -80,6 +80,6 @@ if __name__ == '__main__':
     subset = getGenes(subset)
     subset = data_aanpassen(subset)
     subset = one_hot_encoding(subset, "CLNVC")
-    subset = one_hot_encoding(subset, "GENECODE")
     subset = one_hot_encoding(subset, "CHROM")
+    subset = one_hot_encoding(subset, "GENECODE")
     write_tsv(subset, "ML data.tsv")
