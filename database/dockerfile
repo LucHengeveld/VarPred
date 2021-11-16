@@ -1,4 +1,4 @@
 FROM mongo
 
 COPY variant.json /variant.json
-CMD mongoimport --host mongodb --db reach-engine --collection varpred --type json --file /variant.json --jsonArray
+CMD mongoimport --host mongodb --db varpred --collection variant --type json --file /variant.json --jsonArray
