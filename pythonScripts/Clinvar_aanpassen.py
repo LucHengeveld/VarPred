@@ -43,10 +43,13 @@ def change_dict(file_dictionary):
                 value[i] = value[i].rstrip("_")
 
         # ref length appended to the end
-        value.append(len(value[2]))
+        reflen = len(value[2])
+        value.append(reflen)
 
         # alt length appended to the end
-        value.append(len(value[3]))
+        altlen = len(value[3])
+        value.append(altlen)
+        value.append((reflen - altlen))
         file_dictionary[key] = value
 
     return file_dictionary
@@ -59,7 +62,8 @@ def write_file(file_dictionary):
                        "CLNDISDBINCL", "CLNHGVS", "CLNREVSTAT", "CLNSIG",
                        "CLNSIGCONF", "CLNSIGINCL", "CLNVC", "CLNVCSO", "CLNVI",
                        "DBVARID", "GENEINFO", "MC", "ORIGIN", "RS", "SSR",
-                       "REF LENGTH", "ALT LENGTH"]
+                       "REF LENGTH", "ALT LENGTH",
+                       "DIFFERENCE REF AND ALT LENGTH"]
         for value in column_list:
             file.write(f"{value}\t")
         file.write("\n")
