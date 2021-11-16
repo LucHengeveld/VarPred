@@ -1,11 +1,14 @@
 {% extends 'header.html' %}
 {% block content %}
-        <h2>Calculate:</h2>
+    <div class="container container-adjustment p-3 mb-2 border border-success border-3 rounded-pill">
+        <h2>Clinical significance predictor:</h2>
 <form action="{{ url_for('get_input') }}" method="POST" enctype="multipart/form-data">
 <label>Enter the VCF file below:<br><br>
-<input type="file" name="vcf_file" accept=".vcf" />
+    <div class="mb-3">
+  <input class="form-control" type="file" name="vcf_file" accept=".vcf">
+</div>
 </label><br><br>
-<button name="resultbutton" type="submit">Calculate results</button>
+<button class= "btn btn-primary btn-lg" name="resultbutton" type="submit">Calculate results</button>
 {{ errormsg }}
-</form>
+</form></div>
 {% endblock %}
