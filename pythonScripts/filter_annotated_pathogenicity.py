@@ -41,16 +41,17 @@ def one_hot_encoding(data, column):
 
 def clin_sig(data):
     types = list(set(data["CLNSIG"].tolist()))
-    print(types)
+    types.sort()
     # ['Pathogenic', 'drug response', 'Pathogenic, drug response',
     # 'Likely pathogenic', 'Likely benign', 'Benign',
     # 'Conflicting interpretations of pathogenicity',
     # 'Pathogenic/Likely pathogenic, drug response']
     sig_list = data['CLNSIG']
     numerical_sig_list = []
+    binary_encoding = ['0000001', '00000010', '00000100', '00001000','00010000', '00100000', '01000000','10000000']
     for sig in sig_list:
         sig_num = types.index(sig)
-        numerical_sig_list.append(sig_num)
+        numerical_sig_list.append(binary_encoding[sig_num])
     data['CLNSIG NUM'] = numerical_sig_list
     return data
 

@@ -10,19 +10,20 @@ import numpy as np
 def makeplots(prediction, probability, y_test):
     # confusion matrix
     cm = confusion_matrix(y_test, prediction)
-    tn, fp, fn, tp, qw, wq, fsda, sdfa, fds = confusion_matrix(y_test, prediction).ravel()
+    print(cm)
+    list_ding = list(confusion_matrix(y_test, prediction).ravel())
 
-    print("FPR: " + str(fp / (fp + tn)))
-    print("FNR: " + str(fn / (fn + tp)))
-    print("Specificity: " + str(tn / (fp + tn)))
-    print("Sensitivity: " + str(tp / (tp + fn)))
+    #print("FPR: " + str(fp / (fp + tn)))
+    #print("FNR: " + str(fn / (fn + tp)))
+    #print("Specificity: " + str(tn / (fp + tn)))
+    #print("Sensitivity: " + str(tp / (tp + fn)))
     fig, ax = plot_confusion_matrix(conf_mat=cm)
     plt.rcParams['font.size'] = 20
     plt.title("LDA")
     plt.show()
 
     [fpr, tpr, thr] = roc_curve(y_test, probability)
-    idx = np.min(np.where(tpr > 0.95)) 
+    idx = np.min(np.where(tpr > 0.95))
     plt.figure(figsize=(10, 10))
     plt.plot(fpr, tpr, color='coral', label='ROC curve (area = %0.3f)' % auc(fpr, tpr))
     plt.plot([0, 1], [0, 1], 'k--')
