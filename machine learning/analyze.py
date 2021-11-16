@@ -21,7 +21,7 @@ sns.set()
 # age;sex;cp;trestbps;chol;fbs;restecg;thalach;exang;oldpeak;slope;ca;thal;target'
 df = pd.read_csv('ML data.tsv', sep='\t')
 df.to_csv("test.tsv", sep="\t")
-X = df.iloc[:, np.r_[2, 5, 6, 7, 25, 27, 28, 31:len(df.columns)]]
+X = df.iloc[:, np.r_[2, 5, 6, 7, 25, 27, 28, 29, 32:len(df.columns)]]
 X.to_csv("test.tsv", sep="\t")
 y = df['CLNSIG NUM']
 print(y)
