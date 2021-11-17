@@ -2005,6 +2005,7 @@ progress {
     --bs-table-hover-color: #000;
     color: #000;
     border-color: #dfc2c4
+
 }
 
 .table-light {
@@ -3004,15 +3005,15 @@ textarea.form-control-lg {
 
 .btn-primary {
     color: #fff;
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
     font-family: Fantasy;
 }
 
 .btn-primary:hover {
     color: #fff;
-    background-color: #0b5ed7;
-    border-color: #0a58ca
+    background-color: #33cc33;
+    border-color: #2eb82e;
 }
 
 .btn-check:focus + .btn-primary, .btn-primary:focus {
@@ -11671,6 +11672,7 @@ textarea.form-control-lg {
 
 .container-adjustment-about{
     margin-top: 10%;
+    background-color: #5dd55d;
 }
 
 input[type=text]{
@@ -11685,26 +11687,10 @@ input[type=text]{
     margin-right: auto;
 }
 
-/*.text-underline-hover {*/
-/*    text-decoration: none;*/
-/*}*/
-
-/*.text-underline-hover:hover {*/
-/*    text-decoration: underline;*/
-/*}*/
-
-/*a:not([class]) {*/
-/*    text-decoration: none;*/
-/*}*/
-
-/*a:not([class]):hover {*/
-/*    text-decoration: underline;*/
-/*}*/
-
 .link-flash {
   --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
   position: relative;
-    color: #1a1e21;
+    color: #33cc33;
     text-decoration: none;
 }
 .link-flash::before, .link-flash::after {
@@ -11715,7 +11701,7 @@ input[type=text]{
   display: block;
   width: 100%;
   height: 1px;
-  background: var(--primary-color);
+  background: #33cc33;
   transition: 1.1s var(--ease-out-expo);
 }
 .link-flash::before {
@@ -11744,4 +11730,25 @@ input[type=text]{
     position: relative;
     width: var(--carousel-width);
     overflow: hidden;
+}
+
+.nav {
+    --nav-underline-color: var(--secondary-color);
+    --nav-color: black;
+    --nav-active-color: #33cc33;
+    --nav-inactive-color: #70db70;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    border-bottom: 1px solid var(--nav-underline-color);
+}
+
+.dropdown {
+    --dropdown-color: black;
+    --dropdown-toggle-color: #70db70;
+    --dropdown-item-color: white;
+    --dropdown-item-hover-color: hsl(0, 0%, 96%);
+    --dropdown-item-divider-color: rgba(255, 255, 255, 0.2);
+    position: relative;
 }
