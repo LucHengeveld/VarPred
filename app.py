@@ -200,3 +200,31 @@ def whoarewe():
 
 if __name__ == '__main__':
     app.run()
+
+from wtforms import Form, BooleanField, StringField, validators
+
+class RegistrationForm(Form):
+    firstname = StringField('Firstname', [validators.Length(min=2, max=25)])
+    lastname = StringField('Lastname', [validators.Length(min=2, max=35)])
+    email = StringField('Email', [validators.Length(min=6, max=35)])
+    phonenumber = StringField('Phonenumber', [validators.Length(min=6, max=35)])
+
+    accept_tos = BooleanField('invalidCheck', [validators.DataRequired()])
+
+from flask import request, redirect
+
+@app.route("/sign-up", methods=["GET", "POST"])
+def sign_up():
+
+    if request.method == "POST":
+
+        req = request.form
+
+        firstname = req.get("firstname")
+        lastname = req["lastname"]
+        email = req["Email"]
+        phonenumber = req["Phonenumber"]
+
+        return redirect(request.url)
+
+    return render_template("contact.html")

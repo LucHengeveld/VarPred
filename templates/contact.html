@@ -1,93 +1,76 @@
 {% extends 'header.html' %}
 {% block content %}
-    <form class="row g-3 container-adjustment-contact border border-secondar border-4" novalidate>
+    <form class="row g-3 container-adjustment-contact border border-secondar border-4 needs-validation" method="post" action="contact.html" novalidate>
    <div class="col-md-4">
-    <label for="validationDefault01" class="form-label">First name</label>
-    <input type="text" class="form-control" id="validationDefault01" value="Mark" required>
+    <label for="validationCustom01" class="form-label">Firstname</label>
+    <input type="text" class="form-control" id="Firstname" name="Firstname" required>
+       <div class="valid-feedback">
+        Looks good!
+      </div>
+       <div class="invalid-feedback">
+        Please fill your firstname.
+      </div>
   </div>
   <div class="col-md-4">
-    <label for="validationDefault02" class="form-label">Last name</label>
-    <input type="text" class="form-control" id="validationDefault02" value="Otto" required>
+    <label for="validationCustom02" class="form-label">Lastname</label>
+    <input type="text" class="form-control" id="Lastname" name="Lastname" required>
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+       <div class="invalid-feedback">
+        Please fill your lastname.
+      </div>
   </div>
   <div class="col-md-4">
-    <label for="validationDefaultUsername" class="form-label">Username</label>
-    <div class="input-group">
-      <span class="input-group-text" id="inputGroupPrepend2">@</span>
-      <input type="text" class="form-control" id="validationDefaultUsername"  aria-describedby="inputGroupPrepend2" required>
-    </div>
+    <label class="form-label">Message</label>
+      <textarea class="form-control" id="Message" name="Message"></textarea>
   </div>
   <div class="col-md-6">
-    <label for="validationDefault03" class="form-label">City</label>
-    <input type="text" class="form-control" id="validationDefault03" required>
+    <label for="validationCustom03" class="form-label">E-mail</label>
+    <input type="text" class="form-control" id="Email" name="Email" required>
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+       <div class="invalid-feedback">
+        Please fill your e-mail.
+      </div>
   </div>
   <div class="col-md-3">
-    <label for="validationDefault04" class="form-label">State</label>
-    <select class="form-select" id="validationDefault04" required>
+    <label for="validationCustom04" class="form-label">Gender</label>
+    <select class="form-select" id="Gender" name="Gender" required>
       <option selected disabled value="">Choose...</option>
-      <option>...</option>
+      <option>Man</option>
+        <option>Woman</option>
+        <option>Non-binair</option>
     </select>
+       <div class="invalid-feedback">
+        Please choose a gender
+      </div>
   </div>
   <div class="col-md-3">
-    <label for="validationDefault05" class="form-label">Zip</label>
-    <input type="text" class="form-control" id="validationDefault05" required>
+    <label for="validationCustom05" class="form-label">Phonenumber</label>
+    <input type="number" class="form-control" id="Phonenumber" name="Phonenumber" required>
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+       <div class="invalid-feedback">
+        Please fill your phonenumber.
+      </div>
   </div>
   <div class="col-12">
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" value="" id="invalidCheck2" required>
-      <label class="form-check-label" for="invalidCheck2">
+      <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+      <label class="form-check-label" for="invalidCheck">
         Agree to terms and conditions
       </label>
+        <div class="invalid-feedback">
+        You must agree before submitting.
+      </div>
     </div>
   </div>
   <div class="col-12">
     <button class="btn btn-primary" type="submit">Submit form</button>
   </div>
 </form>
-{#    <div class="container-adjustment-contact border border-secondar border-4 col-sm-6">#}
-{#    <h2>Contact form</h2>#}
-{#         <form class="was-validated">#}
-{#         <div class="mb-3">#}
-{#            <label for="validationTextarea" class="form-label">Name</label>#}
-{#                <input type="text" class="form-control is-invalid" id="validationTextarea" placeholder="Required Name">#}
-{#            <div class="invalid-feedback">#}
-{#              Please enter your name.#}
-{#            </div>#}
-{#        </div>#}
-{##}
-{#        <label for="naam">Naam: </label>#}
-{#        <input type="text" name="naam" id="naam"><br>#}
-{#        <label for="telefoonnummer">Telefoonnummer: </label>#}
-{#        <input type="number" name="telefoonnummer" id="telefoonnummer" value="<?php if(isset($_GET['telefoonnummer'])){ echo htmlentities($_GET['telefoonnummer']);} ?>"><br>#}
-{#        <label for="e-mail">E-mail: </label>#}
-{#        <input type="email" name="e-mail" id="e-mail" value="<?php if(isset($_GET['e-mail'])){ echo htmlentities($_GET['e-mail']);} ?>" ><br>#}
-{#        <label for="project">project: </label>#}
-{#        <select name="project" id="project">#}
-{#            <option value="">...</option>#}
-{#            <option value="Reizen in Finland">Reizen in Finland</option>#}
-{#            <option value="Profielwerkstuk">Profielwerkstuk</option>#}
-{#            <option value="Klussen thuis">Klussen thuis</option>#}
-{#            <option value="Hobbyprojecten">Hobbyprojecten</option>#}
-{#            <option value="Vakken op school">Vakken op school</option>#}
-{#            <option value="Op reis naar Thailand">Op reis naar Thailand</option>#}
-{#            <option value="Op reis naar Tsjechië">Op reis naar Tsjechië</option>#}
-{#            <option value="Vakken op de middelbare school">Vakken op de middelbare school</option>#}
-{#        </select><br>#}
-{#        <fieldset>#}
-{#            <label for="interesses1">Interesses:</label>#}
-{#            <input type="radio" name="interesses" value="inhoudelijk" checked="checked" id="interesses1"> Inhoudelijk<br>#}
-{#            <label for="interesses2"></label>#}
-{#            <input type="radio" name="interesses" value="samenwerking" id="interesses2"> Samenwerking<br>#}
-{#            <label for="interesses3"></label>#}
-{#            <input type="radio" name="interesses" value="advies" id="interesses3"> Advies<br>#}
-{#        </fieldset>#}
-{#        <label for="bericht">bericht: </label>#}
-{#        <textarea rows="10" cols="50" name="bericht" id="bericht"><?php if(isset($_GET['bericht'])){ echo $_GET['bericht'];} ?></textarea><br>#}
-{#        <fieldset>#}
-{#            <label for="terugbellen">Wil je terug gebeld worden? </label>#}
-{#            <input type="checkbox" name="terugbellen" value="Ja" id="terugbellen"><br>#}
-{#        </fieldset>#}
-{#        <input class="button" type="submit" name="verzenden" value="Verzenden"><br>#}
-{#        <input class="button" type="submit" name="resetten" value="Resetten">#}
-{#    </form>#}
-{#    </div>#}
+
 {% endblock %}
