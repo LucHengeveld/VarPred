@@ -1,5 +1,11 @@
 from flask import Flask, render_template, request
 import pymongo
+import dash
+from dash import dcc
+from dash import html
+import plotly
+import plotly.graph_objects as go
+import json
 
 app = Flask(__name__)
 
@@ -40,9 +46,13 @@ def get_input():
                 # Calls the function compare_dataset
                 results = compare_dataset(compare_list)
 
+                # Creates the visualisation bar
+                graphJSON = visualisation_bar(compare_list[1])
+
                 # Returns the results page
                 return render_template('results.html',
-                                       results=results)
+                                       results=results,
+                                       graphJSON=graphJSON)
 
             else:
                 # Returns an error if the file format is incorrect.
@@ -53,8 +63,9 @@ def get_input():
         elif vcf_file_name != "":
             # Returns an error if a file with the wrong file extension
             # is entered on the webapplication.
-            return render_template('calculate.html', errormsg="Entered file has the"
-                                                              " wrong file extension. Please enter a .vcf file")
+            return render_template('calculate.html',
+                                   errormsg="Entered file has the"
+                                            " wrong file extension. Please enter a .vcf file")
 
         else:
             # Returns an error if no file is selected.
@@ -127,10 +138,10 @@ def create_compare_list(vcf_list):
     # Loops through the vcf_list and saves the chromosome numbers and
     # positions to a 2D list with the structure [chrom_list, pos_list]
     for i in vcf_list:
-        chrom_list.append(str(i[0]))
-        pos_list.append(int(i[1]))
-        ref_list.append(str(i[3]))
-        alt_list.append(str(i[4]))
+        chrom_list.append(i[0])
+        pos_list.append(i[1])
+        ref_list.append(i[3])
+        alt_list.append(i[4])
     compare_list = [chrom_list, pos_list, ref_list, alt_list]
 
     # Returns the compare_list
@@ -156,14 +167,44 @@ def compare_dataset(compare_list):
     # Saves the results in a list
     for simularity in mycol.find({"$and": [{"CHROM": {"$in": compare_list[0]}},
                                            {"POS": {"$in": compare_list[1]}},
-                                           {"REF": {"$in": compare_list[2]}},
-                                           {"ALT": {"$in": compare_list[3]}}]}):
+                                           {"REF": {"$in": compare_list[2]}}, {
+                                               "ALT": {
+                                                   "$in": compare_list[3]}}]}):
         results.append(simularity)
 
     for i in results:
         print(i)
     # Return the results list
     return results
+
+
+def visualisation_bar(compare_list):
+    chrom_size = 248956422
+
+    x_list = []
+    for i in compare_list[1]:
+        x_list.append(int(i))
+
+    y_list = []
+    for i in range(len(x_list)):
+        y_list.append(0)
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=x_list, y=y_list,
+        mode='markers', marker_size=42.5, marker_symbol='line-ns',
+        marker_line_color="black", marker_line_width=2
+    ))
+    fig.update_xaxes(showgrid=False, fixedrange=False, range=[0, chrom_size],
+                     tickfont_family="Arial Black", tickformat=',d')
+    fig.update_yaxes(showgrid=False, fixedrange=True,
+                     zeroline=True, zerolinecolor='#04AA6D', zerolinewidth=60,
+                     showticklabels=False)
+    fig.update_layout(height=260, plot_bgcolor='white', font_size=18)
+
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    print(graphJSON)
+    return graphJSON
 
 
 @app.route('/calculate.html', methods=["POST", "GET"])
