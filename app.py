@@ -1,5 +1,11 @@
 from flask import Flask, render_template, request
 import pymongo
+import dash
+from dash import dcc
+from dash import html
+import plotly
+import plotly.graph_objects as go
+import json
 
 app = Flask(__name__)
 
@@ -40,9 +46,13 @@ def get_input():
                 # Calls the function compare_dataset
                 results = compare_dataset(compare_list)
 
+                # Creates the visualisation bar
+                graphJSON = visualisation_bar(compare_list[1])
+
                 # Returns the results page
                 return render_template('results.html',
-                                       results=results)
+                                       results=results,
+                                       graphJSON=graphJSON)
 
             else:
                 # Returns an error if the file format is incorrect.
@@ -166,6 +176,35 @@ def compare_dataset(compare_list):
         print(i)
     # Return the results list
     return results
+
+
+def visualisation_bar(compare_list):
+    chrom_size = 248956422
+
+    x_list = []
+    for i in compare_list[1]:
+        x_list.append(int(i))
+
+    y_list = []
+    for i in range(len(x_list)):
+        y_list.append(0)
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=x_list, y=y_list,
+        mode='markers', marker_size=42.5, marker_symbol='line-ns',
+        marker_line_color="black", marker_line_width=2
+    ))
+    fig.update_xaxes(showgrid=False, fixedrange=False, range=[0, chrom_size],
+                     tickfont_family="Arial Black", tickformat=',d')
+    fig.update_yaxes(showgrid=False, fixedrange=True,
+                     zeroline=True, zerolinecolor='#04AA6D', zerolinewidth=60,
+                     showticklabels=False)
+    fig.update_layout(height=260, plot_bgcolor='white', font_size=18)
+
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    print(graphJSON)
+    return graphJSON
 
 
 @app.route('/calculate.html', methods=["POST", "GET"])
