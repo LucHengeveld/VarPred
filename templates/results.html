@@ -1,69 +1,74 @@
 {% extends 'header.html' %}
 {% block content %}
-<link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/style.css">
 
-<h2>Results:</h2>
-<div class="rectangle_container">
-    <p>Select a chromosome below:</p>
-    <div class="btn-group">
-        <button>1</button>
-        &nbsp;
-        <button>2</button>
-        &nbsp;
-        <button>3</button>
-        &nbsp;
-        <button>4</button>
-        &nbsp;
-        <button>5</button>
-        &nbsp;
-        <button>6</button>
-        &nbsp;
-        <button>7</button>
-        &nbsp;
-        <button>8</button>
-        &nbsp;
-        <button>9</button>
-        &nbsp;
-        <button>10</button>
-        &nbsp;
-        <button>11</button>
-        &nbsp;
-        <button>12</button>
-        &nbsp;
-        <button>13</button>
-        &nbsp;
-        <button>14</button>
-        &nbsp;
-        <button>15</button>
-        &nbsp;
-        <button>16</button>
-        &nbsp;
-        <button>17</button>
-        &nbsp;
-        <button>18</button>
-        &nbsp;
-        <button>19</button>
-        &nbsp;
-        <button>20</button>
-        &nbsp;
-        <button>21</button>
-        &nbsp;
-        <button>22</button>
-        &nbsp;
-        <button>X</button>
-        &nbsp;
-        <button>Y</button>
-        &nbsp;
-        <button>MT</button>
-    </div>
-    <br>
-    <div class="rectangle_visualisation">
-        <div id='chart' class='chart'></div>
-    </div>
-</div><br>
-{% for result in results %}
-{{ result }}<br><br>
-{% endfor %}
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <h2>Results:</h2>
+    <div class="rectangle_container">
+        <p>Select a chromosome below:</p>
+        <div class="btn-group">
+            <button>1</button>
+            &nbsp;
+            <button>2</button>
+            &nbsp;
+            <button>3</button>
+            &nbsp;
+            <button>4</button>
+            &nbsp;
+            <button>5</button>
+            &nbsp;
+            <button>6</button>
+            &nbsp;
+            <button>7</button>
+            &nbsp;
+            <button>8</button>
+            &nbsp;
+            <button>9</button>
+            &nbsp;
+            <button>10</button>
+            &nbsp;
+            <button>11</button>
+            &nbsp;
+            <button>12</button>
+            &nbsp;
+            <button>13</button>
+            &nbsp;
+            <button>14</button>
+            &nbsp;
+            <button>15</button>
+            &nbsp;
+            <button>16</button>
+            &nbsp;
+            <button>17</button>
+            &nbsp;
+            <button>18</button>
+            &nbsp;
+            <button>19</button>
+            &nbsp;
+            <button>20</button>
+            &nbsp;
+            <button>21</button>
+            &nbsp;
+            <button>22</button>
+            &nbsp;
+            <button>X</button>
+            &nbsp;
+            <button>Y</button>
+            &nbsp;
+            <button>MT</button>
+        </div>
+        <br>
+        <div class="rectangle_visualisation">
+            <div id='chart' class='chart'></div>
+            <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
+            <script type="text/javascript">
+                var graph1 = {{ graphJSON | safe }};
+                Plotly.plot('chart', graph1, {});
+            </script>
+
+        </div>
+    </div><br>
+    {% for result in results %}
+        {{ result }}<br><br>
+    {% endfor %}
 {% endblock %}

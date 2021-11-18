@@ -182,7 +182,7 @@ def visualisation_bar(compare_list):
     chrom_size = 248956422
 
     x_list = []
-    for i in compare_list[1]:
+    for i in compare_list:
         x_list.append(int(i))
 
     y_list = []
@@ -203,6 +203,7 @@ def visualisation_bar(compare_list):
     fig.update_layout(height=260, plot_bgcolor='white', font_size=18)
 
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
     print(graphJSON)
     return graphJSON
 
