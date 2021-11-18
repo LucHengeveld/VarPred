@@ -1,3 +1,4 @@
+import numpy as np
 import seaborn as sns
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -14,9 +15,10 @@ from sklearn.tree import DecisionTreeClassifier
 
 sns.set()
 
+
 df = pd.read_csv('ML data.tsv', sep='\t')
 
-X = df.iloc[:, [5, 6, 7, 25, 27, 28]]
+X = df.iloc[:, np.r_[5, 6, 7, 25, 27:31, 33:len(df.columns)]]
 # print(X)
 
 # X = df.iloc[:, np.r_[27, 28, 31:len(df.colums)]]
@@ -143,7 +145,7 @@ def results(prediction, prediction_proba):
 def main():
     # lda()
     # decision_tree()
-    # random_forest()
+    random_forest()
     # logistic()
 
 

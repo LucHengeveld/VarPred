@@ -19,8 +19,8 @@ def filter_data(data):
 def write_tsv(data, name):
     data.to_csv(name, sep="\t", index=False)
 
+
 def scale_pos(data):
-    
     pos_list = data['POS'].tolist()
     chrom_list = data['CHROM'].tolist()
     scaled_pos_list = []
@@ -30,6 +30,7 @@ def scale_pos(data):
         scaled_pos_list.append(round(scaled_pos, 4))
     data['SC_POS'] = scaled_pos_list
     return data
+
 
 def getGenes(data):
     gene_list = data['GENEINFO']
@@ -84,6 +85,15 @@ def data_aanpassen(data):
     return data
 
 
+def get_first_value(data, column):
+    items = list()
+    for item in data[column]:
+        item = str(item)
+        items.append(item.split(",")[0][(item.find("|") + 1):])
+    data[column] = items
+    return data
+
+
 if __name__ == '__main__':
     dataset = open_tsv("results_new.tsv")
     subset = filter_data(dataset)
@@ -91,8 +101,10 @@ if __name__ == '__main__':
     subset = scale_pos(subset)
     subset = clin_sig(subset)
     subset = getGenes(subset)
+    subset = get_first_value(subset, "MC")
     subset = data_aanpassen(subset)
     subset = one_hot_encoding(subset, "CLNVC")
+    subset = one_hot_encoding(subset, "MC")
     subset = one_hot_encoding(subset, "CHROM")
     subset = one_hot_encoding(subset, "GENECODE")
     write_tsv(subset, "ML data.tsv")
