@@ -2,6 +2,7 @@ from matplotlib.pyplot import get_current_fig_manager
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 import os
+from chrom_dict import chromosome_length
 
 
 def open_tsv(location):
@@ -18,6 +19,17 @@ def filter_data(data):
 def write_tsv(data, name):
     data.to_csv(name, sep="\t", index=False)
 
+def scale_pos(data):
+    
+    pos_list = data['POS'].tolist()
+    chrom_list = data['CHROM'].tolist()
+    scaled_pos_list = []
+    for i in range(len(pos_list)):
+        chrom_length = chromosome_length[str(chrom_list[i])]
+        scaled_pos = chrom_length / pos_list[i]
+        scaled_pos_list.append(round(scaled_pos, 4))
+    data['SC_POS'] = scaled_pos_list
+    return data
 
 def getGenes(data):
     gene_list = data['GENEINFO']
@@ -76,6 +88,7 @@ if __name__ == '__main__':
     dataset = open_tsv("results_new.tsv")
     subset = filter_data(dataset)
     # subset = open_tsv("pythonScripts/ML data.txt")
+    subset = scale_pos(subset)
     subset = clin_sig(subset)
     subset = getGenes(subset)
     subset = data_aanpassen(subset)
