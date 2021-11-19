@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-zrnmn8R8KkWl12rAZFt4yKjxplaDaT7/EUkKm7AovijfrQItFWR7O/JJn4DAa/gx" crossorigin="anonymous">
     <script src="../static/bootstrap.js"></script>
     <link rel="icon" href="../static/VarPred_logo.png" type="image/gif" sizes="16x16">
-    <TITLE>Home</TITLE>
+    <TITLE> {% block title %}{% endblock %} </TITLE>
 </head>
 <body>
 <header>
@@ -24,7 +24,7 @@
                     <a class="nav-link" data-toggle="tab" role="tab" aria-controls="home" aria-selected="true" href="home.html">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="info.html" data-toggle="tab" role="tab" aria-controls="profile" aria-selected="false">Calculator</a>
+                    <a class="nav-link" href="calculator.html" data-toggle="tab" role="tab" aria-controls="profile" aria-selected="false">Calculator</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -122,7 +122,7 @@
             Useful links
           </h6>
           <p>
-            <a href="info.html" class="link-flash text-reset">Calculator</a>
+            <a href="calculator.html" class="link-flash text-reset">Calculator</a>
           </p>
           <p>
             <a href="https://en.wikipedia.org/wiki/Clinical_significance" class="link-flash text-reset">Clinical significance</a>

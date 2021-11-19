@@ -150,17 +150,17 @@ def compare_dataset(ID_list):
     return results
 
 
-@app.route('/info.html', methods=["POST", "GET"])
+@app.route('/calculator.html', methods=["POST", "GET"])
 def info():
     """
     This function shows the info page when the user selects it in the
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the info.html page to the user
+    :return render template: shows the calculator.html page to the user
     """
     # Returns the info page
-    return render_template('info.html')
+    return render_template('calculator.html')
 
 @app.route('/disclaimer.html', methods=["POST", "GET"])
 def disclaimer():
@@ -169,7 +169,7 @@ def disclaimer():
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the info.html page to the user
+    :return render template: shows the calculator.html page to the user
     """
     # Returns the info page
     return render_template('disclaimer.html')
@@ -181,7 +181,7 @@ def contact():
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the info.html page to the user
+    :return render template: shows the calculator.html page to the user
     """
     # Returns the info page
     return render_template('contact.html')
@@ -193,7 +193,7 @@ def whoarewe():
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the info.html page to the user
+    :return render template: shows the calculator.html page to the user
     """
     # Returns the info page
     return render_template('aboutvarpred.html')
