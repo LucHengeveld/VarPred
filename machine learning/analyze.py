@@ -5,8 +5,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import confusion_matrix, precision_score, accuracy_score, recall_score, roc_auc_score, \
-    roc_curve, f1_score
+from sklearn.metrics import confusion_matrix, precision_score, accuracy_score,\
+    recall_score, roc_auc_score, roc_curve, f1_score
 from mlxtend.plotting import plot_confusion_matrix
 from matplotlib import pyplot as plt
 from sklearn.tree import DecisionTreeClassifier
@@ -18,10 +18,9 @@ sns.set()
 
 df = pd.read_csv('ML data.tsv', sep='\t')
 
-X = df.iloc[:, np.r_[5, 6, 7, 25, 27:31, 33:len(df.columns)]]
+X = df.iloc[:, np.r_[5, 6, 7, 27:31, 25, 33:84]]
 # print(X)
 
-# X = df.iloc[:, np.r_[27, 28, 31:len(df.colums)]]
 y = df['CLNSIG NUM']
 # print(y)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20,
@@ -53,6 +52,7 @@ def decision_tree():
     clf_prediction_proba = clf.predict_proba(X_test)
     cm = confusion_matrix(y_test, clf_prediction)
     # lijst_decision = list(confusion_matrix(y_test, clf_prediction).ravel())
+    count = 0
     for importance, name in sorted(zip(clf.feature_importances_, X_train.columns),
                                    reverse=True):
         print(name, importance)
@@ -72,7 +72,7 @@ def random_forest():
     # lijst_random = list(confusion_matrix(y_test, rfc_prediction).ravel())
 
     for importance, name in sorted(zip(rfc.feature_importances_, X_train.columns),
-                                   reverse=True):
+                                   reverse=True)[:10]:
         print(name, importance)
 
     results(rfc_prediction, rfc_prediction_proba)
