@@ -180,6 +180,15 @@ def compare_dataset(compare_list):
 
 def visualisation_bar(compare_list):
     chrom_size = 248956422
+    chromosome_dict = {"1": 248956422, "2": 242193529, "3": 198295559,
+                       "4": 190214555, "5": 181538259, "6": 170805979,
+                       "7": 159345973, "8": 145138636, "9": 138394717,
+                       "10": 133797422, "11": 135086622, "12": 133275309,
+                       "13": 114364328, "14": 107043718, "15": 101991189,
+                       "16": 90338345, "17": 83257441, "18": 80373285,
+                       "19": 58617616, "20": 64444167, "21": 46709983,
+                       "22": 50818468, "X": 156040895, "Y": 57227415,
+                       "MT": 16569}
 
     x_list = []
     for i in compare_list:
@@ -209,7 +218,7 @@ def visualisation_bar(compare_list):
 
 
 @app.route('/calculate.html', methods=["POST", "GET"])
-def info():
+def calculate():
     """
     This function shows the info page when the user selects it in the
     menu bar on the webapplication. The info page contains information
