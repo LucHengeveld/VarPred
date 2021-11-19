@@ -8,7 +8,7 @@ app = dash.Dash(__name__)
 vcf_list = []
 
 # Saves the mutation information in a list
-with open("vcf-test - kopie.vcf") as file:
+with open("vcf-test.vcf") as file:
     for line in file:
         if not line.startswith("#"):
             vcf_list.append(line.split("\t"))
@@ -28,35 +28,26 @@ for i in vcf_list:
     alt_list.append(i[4])
 compare_list = [chrom_list, pos_list, ref_list, alt_list]
 
-chrom_size = 248956422
+print(compare_list)
 
 x_list = []
-for i in compare_list[1]:
-    x_list.append(int(i))
+pos_list = []
+position_dict = {}
 
-y_list = []
-for i in range(len(x_list)):
-    y_list.append(0)
+for i in range(len(compare_list[0])):
+    if i == 0:
+        pos_list.append(compare_list[1][i])
 
-fig = go.Figure()
-fig.add_trace(go.Scatter(
-    x=x_list, y=y_list,
-    mode='markers', marker_size=42.5, marker_symbol='line-ns',
-    marker_line_color="black", marker_line_width=2
-))
-fig.update_xaxes(showgrid=False, fixedrange=False, range=[0, chrom_size],
-                 tickfont_family="Arial Black", tickformat=',d')
-fig.update_yaxes(showgrid=False, fixedrange=True,
-                 zeroline=True, zerolinecolor='#04AA6D', zerolinewidth=60,
-                 showticklabels=False)
-fig.update_layout(height=260, plot_bgcolor='white', font_size=18)
+    elif compare_list[0][i] == compare_list[0][i-1]:
+        pos_list.append(compare_list[1][i])
+        if compare_list[1][i] == compare_list[1][-1]:
+            position_dict[compare_list[0][i]] = pos_list
 
-app.layout = html.Div(children=[
-    dcc.Graph(
-        id='chromosome',
-        figure=fig
-    )
-])
+    elif compare_list[0][i] != compare_list[0][i-1]:
+        position_dict[compare_list[0][i-1]] = pos_list
+        pos_list = [compare_list[1][i]]
+        if compare_list[1][i] == compare_list[1][-1]:
+            position_dict[compare_list[0][i]] = pos_list
 
-if __name__ == '__main__':
-    app.run_server(debug=True)
+print(pos_list)
+print(position_dict)

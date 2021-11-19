@@ -47,7 +47,7 @@ def get_input():
                 results = compare_dataset(compare_list)
 
                 # Creates the visualisation bar
-                graphJSON = visualisation_bar(compare_list[1])
+                graphJSON = visualisation_bar(compare_list)
 
                 # Returns the results page
                 return render_template('results.html',
@@ -172,8 +172,9 @@ def compare_dataset(compare_list):
                                                    "$in": compare_list[3]}}]}):
         results.append(simularity)
 
-    for i in results:
-        print(i)
+    # for i in results:
+    #     print(i)
+
     # Return the results list
     return results
 
@@ -190,30 +191,50 @@ def visualisation_bar(compare_list):
                        "22": 50818468, "X": 156040895, "Y": 57227415,
                        "MT": 16569}
 
-    x_list = []
-    for i in compare_list:
-        x_list.append(int(i))
+    pos_list = []
+    position_dict = {}
+
+    for i in range(len(compare_list[0])):
+        if i == 0:
+            pos_list.append(int(compare_list[1][i]))
+
+        elif compare_list[0][i] == compare_list[0][i - 1]:
+            pos_list.append(int(compare_list[1][i]))
+            if compare_list[1][i] == compare_list[1][-1]:
+                position_dict[compare_list[0][i]] = pos_list
+
+        elif compare_list[0][i] != compare_list[0][i - 1]:
+            position_dict[compare_list[0][i - 1]] = pos_list
+            pos_list = [int(compare_list[1][i])]
+            if compare_list[1][i] == compare_list[1][-1]:
+                position_dict[compare_list[0][i]] = pos_list
+    print(pos_list)
+    print(position_dict)
+
+    x_list = position_dict["1"]
 
     y_list = []
     for i in range(len(x_list)):
         y_list.append(0)
 
+    print(x_list)
+    # for i in range(len(x_list)):
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=x_list, y=y_list,
         mode='markers', marker_size=42.5, marker_symbol='line-ns',
         marker_line_color="black", marker_line_width=2
     ))
-    fig.update_xaxes(showgrid=False, fixedrange=False, range=[0, chrom_size],
+    fig.update_xaxes(showgrid=False, fixedrange=False, range=[0, chromosome_dict["1"]],
                      tickfont_family="Arial Black", tickformat=',d')
     fig.update_yaxes(showgrid=False, fixedrange=True,
                      zeroline=True, zerolinecolor='#04AA6D', zerolinewidth=60,
                      showticklabels=False)
     fig.update_layout(height=260, plot_bgcolor='white', font_size=18)
-
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-    print(graphJSON)
+
+    # print(graphJSON)
     return graphJSON
 
 
