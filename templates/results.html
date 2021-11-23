@@ -1,80 +1,17 @@
-{% extends 'header.html' %}
-{% block content %}
-<link rel="stylesheet" href="../static/style.css">
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link href="../static/style.css" rel="stylesheet" type="text/css">
+        <TITLE>Results</TITLE>
+    </head>
 
-<h2>Results:</h2>
-<div class="rectangle_container">
-    <p>Select a chromosome below:</p>
-    <div class="btn-group">
-        <button id="1" onclick="changeChromosome(this.id)">1</button>
-        &nbsp;
-        <button id="2" onclick="changeChromosome(this.id)">2</button>
-        &nbsp;
-        <button id="3" onclick="changeChromosome(this.id)">3</button>
-        &nbsp;
-        <button id="4" onclick="changeChromosome(this.id)">4</button>
-        &nbsp;
-        <button id="5" onclick="changeChromosome(this.id)">5</button>
-        &nbsp;
-        <button id="6" onclick="changeChromosome(this.id)">6</button>
-        &nbsp;
-        <button id="7" onclick="changeChromosome(this.id)">7</button>
-        &nbsp;
-        <button id="8" onclick="changeChromosome(this.id)">8</button>
-        &nbsp;
-        <button id="9" onclick="changeChromosome(this.id)">9</button>
-        &nbsp;
-        <button id="10" onclick="changeChromosome(this.id)">10</button>
-        &nbsp;
-        <button id="11" onclick="changeChromosome(this.id)">11</button>
-        &nbsp;
-        <button id="12" onclick="changeChromosome(this.id)">12</button>
-        &nbsp;
-        <button id="13" onclick="changeChromosome(this.id)">13</button>
-        &nbsp;
-        <button id="14" onclick="changeChromosome(this.id)">14</button>
-        &nbsp;
-        <button id="15" onclick="changeChromosome(this.id)">15</button>
-        &nbsp;
-        <button id="16" onclick="changeChromosome(this.id)">16</button>
-        &nbsp;
-        <button id="17" onclick="changeChromosome(this.id)">17</button>
-        &nbsp;
-        <button id="18" onclick="changeChromosome(this.id)">18</button>
-        &nbsp;
-        <button id="19" onclick="changeChromosome(this.id)">19</button>
-        &nbsp;
-        <button id="20" onclick="changeChromosome(this.id)">20</button>
-        &nbsp;
-        <button id="21" onclick="changeChromosome(this.id)">21</button>
-        &nbsp;
-        <button id="22" onclick="changeChromosome(this.id)">22</button>
-        &nbsp;
-        <button id="X" onclick="changeChromosome(this.id)">X</button>
-        &nbsp;
-        <button id="Y" onclick="changeChromosome(this.id)">Y</button>
-        &nbsp;
-        <button id="MT" onclick="changeChromosome(this.id)">MT</button>
-    </div>
-    <br>
-        <div class="rectangle_visualisation">
-            <div id='chart' class='chart'></div>
-            <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <body>
+        <ul>
+            <li><a class="active" href="home.html">Home</a></li>
+            <li><a href="calculator.html">Info</a></li>
+        </ul>
 
-            <script type="text/javascript">
-                var graph1 = {{ graphJSON | safe }};
-                Plotly.plot('chart', graph1, {});
-            </script>
-        <p id='chromosome_bar'>test</p>
-    </div>
-</div><br>
-{% for result in results %}
-{{ result }}<br><br>
-{% endfor %}
-
-<script>
-    function changeChromosome(clicked_id) {
-        document.getElementById("chromosome_bar").innerHTML = clicked_id;
-    }
-</script>
-{% endblock %}
+        <h2>Results:</h2>
+        <p>VCF file name: {{ vcf_file_name }}</p>
+    </body>
+</html>
