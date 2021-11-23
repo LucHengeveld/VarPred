@@ -1,6 +1,7 @@
 import numpy as np
 import seaborn as sns
 import pandas as pd
+from seaborn.utils import load_dataset
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -18,7 +19,7 @@ sns.set()
 
 df = pd.read_csv('ML data.tsv', sep='\t')
 
-X = df.iloc[:, np.r_[5, 6, 7, 25, 27:31, 33:len(df.columns)]]
+X = df.iloc[:, np.r_[5, 6, 7, 25, 27:31, 33:84]]
 # print(X)
 
 # X = df.iloc[:, np.r_[27, 28, 31:len(df.colums)]]
@@ -90,7 +91,7 @@ def logistic():
     # list_logistic = list(confusion_matrix(y_test, logistic_regression_prediction).ravel())
 
     for importance, name in sorted(zip(logistic_regression_model.coef_[0], X_train.columns),
-                                   reverse=True):
+                                   reverse=True)[:10]:
         print(name, importance)
 
     results(logistic_regression_prediction, lrm_prediction_proba)
@@ -132,6 +133,43 @@ def plot_auc(prediction_proba, name):
     plt.legend(loc='best')
     plt.show()
 
+def average_accuracy(iterations):
+    average_acc_list = []
+    average_prec_list = []
+    average_recall_list = []
+    average_f1_list = []
+    average_roc_list = []
+    x = []
+    for i in range(1, iterations):
+        average_acc = []
+        average_prec = []
+        average_recall = []
+        average_f1 = []
+        average_roc = []
+        for r in range(0, 10):
+            rfc_model = RandomForestClassifier(n_estimators=i)
+            rfc_model.fit(X_train, y_train)
+            rfc_prediction = rfc_model.predict(X_test)
+            lrm_prediction_proba = rfc_model.predict_proba(X_test)
+            average_acc.append(accuracy_score(y_test, rfc_prediction))
+            average_prec.append(precision_score(y_test, rfc_prediction, average='weighted'))
+            average_recall.append(recall_score(y_test, rfc_prediction, average='weighted'))
+            average_f1.append(f1_score(y_test, rfc_prediction, average='weighted'))
+            average_roc.append(roc_auc_score(y_test, lrm_prediction_proba, average='weighted', multi_class='ovr'))
+        average_acc_list.append(sum(average_acc) / len(average_acc))
+        average_prec_list.append(sum(average_prec) / len(average_prec))
+        average_recall_list.append(sum(average_recall) / len(average_recall))
+        average_f1_list.append(sum(average_f1) / len(average_f1))
+        average_roc_list.append(sum(average_roc) / len(average_roc))
+        x.append(i)
+    
+    plt.plot(x, average_acc_list, label = "Average accuracy")
+    plt.plot(x, average_prec_list, label = "Average precision")
+    plt.plot(x, average_recall_list, label = "Average recall")
+    plt.plot(x, average_f1_list, label = "Average f1")
+    plt.plot(x, average_roc_list, label = "Average roc")
+    plt.legend()
+    plt.show()
 
 def results(prediction, prediction_proba):
     print(f"\n _____ Results _____")
@@ -145,8 +183,8 @@ def results(prediction, prediction_proba):
 def main():
     # lda()
     # decision_tree()
-    random_forest()
-    # logistic()
+    #random_forest()
+    average_accuracy(200)
 
 
 main()
