@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request
 import pymongo
 import re
-from wtforms import Form, BooleanField, StringField, validators
 
 app = Flask(__name__)
 
@@ -207,7 +206,7 @@ def check(email,firstname,lastname,phonenumber):
     # and the string into the fullmatch() method
     regex_email = r'\b[A-Za-z0-9._%+-]{6,28}+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
     regex_firstname = r'\D[A-Z|a-z]{2,18}\D'
-    regex_lastname = r'\D[A-Z|a-z]{2,}\D'
+    regex_lastname = r'\D[A-Z|a-z]{2,35}\D'
     regex_phonenumber = r'\d[0-9]{6,12}\d'
 
 
@@ -253,10 +252,3 @@ def whoarewe():
 
 if __name__ == '__main__':
     app.run()
-
-
-class RegistrationForm(Form):
-    firstname = StringField('firstname', [validators.Length(min=2, max=25)])
-    lastname = StringField('lastname', [validators.Length(min=2, max=35)])
-    email = StringField('email', [validators.Length(min=6, max=35)])
-    phonenumber = StringField('phonenumber', [validators.Length(min=8, max=15)])
