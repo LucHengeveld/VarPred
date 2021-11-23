@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request
 import pymongo
+import re
+from wtforms import Form, BooleanField, StringField, validators
 
 app = Flask(__name__)
 
@@ -162,6 +164,7 @@ def info():
     # Returns the info page
     return render_template('calculator.html')
 
+
 @app.route('/disclaimer.html', methods=["POST", "GET"])
 def disclaimer():
     """
@@ -174,6 +177,7 @@ def disclaimer():
     # Returns the info page
     return render_template('disclaimer.html')
 
+
 @app.route('/contact.html', methods=["POST", "GET"])
 def contact():
     """
@@ -183,8 +187,56 @@ def contact():
 
     :return render template: shows the calculator.html page to the user
     """
+
+    if request.method == "POST":
+        email = request.form["email"]
+        firstname = request.form["firstname"]
+        lastname = request.form["lastname"]
+        phonenumber = request.form["phonenumber"]
+
+        correct_email, correct_name, correct_phonenumber = check(email,firstname,lastname,phonenumber)
+
+
+
     # Returns the info page
     return render_template('contact.html')
+
+def check(email,firstname,lastname,phonenumber):
+
+    # pass the regular expression
+    # and the string into the fullmatch() method
+    regex_email = r'\b[A-Za-z0-9._%+-]{6,28}+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    regex_firstname = r'\D[A-Z|a-z]{2,18}\D'
+    regex_lastname = r'\D[A-Z|a-z]{2,}\D'
+    regex_phonenumber = r'\d[0-9]{6,12}\d'
+
+
+    if (re.fullmatch(regex_email, email)):
+        correct_email = True
+    else:
+        correct_email = False
+
+    if (re.fullmatch(regex_firstname, firstname)):
+        correct_firstname = True
+    else:
+        correct_firstname = False
+
+    if (re.fullmatch(regex_lastname, lastname)):
+        correct_lastname = True
+    else:
+        correct_lastname = False
+
+    if (re.fullmatch(regex_phonenumber, phonenumber)):
+        correct_phonenumber = True
+    else:
+        correct_phonenumber = False
+
+
+    return correct_email,correct_firstname,correct_lastname,correct_phonenumber
+
+
+
+
 
 @app.route('/aboutvarpred.html', methods=["POST", "GET"])
 def whoarewe():
@@ -198,33 +250,13 @@ def whoarewe():
     # Returns the info page
     return render_template('aboutvarpred.html')
 
+
 if __name__ == '__main__':
     app.run()
 
-from wtforms import Form, BooleanField, StringField, validators
 
 class RegistrationForm(Form):
-    firstname = StringField('Firstname', [validators.Length(min=2, max=25)])
-    lastname = StringField('Lastname', [validators.Length(min=2, max=35)])
-    email = StringField('Email', [validators.Length(min=6, max=35)])
-    phonenumber = StringField('Phonenumber', [validators.Length(min=6, max=35)])
-
-    accept_tos = BooleanField('invalidCheck', [validators.DataRequired()])
-
-from flask import request, redirect
-
-@app.route("/sign-up", methods=["GET", "POST"])
-def sign_up():
-
-    if request.method == "POST":
-
-        req = request.form
-
-        firstname = req.get("firstname")
-        lastname = req["lastname"]
-        email = req["Email"]
-        phonenumber = req["Phonenumber"]
-
-        return redirect(request.url)
-
-    return render_template("contact.html")
+    firstname = StringField('firstname', [validators.Length(min=2, max=25)])
+    lastname = StringField('lastname', [validators.Length(min=2, max=35)])
+    email = StringField('email', [validators.Length(min=6, max=35)])
+    phonenumber = StringField('phonenumber', [validators.Length(min=8, max=15)])
