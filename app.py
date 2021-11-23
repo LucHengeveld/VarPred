@@ -187,55 +187,8 @@ def contact():
     :return render template: shows the calculator.html page to the user
     """
 
-    if request.method == "POST":
-        email = request.form["email"]
-        firstname = request.form["firstname"]
-        lastname = request.form["lastname"]
-        phonenumber = request.form["phonenumber"]
-
-        correct_email, correct_name, correct_phonenumber = check(email,firstname,lastname,phonenumber)
-
-
-
     # Returns the info page
     return render_template('contact.html')
-
-def check(email,firstname,lastname,phonenumber):
-
-    # pass the regular expression
-    # and the string into the fullmatch() method
-    regex_email = r'\b[A-Za-z0-9._%+-]{6,28}+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-    regex_firstname = r'\D[A-Z|a-z]{2,18}\D'
-    regex_lastname = r'\D[A-Z|a-z]{2,35}\D'
-    regex_phonenumber = r'\d[0-9]{6,12}\d'
-
-
-    if (re.fullmatch(regex_email, email)):
-        correct_email = True
-    else:
-        correct_email = False
-
-    if (re.fullmatch(regex_firstname, firstname)):
-        correct_firstname = True
-    else:
-        correct_firstname = False
-
-    if (re.fullmatch(regex_lastname, lastname)):
-        correct_lastname = True
-    else:
-        correct_lastname = False
-
-    if (re.fullmatch(regex_phonenumber, phonenumber)):
-        correct_phonenumber = True
-    else:
-        correct_phonenumber = False
-
-
-    return correct_email,correct_firstname,correct_lastname,correct_phonenumber
-
-
-
-
 
 @app.route('/aboutvarpred.html', methods=["POST", "GET"])
 def whoarewe():
