@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request
 import pymongo
-import re
 
 app = Flask(__name__)
 
@@ -178,17 +177,32 @@ def disclaimer():
 
 
 @app.route('/contact.html', methods=["POST", "GET"])
-def contact():
-    """
-    This function shows the info page when the user selects it in the
-    menu bar on the webapplication. The info page contains information
-    about the application
+def submit_on_contact():
+    if request.method == "POST":
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        message = request.form['message']
+        email = request.form['email']
+        gender = request.form['gender']
+        phonenumber = request.form['phonenumber']
 
-    :return render template: shows the calculator.html page to the user
-    """
+        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+        mydb = myclient["varpred"]
+        mycol = mydb["contact"]
 
-    # Returns the info page
+        mycol.insert_one(
+            {
+                "firstname": firstname,
+                "lastname": lastname,
+                "message": message,
+                "email": email,
+                "gender": gender,
+                "phonenumber": phonenumber,
+            }
+        )
+
     return render_template('contact.html')
+
 
 @app.route('/aboutvarpred.html', methods=["POST", "GET"])
 def whoarewe():
