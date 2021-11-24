@@ -1,3 +1,5 @@
+import ast
+
 from flask import Flask, render_template, request
 import pymongo
 import dash
@@ -47,12 +49,12 @@ def get_input():
                 results = compare_dataset(compare_list)
 
                 # Creates the visualisation bar
-                graphJSON = visualisation_bar(compare_list)
-
+                JSON_dict, disable_button_dict = visualisation_bar(compare_list)
                 # Returns the results page
                 return render_template('results.html',
                                        results=results,
-                                       graphJSON=graphJSON)
+                                       JSON_dict=JSON_dict,
+                                       disable_button_dict=disable_button_dict)
 
             else:
                 # Returns an error if the file format is incorrect.
@@ -180,16 +182,25 @@ def compare_dataset(compare_list):
 
 
 def visualisation_bar(compare_list):
-    chrom_size = 248956422
-    chromosome_dict = {"1": 248956422, "2": 242193529, "3": 198295559,
-                       "4": 190214555, "5": 181538259, "6": 170805979,
-                       "7": 159345973, "8": 145138636, "9": 138394717,
-                       "10": 133797422, "11": 135086622, "12": 133275309,
-                       "13": 114364328, "14": 107043718, "15": 101991189,
-                       "16": 90338345, "17": 83257441, "18": 80373285,
-                       "19": 58617616, "20": 64444167, "21": 46709983,
-                       "22": 50818468, "X": 156040895, "Y": 57227415,
-                       "MT": 16569}
+    # chromosome_dict = {"1": 248956422, "2": 242193529, "3": 198295559,
+    #                    "4": 190214555, "5": 181538259, "6": 170805979,
+    #                    "7": 159345973, "8": 145138636, "9": 138394717,
+    #                    "10": 133797422, "11": 135086622, "12": 133275309,
+    #                    "13": 114364328, "14": 107043718, "15": 101991189,
+    #                    "16": 90338345, "17": 83257441, "18": 80373285,
+    #                    "19": 58617616, "20": 64444167, "21": 46709983,
+    #                    "22": 50818468, "X": 156040895, "Y": 57227415,
+    #                    "MT": 16569}
+
+    chromosome_list = [["1", 248956422], ["2", 242193529], ["3", 198295559],
+                       ["4", 190214555], ["5", 181538259], ["6", 170805979],
+                       ["7", 159345973], ["8", 145138636], ["9", 138394717],
+                       ["10", 133797422], ["11", 135086622], ["12", 133275309],
+                       ["13", 114364328], ["14", 107043718], ["15", 101991189],
+                       ["16", 90338345], ["17", 83257441], ["18", 80373285],
+                       ["19", 58617616], ["20", 64444167], ["21", 46709983],
+                       ["22", 50818468], ["X", 156040895], ["Y", 57227415],
+                       ["MT", 16569]]
 
     pos_list = []
     position_dict = {}
@@ -208,34 +219,39 @@ def visualisation_bar(compare_list):
             pos_list = [int(compare_list[1][i])]
             if compare_list[1][i] == compare_list[1][-1]:
                 position_dict[compare_list[0][i]] = pos_list
-    print(pos_list)
-    print(position_dict)
 
-    x_list = position_dict["1"]
+    JSON_dict = {}
+    disable_button_dict = {}
+    for i in range(len(chromosome_list)):
+        try:
+            y_list = []
+            x_list = position_dict[chromosome_list[i][0]]
+            for j in range(len(x_list)):
+                y_list.append(0)
+            disable_button_dict[chromosome_list[i][0]] = False
+        except KeyError:
+            x_list = []
+            y_list = []
+            disable_button_dict[chromosome_list[i][0]] = True
 
-    y_list = []
-    for i in range(len(x_list)):
-        y_list.append(0)
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=x_list, y=y_list,
+            mode='markers', marker_size=42.5, marker_symbol='line-ns',
+            marker_line_color="black", marker_line_width=2
+        ))
+        fig.update_xaxes(showgrid=False, fixedrange=False,
+                         range=[0, chromosome_list[i][1]],
+                         tickfont_family="Arial Black", tickformat=',d')
+        fig.update_yaxes(showgrid=False, fixedrange=True,
+                         zeroline=True, zerolinecolor='#04AA6D',
+                         zerolinewidth=60,
+                         showticklabels=False)
+        fig.update_layout(height=260, plot_bgcolor='white', font_size=18)
+        graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        JSON_dict[chromosome_list[i][0]] = graphJSON
 
-    print(x_list)
-    # for i in range(len(x_list)):
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=x_list, y=y_list,
-        mode='markers', marker_size=42.5, marker_symbol='line-ns',
-        marker_line_color="black", marker_line_width=2
-    ))
-    fig.update_xaxes(showgrid=False, fixedrange=False, range=[0, chromosome_dict["1"]],
-                     tickfont_family="Arial Black", tickformat=',d')
-    fig.update_yaxes(showgrid=False, fixedrange=True,
-                     zeroline=True, zerolinecolor='#04AA6D', zerolinewidth=60,
-                     showticklabels=False)
-    fig.update_layout(height=260, plot_bgcolor='white', font_size=18)
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-
-
-    # print(graphJSON)
-    return graphJSON
+    return JSON_dict, disable_button_dict
 
 
 @app.route('/calculate.html', methods=["POST", "GET"])
@@ -249,6 +265,22 @@ def calculate():
     """
     # Returns the info page
     return render_template('calculate.html')
+
+
+@app.route('/results.html', methods=["POST"])
+def select_chromosome():
+    JSON_dict = request.form['JSON_dict']
+    JSON_dict = ast.literal_eval(JSON_dict)
+
+    selected_chrom = request.form["chromosome_button"]
+    JSON_graph = JSON_dict[selected_chrom]
+
+    disable_button_dict = request.form['disable_button_dict']
+    disable_button_dict = ast.literal_eval(disable_button_dict)
+
+    return render_template("results.html", JSON_graph=JSON_graph,
+                           JSON_dict=JSON_dict, selected_chrom=selected_chrom,
+                           disable_button_dict=disable_button_dict)
 
 
 @app.route('/disclaimer.html', methods=["POST", "GET"])
@@ -265,7 +297,7 @@ def disclaimer():
 
 
 @app.route('/contact.html', methods=["POST", "GET"])
-def contact():
+def submit_on_contact():
     """
     This function shows the info page when the user selects it in the
     menu bar on the webapplication. The info page contains information
@@ -274,6 +306,7 @@ def contact():
     :return render template: shows the calculate.html page to the user
     """
     # Returns the info page
+    print("test")
     return render_template('contact.html')
 
 
