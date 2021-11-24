@@ -11,7 +11,7 @@ def read_file():
                    "CLNVCSO", "CLNVI", "DBVARID", "GENEINFO", "MC", "ORIGIN",
                    "RS", "SSR"]
     file_dictionary = dict()
-    file = vcf.Reader(open("pythonScripts/clinvar.vcf"))
+    file = vcf.Reader(open("clinvar.vcf"))
 
     for entry in file:
         file_dictionary[int(entry.ID)] = list()

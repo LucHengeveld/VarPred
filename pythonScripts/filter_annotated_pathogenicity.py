@@ -38,13 +38,12 @@ def getGenes(data):
     for gene in gene_list:
         gene_code = str(gene).split(':')[0]
         gene_code_list.append(gene_code)
-    print(len(gene_code_list))
-    print(len(set(gene_code_list)))
     data['GENECODE'] = gene_code_list
     return data
 
 
 def one_hot_encoding(data, column):
+    data[column] = data[column].astype(str)
     mutation_types = set(data[column].tolist())
     ohe = pd.get_dummies(data[column], prefix=column)
     for mutation_type in mutation_types:
@@ -54,12 +53,10 @@ def one_hot_encoding(data, column):
 
 
 def clin_sig(data):
-    types = ["Benign", "Likely benign", "drug response",
+    types = ["Benign", "Likely benign",
                        "Likely pathogenic", "Pathogenic"]
     data.reset_index()
-    print(data.shape)
     data = data.loc[data["CLNSIG"].isin(types)]
-    print(data.shape)
     sig_list = data['CLNSIG']
     numerical_sig_list = []
     for sig in sig_list:
@@ -70,12 +67,10 @@ def clin_sig(data):
 
 
 def data_aanpassen(data):
-    print(data.AF_ESP)
     columns = ["AF_ESP", "AF_EXAC", "AF_TGP", "RS"]
     for column in columns:
         temp = list()
         col = data[column].isnull()
-        print(col)
         for cell in col:
             if cell:
                 temp.append(0)
@@ -96,15 +91,18 @@ def get_first_value(data, column):
 
 if __name__ == '__main__':
     dataset = open_tsv("results_new.tsv")
-    subset = filter_data(dataset)
+
+    # dataset = filter_data(dataset)
     # subset = open_tsv("pythonScripts/ML data.txt")
-    subset = scale_pos(subset)
-    subset = clin_sig(subset)
-    subset = getGenes(subset)
-    subset = get_first_value(subset, "MC")
-    subset = data_aanpassen(subset)
-    subset = one_hot_encoding(subset, "CLNVC")
-    subset = one_hot_encoding(subset, "MC")
-    subset = one_hot_encoding(subset, "CHROM")
-    subset = one_hot_encoding(subset, "GENECODE")
-    write_tsv(subset, "ML data.tsv")
+    dataset = scale_pos(dataset)
+    dataset = clin_sig(dataset)
+    dataset = getGenes(dataset)
+    dataset = get_first_value(dataset, "MC")
+    dataset = data_aanpassen(dataset)
+    dataset = one_hot_encoding(dataset, "CLNVC")
+    dataset = one_hot_encoding(dataset, "MC")
+    dataset = one_hot_encoding(dataset, "CHROM")
+
+    # dataset = one_hot_encoding(dataset, "GENECODE")
+    # dataset = filter_data(dataset)
+    write_tsv(dataset, "ML data.tsv")

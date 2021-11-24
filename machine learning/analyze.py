@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import confusion_matrix, precision_score, accuracy_score,\
+from sklearn.metrics import confusion_matrix, precision_score, accuracy_score, \
     recall_score, roc_auc_score, roc_curve, f1_score
 from mlxtend.plotting import plot_confusion_matrix
 from matplotlib import pyplot as plt
@@ -15,7 +15,6 @@ from sklearn.tree import DecisionTreeClassifier
 # Prepare the data data
 
 sns.set()
-
 
 df = pd.read_csv('ML data.tsv', sep='\t')
 
@@ -54,8 +53,9 @@ def decision_tree():
     cm = confusion_matrix(y_test, clf_prediction)
     # lijst_decision = list(confusion_matrix(y_test, clf_prediction).ravel())
     count = 0
-    for importance, name in sorted(zip(clf.feature_importances_, X_train.columns),
-                                   reverse=True):
+    for importance, name in sorted(
+            zip(clf.feature_importances_, X_train.columns),
+            reverse=True):
         print(name, importance)
 
     results(clf_prediction, clf_prediction_proba)
@@ -72,8 +72,9 @@ def random_forest():
     cm = confusion_matrix(y_test, rfc_prediction)
     # lijst_random = list(confusion_matrix(y_test, rfc_prediction).ravel())
 
-    for importance, name in sorted(zip(rfc.feature_importances_, X_train.columns),
-                                   reverse=True)[:10]:
+    for importance, name in sorted(
+            zip(rfc.feature_importances_, X_train.columns),
+            reverse=True)[:10]:
         print(name, importance)
 
     results(rfc_prediction, rfc_prediction_proba)
@@ -90,8 +91,9 @@ def logistic():
     cm = confusion_matrix(y_test, logistic_regression_prediction)
     # list_logistic = list(confusion_matrix(y_test, logistic_regression_prediction).ravel())
 
-    for importance, name in sorted(zip(logistic_regression_model.coef_[0], X_train.columns),
-                                   reverse=True)[:10]:
+    for importance, name in sorted(
+            zip(logistic_regression_model.coef_[0], X_train.columns),
+            reverse=True)[:10]:
         print(name, importance)
 
     results(logistic_regression_prediction, lrm_prediction_proba)
@@ -100,7 +102,8 @@ def logistic():
 
 
 def plot_matrix(cm, name):
-    display_labels = ["Benign", "Likely benign", "drug response", "Likely pathogenic", "Pathogenic"]
+    display_labels = ["Benign", "Likely benign", "drug response",
+                      "Likely pathogenic", "Pathogenic"]
     fig, ax = plt.subplots(figsize=(6, 6))
     plot_confusion_matrix(conf_mat=cm, axis=ax)
     ax.set_xticklabels([''] + display_labels, rotation=45)
@@ -119,19 +122,25 @@ def plot_auc(prediction_proba, name):
     n_class = 5
 
     for i in range(n_class):
-        fpr[i], tpr[i], thresh[i] = roc_curve(y_test, prediction_proba[:, i], pos_label=i)
+        fpr[i], tpr[i], thresh[i] = roc_curve(y_test, prediction_proba[:, i],
+                                              pos_label=i)
 
     plt.plot(fpr[0], tpr[0], linestyle='--', color='orange', label='Benign')
-    plt.plot(fpr[1], tpr[1], linestyle='--', color='green', label='Likely benign')
-    plt.plot(fpr[2], tpr[2], linestyle='--', color='blue', label='drug response')
-    plt.plot(fpr[3], tpr[3], linestyle='--', color='red', label='Likely pathogenic')
-    plt.plot(fpr[4], tpr[4], linestyle='--', color='purple', label='Pathogenic')
+    plt.plot(fpr[1], tpr[1], linestyle='--', color='green',
+             label='Likely benign')
+    plt.plot(fpr[2], tpr[2], linestyle='--', color='blue',
+             label='drug response')
+    plt.plot(fpr[3], tpr[3], linestyle='--', color='red',
+             label='Likely pathogenic')
+    plt.plot(fpr[4], tpr[4], linestyle='--', color='purple',
+             label='Pathogenic')
     plt.plot([0, 1], [0, 1], 'k--')
     plt.title(f'Multiclass ROC curve {name}')
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive rate')
     plt.legend(loc='best')
     plt.show()
+
 
 def average_accuracy(iterations):
     average_acc_list = []
@@ -140,51 +149,59 @@ def average_accuracy(iterations):
     average_f1_list = []
     average_roc_list = []
     x = []
-    for i in range(1, iterations):
+    for i in range(1, iterations + 1):
         average_acc = []
         average_prec = []
         average_recall = []
         average_f1 = []
         average_roc = []
         for r in range(0, 10):
-            rfc_model = RandomForestClassifier(n_estimators=i)
+            rfc_model = RandomForestClassifier(min_impurity_decrease=(i/10000))
             rfc_model.fit(X_train, y_train)
             rfc_prediction = rfc_model.predict(X_test)
             lrm_prediction_proba = rfc_model.predict_proba(X_test)
             average_acc.append(accuracy_score(y_test, rfc_prediction))
-            average_prec.append(precision_score(y_test, rfc_prediction, average='weighted'))
-            average_recall.append(recall_score(y_test, rfc_prediction, average='weighted'))
-            average_f1.append(f1_score(y_test, rfc_prediction, average='weighted'))
-            average_roc.append(roc_auc_score(y_test, lrm_prediction_proba, average='weighted', multi_class='ovr'))
+            average_prec.append(
+                precision_score(y_test, rfc_prediction, average='weighted'))
+            average_recall.append(
+                recall_score(y_test, rfc_prediction, average='weighted'))
+            average_f1.append(
+                f1_score(y_test, rfc_prediction, average='weighted'))
+            average_roc.append(
+                roc_auc_score(y_test, lrm_prediction_proba, average='weighted',
+                              multi_class='ovr'))
         average_acc_list.append(sum(average_acc) / len(average_acc))
         average_prec_list.append(sum(average_prec) / len(average_prec))
         average_recall_list.append(sum(average_recall) / len(average_recall))
         average_f1_list.append(sum(average_f1) / len(average_f1))
         average_roc_list.append(sum(average_roc) / len(average_roc))
         x.append(i)
-    
-    plt.plot(x, average_acc_list, label = "Average accuracy")
-    plt.plot(x, average_prec_list, label = "Average precision")
-    plt.plot(x, average_recall_list, label = "Average recall")
-    plt.plot(x, average_f1_list, label = "Average f1")
-    plt.plot(x, average_roc_list, label = "Average roc")
+
+    plt.plot(x, average_acc_list, label="Average accuracy")
+    plt.plot(x, average_prec_list, label="Average precision")
+    plt.plot(x, average_recall_list, label="Average recall")
+    plt.plot(x, average_f1_list, label="Average f1")
+    plt.plot(x, average_roc_list, label="Average roc", color="black")
     plt.legend()
     plt.show()
+
 
 def results(prediction, prediction_proba):
     print(f"\n _____ Results _____")
     print(f"Accuracy: {accuracy_score(y_test, prediction)}")
     print(f"Precision score: {precision_score(y_test, prediction, average='weighted')}")
-    print(f"Recall score: {recall_score(y_test, prediction, average='weighted')}")
+    print(
+        f"Recall score: {recall_score(y_test, prediction, average='weighted')}")
     print(f"F1-score: {f1_score(y_test, prediction, average='weighted')}")
-    print(f"AUC score: {roc_auc_score(y_test, prediction_proba, average='weighted', multi_class='ovr')}")
+    print(
+        f"AUC score: {roc_auc_score(y_test, prediction_proba, average='weighted', multi_class='ovr')}")
 
 
 def main():
     # lda()
     # decision_tree()
-    #random_forest()
-    average_accuracy(200)
+    random_forest()
+    # average_accuracy(50)
 
 
 main()
