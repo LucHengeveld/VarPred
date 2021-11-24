@@ -53,14 +53,17 @@ def one_hot_encoding(data, column):
 
 
 def clin_sig(data):
-    types = ["Benign", "Likely benign",
-                       "Likely pathogenic", "Pathogenic"]
+    types = ["Benign", "Likely benign", "Likely pathogenic", "Pathogenic"]
     data.reset_index()
     data = data.loc[data["CLNSIG"].isin(types)]
     sig_list = data['CLNSIG']
     numerical_sig_list = []
     for sig in sig_list:
         sig_num = types.index(sig)
+        if sig_num in [0,1]:
+            sig_num = 0
+        elif sig_num in [2,3]:
+            sig_num = 1
         numerical_sig_list.append(sig_num)
     data['CLNSIG NUM'] = numerical_sig_list
     return data
@@ -94,15 +97,13 @@ if __name__ == '__main__':
 
     # dataset = filter_data(dataset)
     # subset = open_tsv("pythonScripts/ML data.txt")
-    dataset = scale_pos(dataset)
-    dataset = clin_sig(dataset)
-    dataset = getGenes(dataset)
-    dataset = get_first_value(dataset, "MC")
-    dataset = data_aanpassen(dataset)
-    dataset = one_hot_encoding(dataset, "CLNVC")
-    dataset = one_hot_encoding(dataset, "MC")
-    dataset = one_hot_encoding(dataset, "CHROM")
-
-    # dataset = one_hot_encoding(dataset, "GENECODE")
-    # dataset = filter_data(dataset)
-    write_tsv(dataset, "ML data.tsv")
+    subset = scale_pos(dataset)
+    subset = clin_sig(subset)
+    subset = getGenes(subset)
+    subset = get_first_value(subset, "MC")
+    subset = data_aanpassen(subset)
+    subset = one_hot_encoding(subset, "CLNVC")
+    subset = one_hot_encoding(subset, "MC")
+    subset = one_hot_encoding(subset, "CHROM")
+    #subset = one_hot_encoding(subset, "GENECODE")
+    write_tsv(subset, "ML data.tsv")

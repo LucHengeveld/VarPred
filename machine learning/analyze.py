@@ -18,7 +18,7 @@ sns.set()
 
 df = pd.read_csv('ML data.tsv', sep='\t')
 
-X = df.iloc[:, np.r_[5, 6, 7, 25, 27:31, 33:84]]
+X = df.iloc[:, np.r_[5, 6, 7, 25, 27:31, 33:77]]
 # print(X)
 
 y = df['CLNSIG NUM']
@@ -46,7 +46,7 @@ def lda():
 
 def decision_tree():
     print("##### Decision tree #####")
-    clf = DecisionTreeClassifier()
+    clf = DecisionTreeClassifier(max_depth=10)
     clf_model = clf.fit(X_train, y_train)
     clf_prediction = clf_model.predict(X_test)
     clf_prediction_proba = clf.predict_proba(X_test)
@@ -63,9 +63,26 @@ def decision_tree():
     plot_auc(clf_prediction_proba, "decision tree")
 
 
-def random_forest():
+def random_forest_train():
     print("##### Random forest #####")
-    rfc = RandomForestClassifier()
+    rfc = RandomForestClassifier(max_depth=10)
+    rfc_model = rfc.fit(X_train, y_train)
+    rfc_prediction = rfc_model.predict(X_train)
+    rfc_prediction_proba = rfc.predict_proba(X_train)
+    cm = confusion_matrix(y_train, rfc_prediction)
+    # lijst_random = list(confusion_matrix(y_test, rfc_prediction).ravel())
+
+    for importance, name in sorted(zip(rfc.feature_importances_, X_train.columns),
+                                   reverse=True)[:10]:
+        print(name, importance)
+
+    results(rfc_prediction, rfc_prediction_proba, y_train)
+    plot_matrix(cm, "Random forest")
+    plot_auc(rfc_prediction_proba, "random forest")
+
+def random_forest_test():
+    print("##### Random forest #####")
+    rfc = RandomForestClassifier(max_depth=10)
     rfc_model = rfc.fit(X_train, y_train)
     rfc_prediction = rfc_model.predict(X_test)
     rfc_prediction_proba = rfc.predict_proba(X_test)
@@ -77,10 +94,9 @@ def random_forest():
             reverse=True)[:10]:
         print(name, importance)
 
-    results(rfc_prediction, rfc_prediction_proba)
+    results(rfc_prediction, rfc_prediction_proba, y_test)
     plot_matrix(cm, "Random forest")
     plot_auc(rfc_prediction_proba, "random forest")
-
 
 def logistic():
     print("##### Logistic regression #####")
@@ -102,8 +118,7 @@ def logistic():
 
 
 def plot_matrix(cm, name):
-    display_labels = ["Benign", "Likely benign", "drug response",
-                      "Likely pathogenic", "Pathogenic"]
+    display_labels = ["Benign", "Pathogenic"]
     fig, ax = plt.subplots(figsize=(6, 6))
     plot_confusion_matrix(conf_mat=cm, axis=ax)
     ax.set_xticklabels([''] + display_labels, rotation=45)
@@ -119,21 +134,16 @@ def plot_auc(prediction_proba, name):
     fpr = {}
     tpr = {}
     thresh = {}
-    n_class = 5
+    n_class = 2
 
     for i in range(n_class):
         fpr[i], tpr[i], thresh[i] = roc_curve(y_test, prediction_proba[:, i],
                                               pos_label=i)
 
     plt.plot(fpr[0], tpr[0], linestyle='--', color='orange', label='Benign')
-    plt.plot(fpr[1], tpr[1], linestyle='--', color='green',
-             label='Likely benign')
-    plt.plot(fpr[2], tpr[2], linestyle='--', color='blue',
-             label='drug response')
-    plt.plot(fpr[3], tpr[3], linestyle='--', color='red',
-             label='Likely pathogenic')
-    plt.plot(fpr[4], tpr[4], linestyle='--', color='purple',
-             label='Pathogenic')
+    #plt.plot(fpr[1], tpr[1], linestyle='--', color='green', label='Drug response')
+    #plt.plot(fpr[2], tpr[2], linestyle='--', color='red', label='Likely pathogenic')
+    plt.plot(fpr[1], tpr[1], linestyle='--', color='purple', label='Pathogenic')
     plt.plot([0, 1], [0, 1], 'k--')
     plt.title(f'Multiclass ROC curve {name}')
     plt.xlabel('False Positive Rate')
@@ -149,14 +159,14 @@ def average_accuracy(iterations):
     average_f1_list = []
     average_roc_list = []
     x = []
-    for i in range(1, iterations + 1):
+    for i in range(2, iterations):
         average_acc = []
         average_prec = []
         average_recall = []
         average_f1 = []
         average_roc = []
         for r in range(0, 10):
-            rfc_model = RandomForestClassifier(min_impurity_decrease=(i/10000))
+            rfc_model = RandomForestClassifier(max_leaf_nodes=i)
             rfc_model.fit(X_train, y_train)
             rfc_prediction = rfc_model.predict(X_test)
             lrm_prediction_proba = rfc_model.predict_proba(X_test)
@@ -185,23 +195,21 @@ def average_accuracy(iterations):
     plt.legend()
     plt.show()
 
-
-def results(prediction, prediction_proba):
+def results(prediction, prediction_proba, dataset):
     print(f"\n _____ Results _____")
-    print(f"Accuracy: {accuracy_score(y_test, prediction)}")
-    print(f"Precision score: {precision_score(y_test, prediction, average='weighted')}")
-    print(
-        f"Recall score: {recall_score(y_test, prediction, average='weighted')}")
-    print(f"F1-score: {f1_score(y_test, prediction, average='weighted')}")
-    print(
-        f"AUC score: {roc_auc_score(y_test, prediction_proba, average='weighted', multi_class='ovr')}")
+    print(f"Accuracy: {accuracy_score(dataset, prediction)}")
+    print(f"Precision score: {precision_score(dataset, prediction, average='weighted')}")
+    print(f"Recall score: {recall_score(dataset, prediction, average='weighted')}")
+    print(f"F1-score: {f1_score(dataset, prediction, average='weighted')}")
+    #print(f"AUC score: {roc_auc_score(dataset, prediction_proba, average='weighted', multi_class='ovr')}")
 
 
 def main():
     # lda()
-    # decision_tree()
-    random_forest()
-    # average_accuracy(50)
+    #decision_tree()
+    random_forest_test()
+    random_forest_train()
+    #average_accuracy(50)
 
 
 main()
