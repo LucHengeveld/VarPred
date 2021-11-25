@@ -49,7 +49,8 @@ def get_input():
                 results = compare_dataset(compare_list)
 
                 # Creates the visualisation bar
-                JSON_dict, disable_button_dict = visualisation_bar(compare_list)
+                JSON_dict, disable_button_dict = visualisation_bar(
+                    compare_list)
                 # Returns the results page
                 return render_template('results.html',
                                        results=results,
@@ -174,8 +175,8 @@ def compare_dataset(compare_list):
                                                    "$in": compare_list[3]}}]}):
         results.append(simularity)
 
-    # for i in results:
-    #     print(i)
+    for i in results:
+        print(i)
 
     # Return the results list
     return results
@@ -238,7 +239,10 @@ def visualisation_bar(compare_list):
         fig.add_trace(go.Scatter(
             x=x_list, y=y_list,
             mode='markers', marker_size=42.5, marker_symbol='line-ns',
-            marker_line_color="black", marker_line_width=2
+            marker_line_color="black", marker_line_width=2,
+            hovertemplate=
+            '<b>Positie: %{x}' +
+            '<br>REF > ALT: G > T</b><extra></extra>'
         ))
         fig.update_xaxes(showgrid=False, fixedrange=False,
                          range=[0, chromosome_list[i][1]],
@@ -247,7 +251,13 @@ def visualisation_bar(compare_list):
                          zeroline=True, zerolinecolor='#04AA6D',
                          zerolinewidth=60,
                          showticklabels=False)
-        fig.update_layout(height=260, plot_bgcolor='white', font_size=18)
+        fig.update_layout(height=260, plot_bgcolor='white', font_size=18,
+                          hoverlabel=dict(
+                              bgcolor='#e6ffe6',
+                              font_size=22,
+                              font_family="Courier",
+                              font_color="black"
+                          ))
         graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
         JSON_dict[chromosome_list[i][0]] = graphJSON
 
