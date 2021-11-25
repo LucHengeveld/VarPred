@@ -10,10 +10,15 @@ def open_tsv(location):
 
 
 def filter_data(data):
-    return data[((data.CLNREVSTAT == "reviewed by expert panel") |
-                 (data.CLNREVSTAT == "practice guideline") |
-                 (data.CHROM == "Y")) &
-                (data.CLNSIG != "Uncertain significance")]
+    # return data[((data.CLNREVSTAT == "reviewed by expert panel") |
+    #              (data.CLNREVSTAT == "practice guideline") |
+    #              (data.CHROM == "Y")) &
+    #             (data.CLNSIG != "Uncertain significance") &
+    #             (data.AF_ESP.isnan())]
+    bad = [976754, 974718, 983388, 978267, 977757, 974724, 974730, 974732,
+           974737, 974740, 974741, 983494, 974742, 974714, 974715]
+
+    return data[~data.ID.isin(bad)]
 
 
 def write_tsv(data, name):
@@ -26,8 +31,8 @@ def scale_pos(data):
     scaled_pos_list = []
     for i in range(len(pos_list)):
         chrom_length = chromosome_length[str(chrom_list[i])]
-        scaled_pos =  pos_list[i] / chrom_length
-        scaled_pos_list.append(round(scaled_pos, 4))
+        scaled_pos = pos_list[i] / chrom_length
+        scaled_pos_list.append(round(scaled_pos, 8))
     data['SC_POS'] = scaled_pos_list
     return data
 
@@ -44,7 +49,8 @@ def getGenes(data):
 
 def one_hot_encoding(data, column):
     data[column] = data[column].astype(str)
-    mutation_types = set(data[column].tolist())
+    mutation_types = list(set(data[column].tolist()))
+    mutation_types.sort()
     ohe = pd.get_dummies(data[column], prefix=column)
     for mutation_type in mutation_types:
         col = column + "_" + str(mutation_type)
@@ -55,16 +61,21 @@ def one_hot_encoding(data, column):
 def clin_sig(data):
     types = ["Benign", "Likely benign", "Likely pathogenic", "Pathogenic"]
     data.reset_index()
-    data = data.loc[data["CLNSIG"].isin(types)]
+    # data = data.loc[data["CLNSIG"].isin(types)]
     sig_list = data['CLNSIG']
     numerical_sig_list = []
     for sig in sig_list:
-        sig_num = types.index(sig)
-        if sig_num in [0,1]:
-            sig_num = 0
-        elif sig_num in [2,3]:
-            sig_num = 1
-        numerical_sig_list.append(sig_num)
+        try:
+            sig = str(sig)
+            if sig.lower().endswith("pathogenic"):
+                sig_num = 1
+            elif sig.lower().endswith("benign"):
+                sig_num = 0
+            else:
+                sig_num = ""
+            numerical_sig_list.append(sig_num)
+        except ValueError:
+            numerical_sig_list.append("")
     data['CLNSIG NUM'] = numerical_sig_list
     return data
 
@@ -94,16 +105,15 @@ def get_first_value(data, column):
 
 if __name__ == '__main__':
     dataset = open_tsv("results_new.tsv")
+    dataset = scale_pos(dataset)
+    dataset = clin_sig(dataset)
+    dataset = getGenes(dataset)
+    dataset = get_first_value(dataset, "MC")
+    dataset = data_aanpassen(dataset)
+    dataset = one_hot_encoding(dataset, "CLNVC")
+    dataset = one_hot_encoding(dataset, "MC")
+    dataset = one_hot_encoding(dataset, "CHROM")
 
-    # dataset = filter_data(dataset)
-    # subset = open_tsv("pythonScripts/ML data.txt")
-    subset = scale_pos(dataset)
-    subset = clin_sig(subset)
-    subset = getGenes(subset)
-    subset = get_first_value(subset, "MC")
-    subset = data_aanpassen(subset)
-    subset = one_hot_encoding(subset, "CLNVC")
-    subset = one_hot_encoding(subset, "MC")
-    subset = one_hot_encoding(subset, "CHROM")
-    #subset = one_hot_encoding(subset, "GENECODE")
-    write_tsv(subset, "ML data.tsv")
+    # dataset = one_hot_encoding(dataset, "GENECODE")
+    dataset = filter_data(dataset)
+    write_tsv(dataset, "testbestand.tsv")
