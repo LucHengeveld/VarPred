@@ -26,7 +26,7 @@ def scale_pos(data):
     scaled_pos_list = []
     for i in range(len(pos_list)):
         chrom_length = chromosome_length[str(chrom_list[i])]
-        scaled_pos = chrom_length / pos_list[i]
+        scaled_pos =  pos_list[i] / chrom_length
         scaled_pos_list.append(round(scaled_pos, 4))
     data['SC_POS'] = scaled_pos_list
     return data
