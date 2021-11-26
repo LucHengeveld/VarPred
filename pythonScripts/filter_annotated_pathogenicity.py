@@ -10,15 +10,14 @@ def open_tsv(location):
 
 
 def filter_data(data):
-    # return data[((data.CLNREVSTAT == "reviewed by expert panel") |
-    #              (data.CLNREVSTAT == "practice guideline") |
-    #              (data.CHROM == "Y")) &
-    #             (data.CLNSIG != "Uncertain significance") &
-    #             (data.AF_ESP.isnan())]
-    bad = [976754, 974718, 983388, 978267, 977757, 974724, 974730, 974732,
-           974737, 974740, 974741, 983494, 974742, 974714, 974715]
-
-    return data[~data.ID.isin(bad)]
+    return data[((data.CLNREVSTAT == "reviewed by expert panel") |
+                 (data.CLNREVSTAT == "practice guideline") |
+                 (data.CHROM == "Y")) &
+                (data.CLNSIG != "Uncertain significance")]
+    # bad = [976754, 974718, 983388, 978267, 977757, 974724, 974730, 974732,
+    #        974737, 974740, 974741, 983494, 974742, 974714, 974715]
+    #
+    # return data[~data.ID.isin(bad)]
 
 
 def write_tsv(data, name):
@@ -115,5 +114,5 @@ if __name__ == '__main__':
     dataset = one_hot_encoding(dataset, "CHROM")
 
     # dataset = one_hot_encoding(dataset, "GENECODE")
-    dataset = filter_data(dataset)
+    # dataset = filter_data(dataset)
     write_tsv(dataset, "testbestand.tsv")

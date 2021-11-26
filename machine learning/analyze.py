@@ -11,6 +11,7 @@ from sklearn.metrics import confusion_matrix, precision_score, accuracy_score, \
 from mlxtend.plotting import plot_confusion_matrix
 from matplotlib import pyplot as plt
 from sklearn.tree import DecisionTreeClassifier
+import pickle
 
 # Prepare the data data
 
@@ -18,7 +19,8 @@ sns.set()
 
 df = pd.read_csv('ML data.tsv', sep='\t')
 
-X = df.iloc[:, np.r_[5, 6, 7, 25, 27:31, 33:77]]
+X = df.iloc[:, np.r_[5, 6, 7, 25, 27:31, 33:len(df.columns)]]
+X.to_csv("ML columns.tsv", sep="\t", index=False)
 # print(X)
 
 y = df['CLNSIG NUM']
@@ -65,8 +67,9 @@ def decision_tree():
 
 def random_forest_train():
     print("##### Random forest #####")
-    rfc = RandomForestClassifier(max_depth=10)
+    rfc = RandomForestClassifier()
     rfc_model = rfc.fit(X_train, y_train)
+    pickle.dump(rfc_model, open("model.p", "wb"))
     rfc_prediction = rfc_model.predict(X_train)
     rfc_prediction_proba = rfc.predict_proba(X_train)
     cm = confusion_matrix(y_train, rfc_prediction)
@@ -79,6 +82,7 @@ def random_forest_train():
     results(rfc_prediction, rfc_prediction_proba, y_train)
     plot_matrix(cm, "Random forest")
     plot_auc(rfc_prediction_proba, "random forest")
+
 
 def random_forest_test():
     print("##### Random forest #####")
@@ -97,6 +101,7 @@ def random_forest_test():
     results(rfc_prediction, rfc_prediction_proba, y_test)
     plot_matrix(cm, "Random forest")
     plot_auc(rfc_prediction_proba, "random forest")
+
 
 def logistic():
     print("##### Logistic regression #####")
@@ -207,7 +212,7 @@ def results(prediction, prediction_proba, dataset):
 def main():
     # lda()
     #decision_tree()
-    random_forest_test()
+    # random_forest_test()
     random_forest_train()
     #average_accuracy(50)
 
