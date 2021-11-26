@@ -69,7 +69,6 @@ def random_forest_train():
     print("##### Random forest #####")
     rfc = RandomForestClassifier(max_depth=10)
     rfc_model = rfc.fit(X_train, y_train)
-    pickle.dump(rfc_model, open("model.p", "wb"))
     rfc_prediction = rfc_model.predict(X_train)
     rfc_prediction_proba = rfc.predict_proba(X_train)
     cm = confusion_matrix(y_train, rfc_prediction)
@@ -123,7 +122,7 @@ def logistic():
 
 
 def plot_matrix(cm, name):
-    display_labels = ["Benign", "Pathogenic"]
+    display_labels = ["Likely benign", "Benign"]
     fig, ax = plt.subplots(figsize=(6, 6))
     plot_confusion_matrix(conf_mat=cm, axis=ax)
     ax.set_xticklabels([''] + display_labels, rotation=45)
@@ -177,7 +176,7 @@ def average_accuracy(iterations):
             rfc_model.fit(X_train, y_train)
             rfc_prediction = rfc_model.predict(X_test)
             rfc_prediction_train = rfc_model.predict(X_train)
-            lrm_prediction_proba = rfc_model.predict_proba(X_test)
+            rfc_prediction_proba = rfc_model.predict_proba(X_test)
             average_acc.append(accuracy_score(y_test, rfc_prediction))
             average_acc_train.append(accuracy_score(y_train, rfc_prediction_train))
             #average_acc_list.append(accuracy_score(y_test, rfc_prediction))

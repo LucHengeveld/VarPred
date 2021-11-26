@@ -29,6 +29,8 @@ def scale_pos(data):
     chrom_list = data['CHROM'].tolist()
     scaled_pos_list = []
     for i in range(len(pos_list)):
+        if str(chrom_list[i]) == 'NW 009646201.1':
+            chrom_list[i] = 9
         chrom_length = chromosome_length[str(chrom_list[i])]
         scaled_pos = pos_list[i] / chrom_length
         scaled_pos_list.append(round(scaled_pos, 8))
@@ -78,6 +80,47 @@ def clin_sig(data):
     data['CLNSIG NUM'] = numerical_sig_list
     return data
 
+def clin_sig_pathogenic(data):
+    types = ["Likely pathogenic", "Pathogenic"]
+    data.reset_index()
+    data = data.loc[data["CLNSIG"].isin(types)]
+    sig_list = data['CLNSIG']
+    numerical_sig_list = []
+    for sig in sig_list:
+        try:
+            sig = str(sig)
+            if sig.lower() == "pathogenic":
+                sig_num = 1
+            elif sig.lower() == "likely pathogenic":
+                sig_num = 0
+            else:
+                sig_num = ""
+            numerical_sig_list.append(sig_num)
+        except ValueError:
+            numerical_sig_list.append("")
+    data['CLNSIG NUM'] = numerical_sig_list
+    return data
+
+def clin_sig_benign(data):
+    types = ["Likely benign", "Benign"]
+    data.reset_index()
+    data = data.loc[data["CLNSIG"].isin(types)]
+    sig_list = data['CLNSIG']
+    numerical_sig_list = []
+    for sig in sig_list:
+        try:
+            sig = str(sig)
+            if sig.lower() == "benign":
+                sig_num = 1
+            elif sig.lower() == "likely benign":
+                sig_num = 0
+            else:
+                sig_num = ""
+            numerical_sig_list.append(sig_num)
+        except ValueError:
+            numerical_sig_list.append("")
+    data['CLNSIG NUM'] = numerical_sig_list
+    return data
 
 def data_aanpassen(data):
     columns = ["AF_ESP", "AF_EXAC", "AF_TGP", "RS"]
