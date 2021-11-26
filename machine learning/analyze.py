@@ -16,7 +16,7 @@ from sklearn.tree import DecisionTreeClassifier
 
 sns.set()
 
-df = pd.read_csv('ML data.tsv', sep='\t')
+df = pd.read_csv('pathogenic_data.tsv', sep='\t')
 
 X = df.iloc[:, np.r_[5, 6, 7, 25, 27:31, 33:77]]
 # print(X)
@@ -118,7 +118,7 @@ def logistic():
 
 
 def plot_matrix(cm, name):
-    display_labels = ["Benign", "Pathogenic"]
+    display_labels = ["Likely benign", "Benign"]
     fig, ax = plt.subplots(figsize=(6, 6))
     plot_confusion_matrix(conf_mat=cm, axis=ax)
     ax.set_xticklabels([''] + display_labels, rotation=45)
@@ -172,7 +172,7 @@ def average_accuracy(iterations):
             rfc_model.fit(X_train, y_train)
             rfc_prediction = rfc_model.predict(X_test)
             rfc_prediction_train = rfc_model.predict(X_train)
-            lrm_prediction_proba = rfc_model.predict_proba(X_test)
+            rfc_prediction_proba = rfc_model.predict_proba(X_test)
             average_acc.append(accuracy_score(y_test, rfc_prediction))
             average_acc_train.append(accuracy_score(y_train, rfc_prediction_train))
             #average_acc_list.append(accuracy_score(y_test, rfc_prediction))
@@ -214,9 +214,9 @@ def results(prediction, prediction_proba, dataset):
 def main():
     # lda()
     #decision_tree()
-    #random_forest_test()
+    random_forest_test()
     #random_forest_train()
-    average_accuracy(20)
+    #average_accuracy(20)
 
 
 main()
