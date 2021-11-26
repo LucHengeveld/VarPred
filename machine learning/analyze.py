@@ -67,7 +67,7 @@ def decision_tree():
 
 def random_forest_train():
     print("##### Random forest #####")
-    rfc = RandomForestClassifier()
+    rfc = RandomForestClassifier(max_depth=10)
     rfc_model = rfc.fit(X_train, y_train)
     pickle.dump(rfc_model, open("model.p", "wb"))
     rfc_prediction = rfc_model.predict(X_train)
@@ -135,7 +135,7 @@ def plot_matrix(cm, name):
     plt.show()
 
 
-def plot_auc(prediction_proba, name):
+def plot_auc(prediction_proba, name, dataset):
     fpr = {}
     tpr = {}
     thresh = {}
@@ -159,6 +159,7 @@ def plot_auc(prediction_proba, name):
 
 def average_accuracy(iterations):
     average_acc_list = []
+    average_acc_list_train = []
     average_prec_list = []
     average_recall_list = []
     average_f1_list = []
@@ -166,37 +167,43 @@ def average_accuracy(iterations):
     x = []
     for i in range(2, iterations):
         average_acc = []
+        average_acc_train = []
         average_prec = []
         average_recall = []
         average_f1 = []
         average_roc = []
         for r in range(0, 10):
-            rfc_model = RandomForestClassifier(max_leaf_nodes=i)
+            rfc_model = RandomForestClassifier(max_depth=i)
             rfc_model.fit(X_train, y_train)
             rfc_prediction = rfc_model.predict(X_test)
+            rfc_prediction_train = rfc_model.predict(X_train)
             lrm_prediction_proba = rfc_model.predict_proba(X_test)
             average_acc.append(accuracy_score(y_test, rfc_prediction))
-            average_prec.append(
-                precision_score(y_test, rfc_prediction, average='weighted'))
-            average_recall.append(
-                recall_score(y_test, rfc_prediction, average='weighted'))
-            average_f1.append(
-                f1_score(y_test, rfc_prediction, average='weighted'))
-            average_roc.append(
-                roc_auc_score(y_test, lrm_prediction_proba, average='weighted',
-                              multi_class='ovr'))
+            average_acc_train.append(accuracy_score(y_train, rfc_prediction_train))
+            #average_acc_list.append(accuracy_score(y_test, rfc_prediction))
+            #average_prec.append(
+            #    precision_score(y_test, rfc_prediction))
+            #average_recall.append(
+            #    recall_score(y_test, rfc_prediction))
+            #average_f1.append(
+            #    f1_score(y_test, rfc_prediction))
+            #average_roc.append(
+            #    roc_auc_score(y_test, lrm_prediction_proba, average='weighted',
+            #                  multi_class='ovr'))
         average_acc_list.append(sum(average_acc) / len(average_acc))
-        average_prec_list.append(sum(average_prec) / len(average_prec))
-        average_recall_list.append(sum(average_recall) / len(average_recall))
-        average_f1_list.append(sum(average_f1) / len(average_f1))
-        average_roc_list.append(sum(average_roc) / len(average_roc))
+        average_acc_list_train.append(sum(average_acc_train) / len(average_acc_train))
+        #average_prec_list.append(sum(average_prec) / len(average_prec))
+        #average_recall_list.append(sum(average_recall) / len(average_recall))
+        #average_f1_list.append(sum(average_f1) / len(average_f1))
+        #average_roc_list.append(sum(average_roc) / len(average_roc))
         x.append(i)
 
-    plt.plot(x, average_acc_list, label="Average accuracy")
-    plt.plot(x, average_prec_list, label="Average precision")
-    plt.plot(x, average_recall_list, label="Average recall")
-    plt.plot(x, average_f1_list, label="Average f1")
-    plt.plot(x, average_roc_list, label="Average roc", color="black")
+    plt.plot(x, average_acc_list, label="Average accuracy test")
+    plt.plot(x, average_acc_list_train, label="Average accuracy train")
+    #plt.plot(x, average_prec_list, label="Average precision")
+    #plt.plot(x, average_recall_list, label="Average recall")
+    #plt.plot(x, average_f1_list, label="Average f1")
+    #plt.plot(x, average_roc_list, label="Average roc", color="black")
     plt.legend()
     plt.show()
 
