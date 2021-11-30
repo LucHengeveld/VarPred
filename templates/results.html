@@ -1,17 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <link href="../static/style.css" rel="stylesheet" type="text/css">
-        <TITLE>Results</TITLE>
-    </head>
+{% extends 'header.html' %}
+{% block content %}
+<link rel="stylesheet" href="../static/style.css"
+      xmlns="http://www.w3.org/1999/html">
 
-    <body>
-        <ul>
-            <li><a class="active" href="home.html">Home</a></li>
-            <li><a href="info.html">Info</a></li>
-        </ul>
+<h2>Results:</h2>
+<div class="rectangle_container">
+    <p>Select a chromosome below:</p>
+    <form action="{{ url_for('select_chromosome') }}" method="POST">
+        <div class="btn-group">
+            <input type="hidden" name="JSON_dict" value="{{ JSON_dict }}">
+            <input type="hidden" name="disable_button_dict" value="{{ disable_button_dict }}">
 
-        <h2>Results:</h2>
-        <p>VCF file name: {{ vcf_file_name }}</p>
-    </body>
-</html>
+            <button id="1" name="chromosome_button" value="1" type="submit">1</button>&nbsp;
+            <button id="2" name="chromosome_button" value="2" type="submit">2</button>&nbsp;
+            <button id="3" name="chromosome_button" value="3" type="submit">3</button>&nbsp;
+            <button id="4" name="chromosome_button" value="4" type="submit">4</button>&nbsp;
+            <button id="5" name="chromosome_button" value="5" type="submit">5</button>&nbsp;
+            <button id="6" name="chromosome_button" value="6" type="submit">6</button>&nbsp;
+            <button id="7" name="chromosome_button" value="7" type="submit">7</button>&nbsp;
+            <button id="8" name="chromosome_button" value="8" type="submit">8</button>&nbsp;
+            <button id="9" name="chromosome_button" value="9" type="submit">9</button>&nbsp;
+            <button id="10" name="chromosome_button" value="10" type="submit">10</button>&nbsp;
+            <button id="11" name="chromosome_button" value="11" type="submit">11</button>&nbsp;
+            <button id="12" name="chromosome_button" value="12" type="submit">12</button>&nbsp;
+            <button id="13" name="chromosome_button" value="13" type="submit">13</button>&nbsp;
+            <button id="14" name="chromosome_button" value="14" type="submit">14</button>&nbsp;
+            <button id="15" name="chromosome_button" value="15" type="submit">15</button>&nbsp;
+            <button id="16" name="chromosome_button" value="16" type="submit">16</button>&nbsp;
+            <button id="17" name="chromosome_button" value="17" type="submit">17</button>&nbsp;
+            <button id="18" name="chromosome_button" value="18" type="submit">18</button>&nbsp;
+            <button id="19" name="chromosome_button" value="19" type="submit">19</button>&nbsp;
+            <button id="20" name="chromosome_button" value="20" type="submit">20</button>&nbsp;
+            <button id="21" name="chromosome_button" value="21" type="submit">21</button>&nbsp;
+            <button id="22" name="chromosome_button" value="22" type="submit">22</button>&nbsp;
+            <button id="X" name="chromosome_button" value="X" type="submit">X</button>&nbsp;
+            <button id="Y" name="chromosome_button" value="Y" type="submit">Y</button>&nbsp;
+            <button id="MT" name="chromosome_button" value="MT" type="submit">MT</button>
+        </div>
+    </form>
+    <br>
+    <div class="rectangle_visualisation">
+        <br>
+        <h1 id='selected_chromosome'>Please select a chromosome above to start.</h1>
+        <div id='chart' class='chart'></div>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script>
+            document.getElementById("selected_chromosome").innerHTML = "Currently showing chromosome " + "{{ selected_chrom }}" + ":";
+            var graph = {{ JSON_graph | safe }};
+            Plotly.plot('chart', graph, {});
+        </script>
+    </div>
+</div><br>
+
+{% for key in disable_button_dict.keys() %}
+    {% if disable_button_dict[key] == True %}
+        <script>
+            document.getElementById("{{ key }}").disabled = true;
+            document.getElementById("{{ key }}").style.backgroundColor = "grey";
+            document.getElementById("{{ key }}").style.borderColor = "grey";
+        </script>
+    {% endif %}
+{% endfor %}
+
+{% for result in results %}
+{{ result }}<br><br>
+{% endfor %}
+{% endblock %}
