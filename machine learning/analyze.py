@@ -12,6 +12,7 @@ from sklearn.metrics import confusion_matrix, \
 from mlxtend.plotting import plot_confusion_matrix
 from matplotlib import pyplot as plt
 from sklearn.tree import DecisionTreeClassifier
+import pickle
 
 # initiate seaborn plugin
 sns.set()
@@ -100,6 +101,7 @@ def random_forest_train():
     plot_auc(rfc_prediction_proba, "random forest", y_train)
 
 
+
 def random_forest_test():
     """Train and analyze Random Forest Model and test with testset
     """
@@ -122,6 +124,7 @@ def random_forest_test():
     results(rfc_prediction, rfc_prediction_proba, y_test)
     plot_matrix(cm, "Random forest test validation")
     plot_auc(rfc_prediction_proba, "Random forest test validation", y_test)
+
 
 
 def logistic():
@@ -282,11 +285,11 @@ def results(prediction, prediction_proba, dataset):
 
 def main():
     # Call functions to analyze performance
-    #lda()
-    #logistic()
-    #decision_tree()
-    #random_forest_test()
-    #random_forest_train()
+    lda()
+    logistic()
+    decision_tree()
+    random_forest_test()
+    random_forest_train()
     average_accuracy(10)
 
 

@@ -1,30 +1,58 @@
-from matplotlib.pyplot import get_current_fig_manager
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder
-import os
 from chrom_dict import chromosome_length
 
 
 def open_tsv(location):
+    """Parses a .tsv file into a pandas dataframe.
+
+    Args:
+        location: String with location/filename of the .tsv file.
+
+    Returns:
+        Dataframe of the .tsv file.
+    """
     return pd.read_csv(location, sep="\t")
 
 
 def filter_data(data):
-    return data[((data.CLNREVSTAT == "reviewed by expert panel") |
-                  (data.CLNREVSTAT == "practice guideline") |
-                  (data.CHROM == "Y")) &
-                 (data.CLNSIG != "Uncertain significance")]
-    #bad = [976754, 974718, 983388, 978267, 977757, 974724, 974730, 974732,
-    #       974737, 974740, 974741, 983494, 974742, 974714, 974715]
+    """Filters the best annotated ClinVar entries fror training the
+     ML model.
 
-    #return data[~data.ID.isin(bad)]
+    Args:
+        data: Dataframe containing all the ClinVar data.
+
+    Returns:
+        Filtered dataframe.
+    """
+    types = ["Benign", "Likely benign", "Likely pathogenic", "Pathogenic"]
+    data = data.loc[data["CLNSIG"].isin(types)]
+    return data[((data.CLNREVSTAT == "reviewed by expert panel") |
+                 (data.CLNREVSTAT == "practice guideline") |
+                 (data.CHROM == "Y")) &
+                (data.CLNSIG != "Uncertain significance")]
 
 
 def write_tsv(data, name):
+    """Creates a .tsv file from a dataframe.
+
+    Args:
+        data: Dataframe that gets written to file.
+        name: String with the filename.
+    """
     data.to_csv(name, sep="\t", index=False)
 
 
 def scale_pos(data):
+    """Adds a column containing the relative positions of the variant to
+    the dataframe.
+
+    Args:
+        data: Dataframe without the realtive position of the variant
+              added.
+
+    Returns:
+        Dataframe with the relative position of the variant added.
+    """
     pos_list = data['POS'].tolist()
     chrom_list = data['CHROM'].tolist()
     scaled_pos_list = []
@@ -39,6 +67,16 @@ def scale_pos(data):
 
 
 def getGenes(data):
+    """Gets the gene codes from the 'GENEINFO' column and adds them to
+    the new 'GENECODE' column.
+
+    Args:
+        data: Dataframe containing all the ClinVar data.
+
+    Returns:
+        Dataframe containing all the ClinVar data with an extra column
+        for the 'GENECODE'.
+    """
     gene_list = data['GENEINFO']
     gene_code_list = []
     for gene in gene_list:
@@ -49,6 +87,15 @@ def getGenes(data):
 
 
 def one_hot_encoding(data, column):
+    """One hot encodes a specific column in a dataframe.
+
+    Args:
+        data: Dataframe object.
+        column: String name of the column that gets one hot encoded.
+
+    Returns:
+        Dataframe object with extra columns for the one hot encoding.
+    """
     data[column] = data[column].astype(str)
     mutation_types = list(set(data[column].tolist()))
     mutation_types.sort()
@@ -60,9 +107,19 @@ def one_hot_encoding(data, column):
 
 
 def clin_sig(data):
-    types = ["Benign", "Likely benign", "Likely pathogenic", "Pathogenic"]
+    """Adds a column with to the dataframe with two groups;
+    group 1: Benign and Likely benign variants,
+    group 0: Pathogenic and Likely pathogenic variants.
+
+    Args:
+        data: Dataframe containing all the ClinVar data.
+
+    Returns:
+        Dataframe including classification in the two groups
+    """
+
     data.reset_index()
-    # data = data.loc[data["CLNSIG"].isin(types)]
+    #
     sig_list = data['CLNSIG']
     numerical_sig_list = []
     for sig in sig_list:
@@ -80,7 +137,18 @@ def clin_sig(data):
     data['CLNSIG NUM'] = numerical_sig_list
     return data
 
+
 def clin_sig_pathogenic(data):
+    """Adds a column with to the dataframe with two groups;
+        group 1: Pathogenic variants,
+        group 0: Likely pathogenic variants.
+
+        Args:
+            data: Dataframe containing all the ClinVar data.
+
+        Returns:
+            Dataframe including classification in the two groups
+    """
     types = ["Likely pathogenic", "Pathogenic"]
     data.reset_index()
     data = data.loc[data["CLNSIG"].isin(types)]
@@ -101,7 +169,18 @@ def clin_sig_pathogenic(data):
     data['CLNSIG NUM'] = numerical_sig_list
     return data
 
+
 def clin_sig_benign(data):
+    """Adds a column with to the dataframe with two groups;
+        group 1: Benign variants,
+        group 0: Likely benign variants.
+
+        Args:
+            data: Dataframe containing all the ClinVar data.
+
+        Returns:
+            Dataframe including classification in the two groups
+    """
     types = ["Likely benign", "Benign"]
     data.reset_index()
     data = data.loc[data["CLNSIG"].isin(types)]
@@ -122,7 +201,20 @@ def clin_sig_benign(data):
     data['CLNSIG NUM'] = numerical_sig_list
     return data
 
+
 def data_aanpassen(data):
+    """Changes the data in the columns 'AF_ESP', 'AF_EXAC', 'AF_TGP' and
+    'RS' by classifying them into 2 groups per column:
+    group 0: data is null;
+    group 1: data isn't null.
+
+    Args:
+        data: Dataframe containing all the ClinVar data.
+
+    Returns:
+        Dataframe with classifications into the two groups for columns
+        'AF_ESP', 'AF_EXAC', 'AF_TGP' and 'RS'.
+    """
     columns = ["AF_ESP", "AF_EXAC", "AF_TGP", "RS"]
     for column in columns:
         temp = list()
@@ -137,6 +229,17 @@ def data_aanpassen(data):
 
 
 def get_first_value(data, column):
+    """Gets the first value from all the cells withing a column.
+
+    Args:
+        data: Dataframe containing all the ClinVar data.
+        column: String with column name whose first values you want to
+                select.
+
+    Returns:
+        Dataframe with just the first value in the cells for the
+        selected column
+    """
     items = list()
     for item in data[column]:
         item = str(item)
@@ -148,7 +251,7 @@ def get_first_value(data, column):
 if __name__ == '__main__':
     dataset = open_tsv("results_new.tsv")
     dataset = scale_pos(dataset)
-    dataset = clin_sig_benign(dataset)
+    dataset = clin_sig(dataset)
     dataset = getGenes(dataset)
     dataset = get_first_value(dataset, "MC")
     dataset = data_aanpassen(dataset)
@@ -157,5 +260,7 @@ if __name__ == '__main__':
     dataset = one_hot_encoding(dataset, "CHROM")
 
     # dataset = one_hot_encoding(dataset, "GENECODE")
+
+    write_tsv(dataset, "OHE ClinVar data.tsv")
     dataset = filter_data(dataset)
-    write_tsv(dataset, "pathogenic_data.tsv")
+    write_tsv(dataset, "ML data.tsv")
