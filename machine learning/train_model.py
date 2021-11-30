@@ -11,11 +11,9 @@ sns.set()
 df = pd.read_csv('ML data.tsv', sep='\t')
 
 X = df.iloc[:, np.r_[5, 6, 7, 25, 27:31, 33:len(df.columns)]]
-X.to_csv("ML columns.tsv", sep="\t", index=False)
-# print(X)
+# X.to_csv("ML columns.tsv", sep="\t", index=False)
 
 y = df['CLNSIG NUM']
-# print(y)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20,
                                                     random_state=27)
 
