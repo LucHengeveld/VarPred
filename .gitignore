@@ -1,3 +1,7 @@
 # created by virtualenv automatically
 *.vcf
 .idea/
+*.cfg
+*.json
+/venv/
+*.tsv

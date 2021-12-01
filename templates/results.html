@@ -49,6 +49,16 @@
             var graph = {{ JSON_graph | safe }};
             Plotly.plot('chart', graph, {});
         </script>
+
+        <div id="results_textbox"></div>
+
+        <script>
+            var myPlot = document.getElementById('chart')
+            myPlot.on('plotly_click', function(graph) {
+                document.getElementById("results_textbox").innerHTML = "Currently showing chromosome {{ selected_chrom }}<br>" +
+                    "Currently showing position " + graph.points[0].x;
+            });
+        </script>
     </div>
 </div><br>
 

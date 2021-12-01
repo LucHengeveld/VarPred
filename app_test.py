@@ -1,4 +1,5 @@
 import ast
+
 from flask import Flask, render_template, request
 import pymongo
 import dash
@@ -6,9 +7,7 @@ from dash import dcc
 from dash import html
 import plotly
 import plotly.graph_objects as go
-import plotly.express as px
 import json
-import pandas as pd
 
 app = Flask(__name__)
 
@@ -50,7 +49,8 @@ def get_input():
                 results = compare_dataset(compare_list)
 
                 # Creates the visualisation bar
-                JSON_dict, disable_button_dict = visualisation_bar(results)
+                JSON_dict, disable_button_dict = visualisation_bar(
+                    compare_list)
                 # Returns the results page
                 return render_template('results.html',
                                        results=results,
@@ -160,27 +160,39 @@ def compare_dataset(compare_list):
     :return results: List with data of the found mutations
     """
     # Connect to the local database
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    myclient = pymongo.MongoClient("mongodb")
     mydb = myclient["varpred"]
     mycol = mydb["variant"]
 
     # Create an empty list
-    global results
     results = []
-    # Saves the results in a list
-    for i in range(len(compare_list[0])):
-        # print(compare_list[0][i], compare_list[1][i], compare_list[2][i],
-        #       compare_list[3][i])
-        for simularity in mycol.find({"$and": [{"CHROM": compare_list[0][i]},
-                                               {"POS": compare_list[1][i]},
-                                               {"REF": compare_list[2][i]},
-                                               {"ALT": compare_list[3][i]}]}):
-            results.append(simularity)
 
+    # Saves the results in a list
+    for simularity in mycol.find({"$and": [{"CHROM": {"$in": compare_list[0]}},
+                                           {"POS": {"$in": compare_list[1]}},
+                                           {"REF": {"$in": compare_list[2]}}, {
+                                               "ALT": {
+                                                   "$in": compare_list[3]}}]}):
+        results.append(simularity)
+
+    for i in results:
+        print(i)
+
+    # Return the results list
     return results
 
 
-def visualisation_bar(results):
+def visualisation_bar(compare_list):
+    # chromosome_dict = {"1": 248956422, "2": 242193529, "3": 198295559,
+    #                    "4": 190214555, "5": 181538259, "6": 170805979,
+    #                    "7": 159345973, "8": 145138636, "9": 138394717,
+    #                    "10": 133797422, "11": 135086622, "12": 133275309,
+    #                    "13": 114364328, "14": 107043718, "15": 101991189,
+    #                    "16": 90338345, "17": 83257441, "18": 80373285,
+    #                    "19": 58617616, "20": 64444167, "21": 46709983,
+    #                    "22": 50818468, "X": 156040895, "Y": 57227415,
+    #                    "MT": 16569}
+
     chromosome_list = [["1", 248956422], ["2", 242193529], ["3", 198295559],
                        ["4", 190214555], ["5", 181538259], ["6", 170805979],
                        ["7", 159345973], ["8", 145138636], ["9", 138394717],
@@ -191,41 +203,23 @@ def visualisation_bar(results):
                        ["22", 50818468], ["X", 156040895], ["Y", 57227415],
                        ["MT", 16569]]
 
-    position_dict = {}
-    mutation_dict = {}
     pos_list = []
-    ref_list = []
-    alt_list = []
+    position_dict = {}
 
-    for i in range(len(results)):
+    for i in range(len(compare_list[0])):
         if i == 0:
-            pos_list.append(results[i]["POS"])
-            ref_list.append(results[i]["REF"])
-            alt_list.append(results[i]["ALT"])
+            pos_list.append(int(compare_list[1][i]))
 
-        elif results[i]["CHROM"] == results[i - 1]["CHROM"]:
-            pos_list.append(int(results[i]["POS"]))
-            ref_list.append(results[i]["REF"])
-            alt_list.append(results[i]["ALT"])
+        elif compare_list[0][i] == compare_list[0][i - 1]:
+            pos_list.append(int(compare_list[1][i]))
+            if compare_list[1][i] == compare_list[1][-1]:
+                position_dict[compare_list[0][i]] = pos_list
 
-            if results[i]["POS"] == results[-1]["POS"]:
-                position_dict[results[i]["CHROM"]] = pos_list
-                mutation_dict[results[i]["CHROM"]] = {"REF": ref_list,
-                                                      "ALT": alt_list}
-
-        elif results[i]["CHROM"] != results[i - 1]["CHROM"]:
-            position_dict[results[i - 1]["CHROM"]] = pos_list
-            mutation_dict[results[i - 1]["CHROM"]] = {"REF": ref_list,
-                                                      "ALT": alt_list}
-
-            pos_list = [int(results[i]["POS"])]
-            ref_list = [(results[i]["REF"])]
-            alt_list = [(results[i]["ALT"])]
-
-            if results[i]["POS"] == results[-1]["POS"]:
-                position_dict[results[i]["CHROM"]] = pos_list
-                mutation_dict[results[i - 1]["CHROM"]] = {"REF": ref_list,
-                                                          "ALT": alt_list}
+        elif compare_list[0][i] != compare_list[0][i - 1]:
+            position_dict[compare_list[0][i - 1]] = pos_list
+            pos_list = [int(compare_list[1][i])]
+            if compare_list[1][i] == compare_list[1][-1]:
+                position_dict[compare_list[0][i]] = pos_list
 
     JSON_dict = {}
     disable_button_dict = {}
@@ -236,44 +230,36 @@ def visualisation_bar(results):
             for j in range(len(x_list)):
                 y_list.append(0)
             disable_button_dict[chromosome_list[i][0]] = False
-
-            df = pd.DataFrame(data=mutation_dict[chromosome_list[i][0]])
-            fig = px.scatter(df, x=x_list, y=y_list,
-                             labels={"x": "Position",
-                                     "y": ""},
-                             custom_data=["REF", "ALT"])
-            fig.update_traces(marker=dict(size=42.5,
-                                          symbol='line-ns',
-                                          line=dict(width=2,
-                                                    color='black')),
-                              hovertemplate=
-                              '<b>Positie: %{x}' +
-                              '<br>REF > ALT: %{customdata[0]} > %{customdata[1]}</b>'
-                              '<extra></extra>',
-                              selector=dict(mode='markers'))
-
-            fig.update_xaxes(showgrid=False, fixedrange=False,
-                             range=[0, chromosome_list[i][1]],
-                             tickfont_family="Arial Black", tickformat=',d')
-            fig.update_yaxes(showgrid=False, fixedrange=True,
-                             zeroline=True, zerolinecolor='#04AA6D',
-                             zerolinewidth=60,
-                             showticklabels=False)
-            fig.update_layout(height=260, plot_bgcolor='white',
-                              font_size=22,
-                              font_family="Arial Black",
-                              font_color="black",
-                              hoverlabel=dict(
-                                  bgcolor='#e6ffe6',
-                                  font_size=22,
-                                  font_family="Courier",
-                                  font_color="black"
-                              ))
-            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-            JSON_dict[chromosome_list[i][0]] = graphJSON
-
         except KeyError:
+            x_list = []
+            y_list = []
             disable_button_dict[chromosome_list[i][0]] = True
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=x_list, y=y_list,
+            mode='markers', marker_size=42.5, marker_symbol='line-ns',
+            marker_line_color="black", marker_line_width=2,
+            hovertemplate=
+            '<b>Positie: %{x}' +
+            '<br>REF > ALT: G > T</b><extra></extra>'
+        ))
+        fig.update_xaxes(showgrid=False, fixedrange=False,
+                         range=[0, chromosome_list[i][1]],
+                         tickfont_family="Arial Black", tickformat=',d')
+        fig.update_yaxes(showgrid=False, fixedrange=True,
+                         zeroline=True, zerolinecolor='#04AA6D',
+                         zerolinewidth=60,
+                         showticklabels=False)
+        fig.update_layout(height=260, plot_bgcolor='white', font_size=18,
+                          hoverlabel=dict(
+                              bgcolor='#e6ffe6',
+                              font_size=22,
+                              font_family="Courier",
+                              font_color="black"
+                          ))
+        graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        JSON_dict[chromosome_list[i][0]] = graphJSON
 
     return JSON_dict, disable_button_dict
 
@@ -304,8 +290,7 @@ def select_chromosome():
 
     return render_template("results.html", JSON_graph=JSON_graph,
                            JSON_dict=JSON_dict, selected_chrom=selected_chrom,
-                           disable_button_dict=disable_button_dict,
-                           results=results)
+                           disable_button_dict=disable_button_dict)
 
 
 @app.route('/disclaimer.html', methods=["POST", "GET"])
@@ -331,6 +316,7 @@ def submit_on_contact():
     :return render template: shows the calculate.html page to the user
     """
     # Returns the info page
+    print("test")
     return render_template('contact.html')
 
 
@@ -348,4 +334,4 @@ def whoarewe():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True, host='0.0.0.0', port=5000)
