@@ -58,6 +58,7 @@ def write_file(data, filename):
         data: Dataframe that gets written to dataframe
         filename: String of the filename
     """
+    # data.to_csv(filename, sep="\t", index=False)
     data.to_json(filename, orient='records')
 
 
@@ -65,4 +66,6 @@ if __name__ == '__main__':
     model = load_ml_model("model.p")
     data = open_tsv_file("OHE ClinVar data.tsv")
     data = predict_labels(data)
-    write_file(data, "dataset.json")
+    # write_file(data, "testbestand2.tsv")
+    write_file(data, "variant.json")
+    # write_file(data, "dataset.json")
