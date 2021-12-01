@@ -165,17 +165,18 @@ def compare_dataset(compare_list):
     mycol = mydb["variant"]
 
     # Create an empty list
+    global results
     results = []
-
     # Saves the results in a list
-    for simularity in mycol.find({"$and": [{"CHROM": {"$in": compare_list[0]}},
-                                           {"POS": {"$in": compare_list[1]}},
-                                           {"REF": {"$in": compare_list[2]}}, {
-                                               "ALT": {
-                                                   "$in": compare_list[3]}}]}):
-        results.append(simularity)
+    for i in range(len(compare_list[0])):
+        # print(compare_list[0][i], compare_list[1][i], compare_list[2][i],
+        #       compare_list[3][i])
+        for simularity in mycol.find({"$and": [{"CHROM": compare_list[0][i]},
+                                               {"POS": compare_list[1][i]},
+                                               {"REF": compare_list[2][i]},
+                                               {"ALT": compare_list[3][i]}]}):
+            results.append(simularity)
 
-    # Return the results list
     return results
 
 
@@ -226,10 +227,6 @@ def visualisation_bar(results):
                 mutation_dict[results[i - 1]["CHROM"]] = {"REF": ref_list,
                                                           "ALT": alt_list}
 
-    # print(mutation_dict)
-    # for key in mutation_dict.keys():
-    #     print(str(key) + "\t\t" + str(mutation_dict[key]))
-
     JSON_dict = {}
     disable_button_dict = {}
     for i in range(len(chromosome_list)):
@@ -262,7 +259,10 @@ def visualisation_bar(results):
                              zeroline=True, zerolinecolor='#04AA6D',
                              zerolinewidth=60,
                              showticklabels=False)
-            fig.update_layout(height=260, plot_bgcolor='white', font_size=18,
+            fig.update_layout(height=260, plot_bgcolor='white',
+                              font_size=22,
+                              font_family="Arial Black",
+                              font_color="black",
                               hoverlabel=dict(
                                   bgcolor='#e6ffe6',
                                   font_size=22,
@@ -304,7 +304,8 @@ def select_chromosome():
 
     return render_template("results.html", JSON_graph=JSON_graph,
                            JSON_dict=JSON_dict, selected_chrom=selected_chrom,
-                           disable_button_dict=disable_button_dict)
+                           disable_button_dict=disable_button_dict,
+                           results=results)
 
 
 @app.route('/disclaimer.html', methods=["POST", "GET"])
