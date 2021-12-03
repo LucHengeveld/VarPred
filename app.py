@@ -174,9 +174,12 @@ def compare_dataset(compare_list):
         for simularity in mycol.find({"$and": [{"CHROM": compare_list[0][i]},
                                                {"POS": compare_list[1][i]},
                                                {"REF": compare_list[2][i]},
-                                               {"ALT": compare_list[3][i]}]}):
+                                               {"ALT": compare_list[3][i]}]},
+                                     {"_id": 0}):
             results.append(simularity)
-
+    print(results)
+    # for i in results:
+    #     print(i)
     return results
 
 
@@ -224,8 +227,8 @@ def visualisation_bar(results):
 
             if results[i]["POS"] == results[-1]["POS"]:
                 position_dict[results[i]["CHROM"]] = pos_list
-                mutation_dict[results[i - 1]["CHROM"]] = {"REF": ref_list,
-                                                          "ALT": alt_list}
+                mutation_dict[results[i]["CHROM"]] = {"REF": ref_list,
+                                                      "ALT": alt_list}
 
     JSON_dict = {}
     disable_button_dict = {}
@@ -236,7 +239,6 @@ def visualisation_bar(results):
             for j in range(len(x_list)):
                 y_list.append(0)
             disable_button_dict[chromosome_list[i][0]] = False
-
             df = pd.DataFrame(data=mutation_dict[chromosome_list[i][0]])
             fig = px.scatter(df, x=x_list, y=y_list,
                              labels={"x": "Position",
@@ -348,4 +350,4 @@ def whoarewe():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
