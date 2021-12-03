@@ -55,8 +55,52 @@
         <script>
             var myPlot = document.getElementById('chart')
             myPlot.on('plotly_click', function(graph) {
-                document.getElementById("results_textbox").innerHTML = "Currently showing chromosome {{ selected_chrom }}<br>" +
-                    "Currently showing position " + graph.points[0].x;
+                var chrom = {{ selected_chrom }}
+                var pos = graph.points[0].x
+                var ref = graph.points[0].customdata[0]
+                var alt = graph.points[0].customdata[1]
+                var results = {{ results | tojson }}
+                console.log(graph)
+                // for (var result in results[0]) {
+                //     if (result["CHROM"] == chrom && result["POS"] = pos) {
+                //     }
+                // }
+                // document.getElementById("results_textbox1").innerHTML = "{{ results }}"
+                var text = "Chromosome: " + results[0]["CHROM"] +
+                    "<br><b></br>Position: " + results[0]["POS"] +
+                    "<br><b>REF:</b> " + results[0]["REF"] +
+                    "<br><b>ALT:</b> " + results[0]["ALT"] +
+                    "<br><b>AF_ESP:</b> " + results[0]["AF_ESP"] +
+                    "<br><b>AF_EXAC:</b> " + results[0]["AF_EXAC"] +
+                    "<br><b>AF_TGP:</b> " + results[0]["AF_TGP"] +
+                    "<br><b>ALLELEID:</b> " + results[0]["ALLELEID"] +
+                    "<br><b>CLNDN:</b> " + results[0]["CLNDN"] +
+                    "<br><b>CLNDNINCL:</b> " + results[0]["CLNDNINCL"] +
+                    "<br><b>CLNDISDB:</b> " + results[0]["CLNDISDB"] +
+                    "<br><b>CLNDISDBINCL:</b> " + results[0]["CLNDISDBINCL"] +
+                    "<br><b>CLNHGVS:</b> " + results[0]["CLNHGVS"] +
+                    "<br><b>CLNREVSTAT:</b> " + results[0]["CLNREVSTAT"] +
+                    "<br><b>CLNSIG:</b> " + results[0]["CLNSIG"] +
+                    "<br><b>CLNSIGCONF:</b> " + results[0]["CLNSIGCONF"] +
+                    "<br><b>CLNSIGINCL:</b> " + results[0]["CLNSIGINCL"] +
+                    "<br><b>CLNVC:</b> " + results[0]["CLNVC"] +
+                    "<br><b>CLNVCSO:</b> " + results[0]["CLNVCSO"] +
+                    "<br><b>CLNVI:</b> " + results[0]["CLNVI"] +
+                    "<br><b>DBVARID:</b> " + results[0]["DBVARID"] +
+                    "<br><b>GENEINFO:</b> " + results[0]["GENEINFO"] +
+                    "<br><b>MC:</b> " + results[0]["MC"] +
+                    "<br><b>ORIGIN:</b> " + results[0]["ORIGIN"] +
+                    "<br><b>RS:</b> " + results[0]["RS"] +
+                    "<br><b>SSR:</b> " + results[0]["SSR"] +
+                    "<br><b>REF LENGTH:</b> " + results[0]["REF LENGTH"] +
+                    "<br><b>ALT LENGTH:</b> " + results[0]["ALT LENGTH"] +
+                    "<br><b>DIFFERENCE REF AND ALT LENGTH:</b> " + results[0]["DIFFERENCE REF AND ALT LENGTH"] +
+                    "<br><b>SC_POS:</b> " + results[0]["SC_POS"] +
+                    "<br><b>CLNSIG NUM:</b> " + results[0]["CLNSIG NUM"] +
+                    "<br><b>ML prediction:</b> " + results[0]["ML prediction"] +
+                    "<br><b>Probability 0:</b> " + results[0]["Probability 0"] +
+                    "<br><b>Probability 1:</b> " + results[0]["Probability 1"]
+                document.getElementById("results_textbox").innerHTML = text
             });
         </script>
     </div>
@@ -73,6 +117,7 @@
 {% endfor %}
 
 {% for result in results %}
-{{ result }}<br><br>
+    {{ result }}<br><br>
 {% endfor %}
+
 {% endblock %}
