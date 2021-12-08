@@ -40,8 +40,7 @@
     </form>
     <br>
     <div class="rectangle_visualisation">
-        <br>
-        <h1 id='selected_chromosome'>Please select a chromosome above to start.</h1>
+        <h2 id='selected_chromosome'>Please select a chromosome above to start.</h2>
         <div id='chart' class='chart'></div>
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <script>
@@ -50,11 +49,10 @@
             Plotly.plot('chart', graph, {});
         </script>
 
-        <div id="results_textbox">test1</div>
+        <div id="results_textbox"></div>
 
         <script>
             var myPlot = document.getElementById('chart')
-            // document.getElementById("results_textbox").innerHTML = "{{ selected_chrom }}"
             myPlot.on('plotly_click', function(graph) {
                 var chrom = "{{ selected_chrom }}"
                 var pos = graph.points[0].x.toString()
@@ -65,7 +63,6 @@
                 var text = ""
                 results.forEach(checkResult)
                 function checkResult(result_dict) {
-                    // text += result_dict["CHROM"] + "<br>"
                     if (result_dict["CHROM"] === chrom &&
                     result_dict["POS"] === pos &&
                     result_dict["REF"] === ref &&
@@ -123,9 +120,4 @@
         </script>
     {% endif %}
 {% endfor %}
-
-{% for result in results %}
-    {{ result }}<br><br>
-{% endfor %}
-
 {% endblock %}
