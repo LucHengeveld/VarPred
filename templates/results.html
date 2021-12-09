@@ -40,14 +40,73 @@
     </form>
     <br>
     <div class="rectangle_visualisation">
-        <br>
-        <h1 id='selected_chromosome'>Please select a chromosome above to start.</h1>
+        <h2 id='selected_chromosome'>Please select a chromosome above to start.</h2>
         <div id='chart' class='chart'></div>
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <script>
             document.getElementById("selected_chromosome").innerHTML = "Currently showing chromosome " + "{{ selected_chrom }}" + ":";
             var graph = {{ JSON_graph | safe }};
             Plotly.plot('chart', graph, {});
+        </script>
+
+        <div id="results_textbox"></div>
+
+        <script>
+            var myPlot = document.getElementById('chart')
+            myPlot.on('plotly_click', function(graph) {
+                var chrom = "{{ selected_chrom }}"
+                var pos = graph.points[0].x.toString()
+                var ref = graph.points[0].customdata[0]
+                var alt = graph.points[0].customdata[1]
+                var results = {{ results | tojson }}
+                console.log(graph)
+                var text = ""
+                results.forEach(checkResult)
+                function checkResult(result_dict) {
+                    if (result_dict["CHROM"] === chrom &&
+                    result_dict["POS"] === pos &&
+                    result_dict["REF"] === ref &&
+                    result_dict["ALT"] === alt) {
+                        text = "<b>Chromosome:</b> " + result_dict["CHROM"] +
+                        "<br><b>Position:</b> " + result_dict["POS"] +
+                        "<br><b>REF:</b> " + result_dict["REF"] +
+                        "<br><b>ALT:</b> " + result_dict["ALT"] +
+                        "<br><b>AF_ESP:</b> " + result_dict["AF_ESP"] +
+                        "<br><b>AF_EXAC:</b> " + result_dict["AF_EXAC"] +
+                        "<br><b>AF_TGP:</b> " + result_dict["AF_TGP"] +
+                        "<br><b>ALLELEID:</b> " + result_dict["ALLELEID"] +
+                        "<br><b>CLNDN:</b> " + result_dict["CLNDN"] +
+                        "<br><b>CLNDNINCL:</b> " + result_dict["CLNDNINCL"] +
+                        "<br><b>CLNDISDB:</b> " + result_dict["CLNDISDB"] +
+                        "<br><b>CLNDISDBINCL:</b> " + result_dict["CLNDISDBINCL"] +
+                        "<br><b>CLNHGVS:</b> " + result_dict["CLNHGVS"] +
+                        "<br><b>CLNREVSTAT:</b> " + result_dict["CLNREVSTAT"] +
+                        "<br><b>CLNSIG:</b> " + result_dict["CLNSIG"] +
+                        "<br><b>CLNSIGCONF:</b> " + result_dict["CLNSIGCONF"] +
+                        "<br><b>CLNSIGINCL:</b> " + result_dict["CLNSIGINCL"] +
+                        "<br><b>CLNVC:</b> " + result_dict["CLNVC"] +
+                        "<br><b>CLNVCSO:</b> " + result_dict["CLNVCSO"] +
+                        "<br><b>CLNVI:</b> " + result_dict["CLNVI"] +
+                        "<br><b>DBVARID:</b> " + result_dict["DBVARID"] +
+                        "<br><b>GENEINFO:</b> " + result_dict["GENEINFO"] +
+                        "<br><b>MC:</b> " + result_dict["MC"] +
+                        "<br><b>ORIGIN:</b> " + result_dict["ORIGIN"] +
+                        "<br><b>RS:</b> " + result_dict["RS"] +
+                        "<br><b>SSR:</b> " + result_dict["SSR"] +
+                        "<br><b>REF LENGTH:</b> " + result_dict["REF LENGTH"] +
+                        "<br><b>ALT LENGTH:</b> " + result_dict["ALT LENGTH"] +
+                        "<br><b>DIFFERENCE REF AND ALT LENGTH:</b> " + result_dict[
+                            "DIFFERENCE REF AND ALT LENGTH"] +
+                        "<br><b>SC_POS:</b> " + result_dict["SC_POS"] +
+                        "<br><b>CLNSIG NUM:</b> " + result_dict["CLNSIG NUM"] +
+                        "<br><b>ML prediction:</b> " + result_dict["ML prediction"] +
+                        "<br><b>Probability 0:</b> " + result_dict["Probability 0"] +
+                        "<br><b>Probability 1:</b> " + result_dict["Probability 1"]
+
+                        document.getElementById("results_textbox").innerHTML = text
+                    }
+                }
+            });
         </script>
     </div>
 </div><br>
@@ -60,9 +119,5 @@
             document.getElementById("{{ key }}").style.borderColor = "grey";
         </script>
     {% endif %}
-{% endfor %}
-
-{% for result in results %}
-{{ result }}<br><br>
 {% endfor %}
 {% endblock %}
