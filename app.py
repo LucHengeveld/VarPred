@@ -360,14 +360,29 @@ def disclaimer():
 
 @app.route('/contact.html', methods=["POST", "GET"])
 def submit_on_contact():
-    """
-    This function shows the info page when the user selects it in the
-    menu bar on the webapplication. The info page contains information
-    about the application
+    if request.method == "POST":
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        message = request.form['message']
+        email = request.form['email']
+        gender = request.form['gender']
+        phonenumber = request.form['phonenumber']
 
-    :return render template: shows the calculate.html page to the user
-    """
-    # Returns the info page
+        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+        mydb = myclient["varpred"]
+        mycol = mydb["contact"]
+
+        mycol.insert_one(
+            {
+                "firstname": firstname,
+                "lastname": lastname,
+                "message": message,
+                "email": email,
+                "gender": gender,
+                "phonenumber": phonenumber,
+            }
+        )
+
     return render_template('contact.html')
 
 
