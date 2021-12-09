@@ -9,6 +9,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import json
 import pandas as pd
+import sys
 
 app = Flask(__name__)
 
@@ -174,7 +175,7 @@ def compare_dataset(compare_list):
                                                "ALT": {
                                                    "$in": compare_list[3]}}]}):
         results.append(simularity)
-
+    print("_____________LEN:_____________" + str(len(results)), file=sys.stderr)
     # Return the results list
     return results
 
