@@ -22,7 +22,7 @@ def get_input():
 
     :return render template: results.html
     """
-    # If calculate results button is pressed:
+    # If calculator results button is pressed:
     if request.method == 'POST':
 
         # Retrieves the entered file from the webapplication and saves
@@ -59,20 +59,20 @@ def get_input():
 
             else:
                 # Returns an error if the file format is incorrect.
-                return render_template('calculate.html',
+                return render_template('calculator.html',
                                        errormsg="Entered file has the wrong "
                                                 "format")
 
         elif vcf_file_name != "":
             # Returns an error if a file with the wrong file extension
             # is entered on the webapplication.
-            return render_template('calculate.html',
+            return render_template('calculator.html',
                                    errormsg="Entered file has the"
                                             " wrong file extension. Please enter a .vcf file")
 
         else:
             # Returns an error if no file is selected.
-            return render_template('calculate.html', errormsg="No file "
+            return render_template('calculator.html', errormsg="No file "
                                                               "selected.")
 
     else:
@@ -315,17 +315,17 @@ def visualisation_bar(results):
     return JSON_dict, disable_button_dict
 
 
-@app.route('/calculate.html', methods=["POST", "GET"])
-def calculate():
+@app.route('/calculator.html', methods=["POST", "GET"])
+def calculator():
     """
     This function shows the info page when the user selects it in the
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the calculate.html page to the user
+    :return render template: shows the calculator.html page to the user
     """
     # Returns the info page
-    return render_template('calculate.html')
+    return render_template('calculator.html')
 
 
 @app.route('/results.html', methods=["POST"])
@@ -352,7 +352,7 @@ def disclaimer():
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the calculate.html page to the user
+    :return render template: shows the calculator.html page to the user
     """
     # Returns the info page
     return render_template('disclaimer.html')
@@ -393,7 +393,7 @@ def whoarewe():
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the calculate.html page to the user
+    :return render template: shows the calculator.html page to the user
     """
     # Returns the info page
     return render_template('aboutvarpred.html')
