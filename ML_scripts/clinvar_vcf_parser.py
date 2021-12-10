@@ -1,9 +1,10 @@
 import os
+import sys
 import pickle
 import vcf
 
 
-def read_file():
+def read_file(filename):
     """Opens and parses a ClinVar .vcf file and converts it to a dictionary;
     this dictionary is pickled and returned.
 
@@ -16,7 +17,7 @@ def read_file():
                    "CLNREVSTAT", "CLNSIG", "CLNSIGCONF", "CLNSIGINCL", "CLNVC",
                    "CLNVCSO", "CLNVI", "DBVARID", "GENEINFO", "MC", "ORIGIN",
                    "RS", "SSR"]
-    file = vcf.Reader(open("clinvar.vcf"))
+    file = vcf.Reader(open(filename))
 
     # convert to dictionary
     file_dictionary = dict()
@@ -31,7 +32,7 @@ def read_file():
                 file_dictionary[int(entry.ID)].append("N/A")
 
     # pickle dictionary
-    pickle.dump(file_dictionary, open("file_dictionary.p", "wb"))
+    pickle.dump(file_dictionary, open(f"{file}.p", "wb"))
 
     return file_dictionary
 
@@ -115,13 +116,13 @@ def write_file(file_dictionary):
 
 
 if __name__ == '__main__':
-    if os.path.isfile("file_dictionary.p"):
+    file = sys.argv[1]
+    if os.path.isfile(f"{file}.p"):
         print("Pickle found, loading pickle...")
-        fd = pickle.load(open("file_dictionary.p", "rb"))
+        fd = pickle.load(open(f"{file}.p", "rb"))
         print("Pickle parsed and loaded...")
     else:
         print("No pickle found, parsing data...")
-        fd = read_file()
+        fd = read_file(f"clinvar-{file}.vcf")
     file_dictionary = change_dict(fd)
-    os.remove('clinvar.vcf')
     write_file(file_dictionary)

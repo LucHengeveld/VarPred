@@ -1,3 +1,4 @@
 FROM mongo
-COPY variant.json variant.json
-CMD mongoimport --host mongodb --db varpred --collection variant --type json --file variant.json --jsonArray
+COPY variant-37.json variant-37.json
+COPY variant-38.json variant-38.json
+CMD mongoimport --host mongodb --db varpred --collection variants-37 --type json --file variant-37.json --jsonArray && mongoimport --host mongodb --db varpred --collection variants-38 --type json --file variant-38.json --jsonArray

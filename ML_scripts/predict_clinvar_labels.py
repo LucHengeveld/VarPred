@@ -2,6 +2,7 @@ import pickle
 import pandas as pd
 import numpy as np
 import os
+import sys
 
 def load_ml_model(model_name):
     """Loads the ML model from a pickle
@@ -64,8 +65,10 @@ def write_file(data, filename):
 
 
 if __name__ == '__main__':
+    file = sys.argv[1]
     model = load_ml_model("model.p")
     data = open_tsv_file("OHE_ClinVar_data.tsv")
     data = predict_labels(data)
     os.remove("OHE_ClinVar_data.tsv")
-    write_file(data, "/database/variant.json")
+    f"{file}.p"
+    write_file(data, f"variant-{file}.json")
