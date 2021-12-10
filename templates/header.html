@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="https://cdn.jsdelivr.net/gh/alphardex/aqua.css/dist/aqua.min.css" rel="stylesheet" type="text/css">
     <link href="../static/bootstrap.min.css" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-zrnmn8R8KkWl12rAZFt4yKjxplaDaT7/EUkKm7AovijfrQItFWR7O/JJn4DAa/gx" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-zrnmn8R8KkWl12rAZFt4yKjxplaDaT7/EUkKm7AovijfrQItFWR7O/JJn4DAa/gx" crossorigin="anonymous">
     <script src="../static/bootstrap.js"></script>
-    <TITLE>Home</TITLE>
+    <link rel="icon" href="../static/VarPred_logo.png" type="image/gif" sizes="16x16">
+    <TITLE> {% block title %}{% endblock %} </TITLE>
 </head>
 <body>
 <header>
@@ -17,12 +19,12 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="home.html">Home</a>
+                    <a class="nav-link" data-toggle="tab" role="tab" aria-controls="home" aria-selected="true" href="home.html">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="calculate.html">Calculator</a>
+                    <a class="nav-link" href="calculator.html" data-toggle="tab" role="tab" aria-controls="profile" aria-selected="false">Calculator</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -55,7 +57,7 @@
 
     <!-- Right -->
     <div>
-      <a href="https://nl-nl.facebook.com/" class="me-4 text-reset">
+      <a href="https://nl-nl.facebook.com/" class="me-4 text-reset ">
         <i class="fab fa-facebook-f"></i>
       </a>
       <a href="https://twitter.com/home?lang=nl" class="me-4 text-reset">
@@ -102,13 +104,13 @@
             About us
           </h6>
           <p>
-            <a href="aboutvarpred.html" class="text-reset">About VarPred</a>
+            <a href="aboutvarpred.html" class="link-flash text-reset">About VarPred</a>
           </p>
           <p>
-            <a href="disclaimer.html" class="text-reset">Disclaimer</a>
+            <a href="disclaimer.html" class="link-flash text-reset">Disclaimer</a>
           </p>
           <p>
-            <a href="contact.html" class="text-reset">Contact</a>
+            <a href="contact.html" class="link-flash text-reset">Contact us</a>
           </p>
         </div>
         <!-- Grid column -->
@@ -120,10 +122,10 @@
             Useful links
           </h6>
           <p>
-            <a href="info.html" class="text-reset">Calculator</a>
+            <a href="calculator.html" class="link-flash text-reset">Calculator</a>
           </p>
           <p>
-            <a href="https://en.wikipedia.org/wiki/Clinical_significance" class="text-reset">Clinical significance</a>
+            <a href="https://en.wikipedia.org/wiki/Clinical_significance" class="link-flash text-reset">Clinical significance</a>
           </p>
         </div>
         <!-- Grid column -->
@@ -137,7 +139,7 @@
           <p><i class="fas fa-home me-3"></i> Laan van scheut 2, Nijmegen</p>
           <p>
             <i class="fas fa-envelope me-3"></i>
-            info@varpred.nl
+             info@varpred.nl
           </p>
           <p><i class="fas fa-phone me-3"></i> +31243539100</p>
           <p><i class="fas fa-print me-3"></i> +31243539100</p>
@@ -156,5 +158,11 @@
   </div>
 </footer>
 <!-- Script -->
+<script>
+    $('.nav-link a').on('click', function(){
+  $('.nav-link .active').removeClass('active');
+  $(this).addClass('active');
+});
+</script>
 </body>
 </html>
