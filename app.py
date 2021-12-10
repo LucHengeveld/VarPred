@@ -170,8 +170,6 @@ def compare_dataset(ID_list):
 
 
 @app.route('/calculator.html', methods=["POST", "GET"])
-def info():
-=======
 def visualisation_bar(results):
     chromosome_list = [["1", 248956422], ["2", 242193529], ["3", 198295559],
                        ["4", 190214555], ["5", 181538259], ["6", 170805979],
@@ -268,20 +266,20 @@ def visualisation_bar(results):
         except KeyError:
             disable_button_dict[chromosome_list[i][0]] = True
 
-    return JSON_dict, disable_button_dict
+    return JSON_dict, disable_button_dict, render_template('calculator.html')
 
 
-@app.route('/calculate.html', methods=["POST", "GET"])
-def calculate():
-    """
-    This function shows the info page when the user selects it in the
-    menu bar on the webapplication. The info page contains information
-    about the application
-
-    :return render template: shows the calculator.html page to the user
-    """
-    # Returns the info page
-    return render_template('calculator.html')
+# @app.route('/calculate.html', methods=["POST", "GET"])
+# def calculate():
+#     """
+#     This function shows the info page when the user selects it in the
+#     menu bar on the webapplication. The info page contains information
+#     about the application
+#
+#     :return render template: shows the calculator.html page to the user
+#     """
+#     # Returns the info page
+#     return render_template('calculator.html')
 
 
 @app.route('/results.html', methods=["POST"])
@@ -338,23 +336,12 @@ def submit_on_contact():
                 "phonenumber": phonenumber,
             }
         )
-    """
-    This function shows the info page when the user selects it in the
-    menu bar on the webapplication. The info page contains information
-    about the application
 
     return render_template('contact.html')
 
 
 @app.route('/aboutvarpred.html', methods=["POST", "GET"])
 def whoarewe():
-    """
-    This function shows the info page when the user selects it in the
-    menu bar on the webapplication. The info page contains information
-    about the application
-
-    :return render template: shows the calculator.html page to the user
-    """
     # Returns the info page
     return render_template('aboutvarpred.html')
 
