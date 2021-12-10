@@ -47,11 +47,6 @@ def get_input():
                 compare_list = create_compare_list(vcf_list)
 
                 # Calls the function compare_dataset
-                results = compare_dataset(ID_list)
-
-                # Returns the results page
-                return render_template('results.html',
-                                       vcf_file_name=vcf_file_name)
                 results = compare_dataset(compare_list)
 
                 # Creates the visualisation bar
@@ -184,9 +179,6 @@ def compare_dataset(compare_list):
     return results
 
 
-
-@app.route('/calculator.html', methods=["POST", "GET"])
-def info():
 def visualisation_bar(results):
     chromosome_list = [["1", 248956422], ["2", 242193529], ["3", 198295559],
                        ["4", 190214555], ["5", 181538259], ["6", 170805979],
@@ -323,8 +315,6 @@ def visualisation_bar(results):
     return JSON_dict, disable_button_dict
 
 
-@app.route('/calculate.html', methods=["POST", "GET"])
-def calculate():
 @app.route('/calculator.html', methods=["POST", "GET"])
 def calculator():
     """
@@ -392,10 +382,6 @@ def submit_on_contact():
                 "phonenumber": phonenumber,
             }
         )
-    """
-    This function shows the info page when the user selects it in the
-    menu bar on the webapplication. The info page contains information
-    about the application
 
     return render_template('contact.html')
 
