@@ -58,12 +58,10 @@
 }
 
 /* Header */
-* {
-    box-sizing: border-box;
-}
+* {box-sizing: border-box;}
 
 body {
-    margin: 25px;
+    margin: 0;
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -121,8 +119,41 @@ body {
     }
 }
 
-.tekst {
-    padding: 30px;
+.tekst{
+padding: 30px;
+}
+
+.btn-group {
+    display: flex;
+}
+
+.btn-group button {
+    background-color: #04AA6D; /* Green background */
+    border: 1px solid green; /* Green border */
+    color: white; /* White text */
+    cursor: pointer; /* Pointer/hand icon */
+    float: left; /* Float the buttons side by side */
+    border-radius: 50%;
+    margin: 1px 2px;
+    height: 40px;
+    width: 100%;
+    font-size: 25px;
+}
+
+/* Clear floats (clearfix hack) */
+.btn-group:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.btn-group button:not(:last-child) {
+    border-right: none; /* Prevent double borders */
+}
+
+/* Add a background color on hover */
+.btn-group button:hover {
+    background-color: #3e8e41;
 }
 
 .btn-group {
