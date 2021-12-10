@@ -1,11 +1,7 @@
 import ast
 from flask import Flask, render_template, request
 import pymongo
-import dash
-from dash import dcc
-from dash import html
 import plotly
-import plotly.graph_objects as go
 import plotly.express as px
 import json
 import pandas as pd
@@ -46,11 +42,15 @@ def get_input():
                 # Calls the function create_compare_list
                 compare_list = create_compare_list(vcf_list)
 
+                # Retrieves the selected reference build
+                reference_build = request.form.get("reference_selector")
+
                 # Calls the function compare_dataset
-                results = compare_dataset(compare_list)
+                compare_dataset(compare_list, reference_build)
 
                 # Creates the visualisation bar
-                JSON_dict, disable_button_dict, length_dict = visualisation_bar(results)
+                JSON_dict, disable_button_dict = visualisation_bar(
+                    reference_build)
                 # Returns the results page
                 return render_template('results.html',
                                        results=results,
@@ -69,12 +69,13 @@ def get_input():
             # is entered on the webapplication.
             return render_template('calculator.html',
                                    errormsg="Entered file has the"
-                                            " wrong file extension. Please enter a .vcf file")
+                                            "wrong file extension. Please "
+                                            "enter a .vcf file")
 
         else:
             # Returns an error if no file is selected.
             return render_template('calculator.html', errormsg="No file "
-                                                              "selected.")
+                                                               "selected.")
 
     else:
         # Returns the standard home page.
@@ -152,10 +153,11 @@ def create_compare_list(vcf_list):
     return compare_list
 
 
-def compare_dataset(compare_list):
+def compare_dataset(compare_list, reference_build):
     """
     Compares the compare_list to the chromosome numbers and positions in the
     Mongo database.
+    :param reference_build:
     :param compare_list: List with all the chromosome numbers and positions out
      of the vcf_list
     :return results: List with data of the found mutations
@@ -163,7 +165,11 @@ def compare_dataset(compare_list):
     # Connect to the local database
     myclient = pymongo.MongoClient("mongodb://localhost:27017/")
     mydb = myclient["varpred"]
-    mycol = mydb["variant"]
+    print(type(reference_build))
+    if reference_build == "37":
+        mycol = mydb["variants-37"]
+    else:
+        mycol = mydb["variants-38"]
 
     # Create an empty list
     global results
@@ -177,19 +183,37 @@ def compare_dataset(compare_list):
                                                {"ALT": compare_list[3][i]}]},
                                      {"_id": 0}):
             results.append(simularity)
-    return results
 
 
-def visualisation_bar(results):
-    chromosome_list = [["1", 248956422], ["2", 242193529], ["3", 198295559],
-                       ["4", 190214555], ["5", 181538259], ["6", 170805979],
-                       ["7", 159345973], ["8", 145138636], ["9", 138394717],
-                       ["10", 133797422], ["11", 135086622], ["12", 133275309],
-                       ["13", 114364328], ["14", 107043718], ["15", 101991189],
-                       ["16", 90338345], ["17", 83257441], ["18", 80373285],
-                       ["19", 58617616], ["20", 64444167], ["21", 46709983],
-                       ["22", 50818468], ["X", 156040895], ["Y", 57227415],
-                       ["MT", 16569]]
+def visualisation_bar(reference_build):
+    if reference_build == "37":
+        chromosome_list = [["1", 249250621], ["2", 243199373],
+                           ["3", 198022430], ["4", 191154276],
+                           ["5", 180915260], ["6", 171115067],
+                           ["7", 159138663], ["8", 146364022],
+                           ["9", 141213431], ["10", 135534747],
+                           ["11", 135006516], ["12", 133851895],
+                           ["13", 115169878], ["14", 107349540],
+                           ["15", 102531392], ["16", 90354753],
+                           ["17", 81195210], ["18", 78077248],
+                           ["19", 59128983], ["20", 63025520],
+                           ["21", 48129895], ["22", 51304566],
+                           ["X", 155270560], ["Y", 59373566],
+                           ["MT", 16569]]
+    else:
+        chromosome_list = [["1", 248956422], ["2", 242193529],
+                           ["3", 198295559], ["4", 190214555],
+                           ["5", 181538259], ["6", 170805979],
+                           ["7", 159345973], ["8", 145138636],
+                           ["9", 138394717], ["10", 133797422],
+                           ["11", 135086622], ["12", 133275309],
+                           ["13", 114364328], ["14", 107043718],
+                           ["15", 101991189], ["16", 90338345],
+                           ["17", 83257441], ["18", 80373285],
+                           ["19", 58617616], ["20", 64444167],
+                           ["21", 46709983], ["22", 50818468],
+                           ["X", 156040895], ["Y", 57227415],
+                           ["MT", 16569]]
 
     position_dict = {}
     mutation_dict = {}
@@ -268,7 +292,8 @@ def visualisation_bar(results):
     length_dict = {}
     for i in range(len(chromosome_list)):
         try:
-            length_dict[chromosome_list[i][0]] = len(position_dict[chromosome_list[i][0]])
+            length_dict[chromosome_list[i][0]] = len(
+                position_dict[chromosome_list[i][0]])
         except KeyError:
             length_dict[chromosome_list[i][0]] = 0
 
@@ -285,7 +310,8 @@ def visualisation_bar(results):
             fig = px.scatter(df, x=x_list, y=y_list,
                              labels={"x": "Position",
                                      "y": ""},
-                             custom_data=["REF", "ALT", "REF_short", "ALT_short"])
+                             custom_data=["REF", "ALT", "REF_short",
+                                          "ALT_short"])
             fig.update_traces(marker=dict(size=42.5,
                                           symbol='line-ns',
                                           line=dict(width=2,
@@ -320,7 +346,7 @@ def visualisation_bar(results):
         except KeyError:
             disable_button_dict[chromosome_list[i][0]] = True
 
-    return JSON_dict, disable_button_dict, length_dict
+    return JSON_dict, disable_button_dict
 
 
 @app.route('/calculator.html', methods=["POST", "GET"])
