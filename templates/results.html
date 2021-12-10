@@ -9,7 +9,8 @@
     <form action="{{ url_for('select_chromosome') }}" method="POST">
         <div class="btn-group">
             <input type="hidden" name="JSON_dict" value="{{ JSON_dict }}">
-            <input type="hidden" name="disable_button_dict" value="{{ disable_button_dict }}">
+            <input type="hidden" name="disable_button_dict"
+                   value="{{ disable_button_dict }}">
 
             <button id="1" name="chromosome_button" value="1" type="submit">1</button>&nbsp;
             <button id="2" name="chromosome_button" value="2" type="submit">2</button>&nbsp;
@@ -37,10 +38,50 @@
             <button id="Y" name="chromosome_button" value="Y" type="submit">Y</button>&nbsp;
             <button id="MT" name="chromosome_button" value="MT" type="submit">MT</button>
         </div>
+        <br>
     </form>
+    <button id="results_per_chromosome_button"
+            onclick="results_per_chromosome()">
+        Click for more information per chromosome
+    </button>
+    <br><br>
+
+    <table id="results_per_chromosome" style="display: none">
+        <tr>
+            <td>Chromosome</td>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+            <td>5</td>
+            <td>6</td>
+            <td>7</td>
+        </tr>
+        <tr>
+            <td>Total mutations</td>
+            <td>14</td>
+            <td>14242</td>
+            <td>14240</td>
+            <td>14240</td>
+            <td>120</td>
+            <td>1560</td>
+            <td>120</td>
+        </tr>
+    </table>
+    <script>
+        function results_per_chromosome() {
+            var x = document.getElementById("results_per_chromosome");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
     <br>
     <div class="rectangle_visualisation">
-        <h2 id='selected_chromosome'>Please select a chromosome above to start.</h2>
+        <h2 id='selected_chromosome'>Please select a chromosome above to
+            start.</h2>
         <div id='chart' class='chart'></div>
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <script>
@@ -53,7 +94,7 @@
 
         <script>
             var myPlot = document.getElementById('chart')
-            myPlot.on('plotly_click', function(graph) {
+            myPlot.on('plotly_click', function (graph) {
                 var chrom = "{{ selected_chrom }}"
                 var pos = graph.points[0].x.toString()
                 var ref = graph.points[0].customdata[0]
@@ -62,46 +103,47 @@
                 console.log(graph)
                 var text = ""
                 results.forEach(checkResult)
+
                 function checkResult(result_dict) {
                     if (result_dict["CHROM"] === chrom &&
-                    result_dict["POS"] === pos &&
-                    result_dict["REF"] === ref &&
-                    result_dict["ALT"] === alt) {
+                        result_dict["POS"] === pos &&
+                        result_dict["REF"] === ref &&
+                        result_dict["ALT"] === alt) {
                         text = "<b>Chromosome:</b> " + result_dict["CHROM"] +
-                        "<br><b>Position:</b> " + result_dict["POS"] +
-                        "<br><b>REF:</b> " + result_dict["REF"] +
-                        "<br><b>ALT:</b> " + result_dict["ALT"] +
-                        "<br><b>AF_ESP:</b> " + result_dict["AF_ESP"] +
-                        "<br><b>AF_EXAC:</b> " + result_dict["AF_EXAC"] +
-                        "<br><b>AF_TGP:</b> " + result_dict["AF_TGP"] +
-                        "<br><b>ALLELEID:</b> " + result_dict["ALLELEID"] +
-                        "<br><b>CLNDN:</b> " + result_dict["CLNDN"] +
-                        "<br><b>CLNDNINCL:</b> " + result_dict["CLNDNINCL"] +
-                        "<br><b>CLNDISDB:</b> " + result_dict["CLNDISDB"] +
-                        "<br><b>CLNDISDBINCL:</b> " + result_dict["CLNDISDBINCL"] +
-                        "<br><b>CLNHGVS:</b> " + result_dict["CLNHGVS"] +
-                        "<br><b>CLNREVSTAT:</b> " + result_dict["CLNREVSTAT"] +
-                        "<br><b>CLNSIG:</b> " + result_dict["CLNSIG"] +
-                        "<br><b>CLNSIGCONF:</b> " + result_dict["CLNSIGCONF"] +
-                        "<br><b>CLNSIGINCL:</b> " + result_dict["CLNSIGINCL"] +
-                        "<br><b>CLNVC:</b> " + result_dict["CLNVC"] +
-                        "<br><b>CLNVCSO:</b> " + result_dict["CLNVCSO"] +
-                        "<br><b>CLNVI:</b> " + result_dict["CLNVI"] +
-                        "<br><b>DBVARID:</b> " + result_dict["DBVARID"] +
-                        "<br><b>GENEINFO:</b> " + result_dict["GENEINFO"] +
-                        "<br><b>MC:</b> " + result_dict["MC"] +
-                        "<br><b>ORIGIN:</b> " + result_dict["ORIGIN"] +
-                        "<br><b>RS:</b> " + result_dict["RS"] +
-                        "<br><b>SSR:</b> " + result_dict["SSR"] +
-                        "<br><b>REF LENGTH:</b> " + result_dict["REF LENGTH"] +
-                        "<br><b>ALT LENGTH:</b> " + result_dict["ALT LENGTH"] +
-                        "<br><b>DIFFERENCE REF AND ALT LENGTH:</b> " + result_dict[
-                            "DIFFERENCE REF AND ALT LENGTH"] +
-                        "<br><b>SC_POS:</b> " + result_dict["SC_POS"] +
-                        "<br><b>CLNSIG NUM:</b> " + result_dict["CLNSIG NUM"] +
-                        "<br><b>ML prediction:</b> " + result_dict["ML prediction"] +
-                        "<br><b>Probability 0:</b> " + result_dict["Probability 0"] +
-                        "<br><b>Probability 1:</b> " + result_dict["Probability 1"]
+                            "<br><b>Position:</b> " + result_dict["POS"] +
+                            "<br><b>REF:</b> " + result_dict["REF"] +
+                            "<br><b>ALT:</b> " + result_dict["ALT"] +
+                            "<br><b>AF_ESP:</b> " + result_dict["AF_ESP"] +
+                            "<br><b>AF_EXAC:</b> " + result_dict["AF_EXAC"] +
+                            "<br><b>AF_TGP:</b> " + result_dict["AF_TGP"] +
+                            "<br><b>ALLELEID:</b> " + result_dict["ALLELEID"] +
+                            "<br><b>CLNDN:</b> " + result_dict["CLNDN"] +
+                            "<br><b>CLNDNINCL:</b> " + result_dict["CLNDNINCL"] +
+                            "<br><b>CLNDISDB:</b> " + result_dict["CLNDISDB"] +
+                            "<br><b>CLNDISDBINCL:</b> " + result_dict["CLNDISDBINCL"] +
+                            "<br><b>CLNHGVS:</b> " + result_dict["CLNHGVS"] +
+                            "<br><b>CLNREVSTAT:</b> " + result_dict["CLNREVSTAT"] +
+                            "<br><b>CLNSIG:</b> " + result_dict["CLNSIG"] +
+                            "<br><b>CLNSIGCONF:</b> " + result_dict["CLNSIGCONF"] +
+                            "<br><b>CLNSIGINCL:</b> " + result_dict["CLNSIGINCL"] +
+                            "<br><b>CLNVC:</b> " + result_dict["CLNVC"] +
+                            "<br><b>CLNVCSO:</b> " + result_dict["CLNVCSO"] +
+                            "<br><b>CLNVI:</b> " + result_dict["CLNVI"] +
+                            "<br><b>DBVARID:</b> " + result_dict["DBVARID"] +
+                            "<br><b>GENEINFO:</b> " + result_dict["GENEINFO"] +
+                            "<br><b>MC:</b> " + result_dict["MC"] +
+                            "<br><b>ORIGIN:</b> " + result_dict["ORIGIN"] +
+                            "<br><b>RS:</b> " + result_dict["RS"] +
+                            "<br><b>SSR:</b> " + result_dict["SSR"] +
+                            "<br><b>REF LENGTH:</b> " + result_dict["REF LENGTH"] +
+                            "<br><b>ALT LENGTH:</b> " + result_dict["ALT LENGTH"] +
+                            "<br><b>DIFFERENCE REF AND ALT LENGTH:</b> " + result_dict[
+                                "DIFFERENCE REF AND ALT LENGTH"] +
+                            "<br><b>SC_POS:</b> " + result_dict["SC_POS"] +
+                            "<br><b>CLNSIG NUM:</b> " + result_dict["CLNSIG NUM"] +
+                            "<br><b>ML prediction:</b> " + result_dict["ML prediction"] +
+                            "<br><b>Probability 0:</b> " + result_dict["Probability 0"] +
+                            "<br><b>Probability 1:</b> " + result_dict["Probability 1"]
 
                         document.getElementById("results_textbox").innerHTML = text
                     }
@@ -112,12 +154,12 @@
 </div><br>
 
 {% for key in disable_button_dict.keys() %}
-    {% if disable_button_dict[key] == True %}
-        <script>
-            document.getElementById("{{ key }}").disabled = true;
-            document.getElementById("{{ key }}").style.backgroundColor = "grey";
-            document.getElementById("{{ key }}").style.borderColor = "grey";
-        </script>
-    {% endif %}
+{% if disable_button_dict[key] == True %}
+<script>
+    document.getElementById("{{ key }}").disabled = true;
+    document.getElementById("{{ key }}").style.backgroundColor = "grey";
+    document.getElementById("{{ key }}").style.borderColor = "grey";
+</script>
+{% endif %}
 {% endfor %}
 {% endblock %}
