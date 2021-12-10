@@ -50,12 +50,13 @@ def get_input():
                 results = compare_dataset(compare_list)
 
                 # Creates the visualisation bar
-                JSON_dict, disable_button_dict = visualisation_bar(results)
+                JSON_dict, disable_button_dict, length_dict = visualisation_bar(results)
                 # Returns the results page
                 return render_template('results.html',
                                        results=results,
                                        JSON_dict=JSON_dict,
-                                       disable_button_dict=disable_button_dict)
+                                       disable_button_dict=disable_button_dict,
+                                       length_dict=length_dict)
 
             else:
                 # Returns an error if the file format is incorrect.
@@ -200,7 +201,7 @@ def visualisation_bar(results):
 
     for i in range(len(results)):
         if i == 0:
-            pos_list.append(results[i]["POS"])
+            pos_list.append(int(results[i]["POS"]))
             ref_list.append(results[i]["REF"])
 
             if len(results[i]["REF"]) > 5:
@@ -263,6 +264,13 @@ def visualisation_bar(results):
                                                       "ALT": alt_list,
                                                       "REF_short": ref_short,
                                                       "ALT_short": alt_short}
+    global length_dict
+    length_dict = {}
+    for i in range(len(chromosome_list)):
+        try:
+            length_dict[chromosome_list[i][0]] = len(position_dict[chromosome_list[i][0]])
+        except KeyError:
+            length_dict[chromosome_list[i][0]] = 0
 
     JSON_dict = {}
     disable_button_dict = {}
@@ -312,7 +320,7 @@ def visualisation_bar(results):
         except KeyError:
             disable_button_dict[chromosome_list[i][0]] = True
 
-    return JSON_dict, disable_button_dict
+    return JSON_dict, disable_button_dict, length_dict
 
 
 @app.route('/calculator.html', methods=["POST", "GET"])
@@ -342,7 +350,8 @@ def select_chromosome():
     return render_template("results.html", JSON_graph=JSON_graph,
                            JSON_dict=JSON_dict, selected_chrom=selected_chrom,
                            disable_button_dict=disable_button_dict,
-                           results=results)
+                           results=results,
+                           length_dict=length_dict)
 
 
 @app.route('/disclaimer.html', methods=["POST", "GET"])
