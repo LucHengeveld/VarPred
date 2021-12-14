@@ -1,20 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <link href="../static/style.css" rel="stylesheet" type="text/css">
-        <TITLE>Results</TITLE>
-    </head>
-
-    <body>
-        <ul>
-            <li><a class="active" href="home.html">Home</a></li>
-            <li><a href="calculator.html">Info</a></li>
-        </ul>
-
-        <h2>Results:</h2>
-        <p>VCF file name: {{ vcf_file_name }}</p>
-    </body>
-</html>
 {% extends 'header.html' %}
 {% block content %}
 <link rel="stylesheet" href="../static/style.css"
@@ -121,10 +104,6 @@
                 var text = ""
                 results.forEach(checkResult)
 
-{% for result in results %}
-{{ result }}<br><br>
-{% endfor %}
-{% endblock %}
                 function checkResult(result_dict) {
                     if (result_dict["CHROM"] === chrom &&
                         result_dict["POS"] === pos &&
