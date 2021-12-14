@@ -165,7 +165,6 @@ def compare_dataset(compare_list, reference_build):
     # Connect to the local database
     myclient = pymongo.MongoClient("mongodb://localhost:27017/")
     mydb = myclient["varpred"]
-    print(type(reference_build))
     if reference_build == "37":
         mycol = mydb["variants-37"]
     else:
