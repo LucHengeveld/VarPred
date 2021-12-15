@@ -59,7 +59,7 @@ def write_file(data, filename):
         filename: String of the filename
     """
     for column in data.columns:
-        data[column]= data[column].map(str)
+        data[column] = data[column].map(str)
 
     data.to_json(filename, orient='records')
 

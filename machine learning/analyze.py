@@ -101,7 +101,6 @@ def random_forest_train():
     plot_auc(rfc_prediction_proba, "random forest", y_train)
 
 
-
 def random_forest_test():
     """Train and analyze Random Forest Model and test with testset
     """

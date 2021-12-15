@@ -1,6 +1,6 @@
 import pandas as pd
-from chrom_dict import chromosome_length
 import os
+
 
 def open_tsv(location):
     """Parses a .tsv file into a pandas dataframe.
@@ -249,6 +249,10 @@ def get_first_value(data, column):
 
 
 if __name__ == '__main__':
+    if str(os.environ["assembly"]) == "37":
+        from chrom_dict_37 import chromosome_length
+    else:
+        from chrom_dict_38 import chromosome_length
     dataset = open_tsv("results_new.tsv")
     dataset = scale_pos(dataset)
     dataset = clin_sig(dataset)
