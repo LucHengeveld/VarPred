@@ -8,6 +8,7 @@ from sklearn.metrics import confusion_matrix, \
     precision_score, accuracy_score, \
     recall_score, roc_auc_score, roc_curve, f1_score
 import os
+import warnings
 
 # prepare the data
 sns.set()
@@ -48,13 +49,19 @@ def results(prediction, prediction_proba, dataset):
         prediction_proba array containing probabilities
         dataset: array with y_test
     """
-    print("\n _____ Results _____")
+    print("\n\033[92m_____ Results _____")
     print(f"Accuracy: {accuracy_score(dataset, prediction)}")
     print(f"Precision score: {precision_score(dataset, prediction)}")
     print(f"Recall score: {recall_score(dataset, prediction)}")
     print(f"F1-score: {f1_score(dataset, prediction)}")
-    print(f"AUC score: {roc_auc_score(dataset, prediction_proba[:, 1])}")
+    print(f"AUC score: "
+          f"{roc_auc_score(dataset, prediction_proba[:, 1])}\033[0m")
 
 
 if __name__ == '__main__':
+    warnings.filterwarnings("ignore")
+    warnings.simplefilter(action="ignore", category=FutureWarning)
+    print("Training Random Forest Classifier...")
     train_random_forest_classifier()
+    print("Random Forest Classifier trained successfully!")
+    print("-----------------------------------------------------------")

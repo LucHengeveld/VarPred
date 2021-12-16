@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 import os
 import sys
+import warnings
+
 
 def load_ml_model(model_name):
     """Loads the ML model from a pickle
@@ -65,10 +67,15 @@ def write_file(data, filename):
 
 
 if __name__ == '__main__':
+    warnings.filterwarnings("ignore")
+    warnings.simplefilter(action="ignore", category=FutureWarning)
+    print("Predicting pathogenicity for ClinVar entries...")
     file = sys.argv[1]
     model = load_ml_model("model.p")
     data = open_tsv_file("OHE_ClinVar_data.tsv")
     data = predict_labels(data)
     os.remove("OHE_ClinVar_data.tsv")
-    f"{file}.p"
+    # f"{file}.p"
     write_file(data, f"variant-{file}.json")
+    print("Pathogenicity predicted successfully!")
+    print("-----------------------------------------------------------")
