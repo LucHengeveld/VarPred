@@ -1,7 +1,2 @@
-mongo "mongodb"
-
-db.variants37.createIndex({CHROM: 1, POS: 1, REF: 1, ALT: 1}, {name: "compound_index_37"})
-
-db.variants38.createIndex({CHROM: 1, POS: 1, REF: 1, ALT: 1}, {name: "compound_index_38"})
-
-exit
+mongoimport --host mongodb --db varpred --collection variants37 --type json --file variant-37.json --jsonArray 
+mongoimport --host mongodb --db varpred --collection variants38 --type json --file variant-38.json --jsonArray

@@ -1,7 +1,7 @@
 #!/bin/sh
 echo Building ml-container
 
-cd ML_scripts/
+cd ml_scripts/
 
 docker build -t ml/python:1.0 .
 
