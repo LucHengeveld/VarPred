@@ -11,21 +11,21 @@
                 <input type="hidden" name="JSON_dict" value="{{ JSON_dict }}">
                 <input type="hidden" name="disable_button_dict" value="{{ disable_button_dict }}">
                 {% for i in range(1, 23) %}
-                    <button id="{{ i }}" name="chromosome_button" value="{{ i }}" type="submit">{{ i }}</button>
+                    <button id="{{ i }}" class="grow" name="chromosome_button" value="{{ i }}" type="submit">{{ i }}</button>
                 {% endfor %}
-                <button id="X" name="chromosome_button" value="X" type="submit">X</button>&nbsp;
-                <button id="Y" name="chromosome_button" value="Y" type="submit">Y</button>&nbsp;
-                <button id="MT" name="chromosome_button" value="MT" type="submit">MT</button>
+                <button id="X" class="grow" name="chromosome_button" value="X" type="submit">X</button>&nbsp;
+                <button id="Y" class="grow" name="chromosome_button" value="Y" type="submit">Y</button>&nbsp;
+                <button id="MT" class="grow" name="chromosome_button" value="MT" type="submit">MT</button>
             </div>
             <br>
         </form>
-        <button id="results_per_chromosome_button"
+        <button id="results_per_chromosome_button" class="btn btn-lg btn-primary"
                 onclick="results_per_chromosome()">
             Click for more information per chromosome
         </button>
         <br><br>
 
-        <table id="results_per_chromosome" class="results_table">
+        <table id="results_per_chromosome" class="results_table border border-3 rounded">
             <tr>
                 <th>Chromosome</th>
                 {% for i in range(1, 23) %}

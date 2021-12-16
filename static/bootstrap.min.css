@@ -11791,11 +11791,11 @@ i:hover {
 	transform: scale(1.3);
 }
 
-.grow img{
+.grow img,.btn-group button{
 transition: 1s ease;
 }
 
-.grow img:hover{
+.grow img:hover,.btn-group button:hover{
 -webkit-transform: scale(1.2);
 -ms-transform: scale(1.2);
 transform: scale(1.2);
