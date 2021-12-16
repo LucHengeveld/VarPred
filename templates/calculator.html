@@ -2,41 +2,46 @@
 {% block title %}Calculator{% endblock %}
 {% block content %}
 
-<div class="container container-adjustment-info p-3 mb-2 border border-3 rounded-pill color">
-    <h2>Clinical significance predictor:</h2>
-    <form action="{{ url_for('get_input') }}" method="POST"
-          enctype="multipart/form-data">
-        <label>Enter the VCF file below:<br>
-            <div class="mb-3">
+    <link rel="stylesheet" href="../static/style.css"
+          xmlns="http://www.w3.org/1999/html">
+
+    <div class="container container-adjustment-info p-3 mb-2 border border-3 rounded-pill">
+        <h2>Clinical significance predictor:</h2>
+        <form action="{{ url_for('get_input') }}" method="POST"
+              enctype="multipart/form-data">
+            <label>Enter the VCF file below:<br>
+                <div class="mb-3">
                     <input class="form-control" type="file" name="vcf_file"
                            accept=".vcf">
-            </div>
-        </label><br>
-        <select name="reference_selector" class="reference_selector" required>
-            <option value=37>GRCh37, hg19</option>
-            <option value=38>GRCh38, hg38</option>
-        </select><br><br>
-        <button id="calculate" class="btn btn-primary btn-lg" onclick="main()"
-                type="submit">Calculate results
-        </button>
-        <span id="error">{{ errormsg }}</span>
-    </form>
-</div>
+                </div>
+            </label><br>
+            <label>
+                <select name="reference_selector" class="reference_selector">
+                    <option value=37>GRCh37, hg19</option>
+                    <option value=38>GRCh38, hg38</option>
+                </select>
+            </label><br><br>
+            <button id="calculate" class="btn btn-primary btn-lg" onclick="main()"
+                    type="submit">Calculate results
+            </button>
+            <span id="error">{{ errormsg }}</span>
+        </form>
+    </div>
 
-<script>
-    function main() {
-        changeTxt()
-        hideErrorMsg()
-    }
+    <script>
+        function main() {
+            changeTxt()
+            hideErrorMsg()
+        }
 
-    function changeTxt() {
-        var calculate = document.getElementById("calculate")
-        calculate.innerHTML = '<span class=\"spinner-border spinner-border-sm\"></span> Loading...';
-    }
+        function changeTxt() {
+            var calculate = document.getElementById("calculate")
+            calculate.innerHTML = '<span class=\"spinner-border spinner-border-sm\"></span> Loading...';
+        }
 
-    function hideErrorMsg() {
-        var errorDiv = document.getElementById("error");
-        errorDiv.style.display = "none";
-    }
-</script>
+        function hideErrorMsg() {
+            var errorDiv = document.getElementById("error");
+            errorDiv.style.display = "none";
+        }
+    </script>
 {% endblock %}
