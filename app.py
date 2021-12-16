@@ -352,9 +352,6 @@ def empty_list(empty):
                   '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0,
                   '21': 0, '22': 0, 'X': 0, 'Y': 0, 'MT': 0}
 
-    for key in empty_dict:
-        empty_dict[key] = 0
-
     return empty_dict
 
 def results_table(position_dict):
