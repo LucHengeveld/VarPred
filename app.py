@@ -1,11 +1,7 @@
 import ast
 from flask import Flask, render_template, request
 import pymongo
-import dash
-from dash import dcc
-from dash import html
 import plotly
-import plotly.graph_objects as go
 import plotly.express as px
 import json
 import pandas as pd
@@ -22,7 +18,7 @@ def get_input():
 
     :return render template: results.html
     """
-    # If calculate results button is pressed:
+    # If calculator results button is pressed:
     if request.method == 'POST':
 
         # Retrieves the entered file from the webapplication and saves
@@ -46,34 +42,43 @@ def get_input():
                 # Calls the function create_compare_list
                 compare_list = create_compare_list(vcf_list)
 
+                # Retrieves the selected reference build
+                reference_build = request.form.get("reference_selector")
+
                 # Calls the function compare_dataset
-                results = compare_dataset(compare_list)
+                compare_dataset(compare_list, reference_build)
 
                 # Creates the visualisation bar
-                JSON_dict, disable_button_dict = visualisation_bar(results)
+                JSON_dict, disable_button_dict, chromosome_lengths_list, position_dict = visualisation_bar(
+                    reference_build)
+
+                results_table(position_dict)
+
                 # Returns the results page
                 return render_template('results.html',
                                        results=results,
                                        JSON_dict=JSON_dict,
-                                       disable_button_dict=disable_button_dict)
+                                       disable_button_dict=disable_button_dict,
+                                       results_table_list=results_table_list)
 
             else:
                 # Returns an error if the file format is incorrect.
-                return render_template('calculate.html',
+                return render_template('calculator.html',
                                        errormsg="Entered file has the wrong "
                                                 "format")
 
         elif vcf_file_name != "":
             # Returns an error if a file with the wrong file extension
             # is entered on the webapplication.
-            return render_template('calculate.html',
+            return render_template('calculator.html',
                                    errormsg="Entered file has the"
-                                            " wrong file extension. Please enter a .vcf file")
+                                            "wrong file extension. Please "
+                                            "enter a .vcf file")
 
         else:
             # Returns an error if no file is selected.
-            return render_template('calculate.html', errormsg="No file "
-                                                              "selected.")
+            return render_template('calculator.html', errormsg="No file "
+                                                               "selected.")
 
     else:
         # Returns the standard home page.
@@ -119,6 +124,8 @@ def vcf_to_list(vcf_file_name):
                 vcf_list.append(line.split("\t"))
     file.close()
 
+    vcf_list.sort()
+
     # Returns the list
     return vcf_list
 
@@ -151,10 +158,11 @@ def create_compare_list(vcf_list):
     return compare_list
 
 
-def compare_dataset(compare_list):
+def compare_dataset(compare_list, reference_build):
     """
     Compares the compare_list to the chromosome numbers and positions in the
     Mongo database.
+    :param reference_build:
     :param compare_list: List with all the chromosome numbers and positions out
      of the vcf_list
     :return results: List with data of the found mutations
@@ -162,107 +170,166 @@ def compare_dataset(compare_list):
     # Connect to the local database
     myclient = pymongo.MongoClient("mongodb://localhost:27017/")
     mydb = myclient["varpred"]
-    mycol = mydb["variant"]
+    if reference_build == "37":
+        mycol = mydb["variants-37"]
+    else:
+        mycol = mydb["variants-38"]
 
     # Create an empty list
+    global results
     results = []
-
     # Saves the results in a list
-    for simularity in mycol.find({"$and": [{"CHROM": {"$in": compare_list[0]}},
-                                           {"POS": {"$in": compare_list[1]}},
-                                           {"REF": {"$in": compare_list[2]}}, {
-                                               "ALT": {
-                                                   "$in": compare_list[3]}}]}):
-        results.append(simularity)
 
-    # Return the results list
-    return results
+    for i in range(len(compare_list[0])):
+
+        for simularity in mycol.find({"$and": [{"CHROM": compare_list[0][i]},
+                                               {"POS": compare_list[1][i]},
+                                               {"REF": compare_list[2][i]},
+                                               {"ALT": compare_list[3][i]}]},
+                                     {"_id": 0}):
+            results.append(simularity)
 
 
-def visualisation_bar(results):
-    chromosome_list = [["1", 248956422], ["2", 242193529], ["3", 198295559],
-                       ["4", 190214555], ["5", 181538259], ["6", 170805979],
-                       ["7", 159345973], ["8", 145138636], ["9", 138394717],
-                       ["10", 133797422], ["11", 135086622], ["12", 133275309],
-                       ["13", 114364328], ["14", 107043718], ["15", 101991189],
-                       ["16", 90338345], ["17", 83257441], ["18", 80373285],
-                       ["19", 58617616], ["20", 64444167], ["21", 46709983],
-                       ["22", 50818468], ["X", 156040895], ["Y", 57227415],
-                       ["MT", 16569]]
+def visualisation_bar(reference_build):
+    if reference_build == "37":
+        chromosome_lengths_list = [["1", 249250621], ["2", 243199373],
+                                   ["3", 198022430], ["4", 191154276],
+                                   ["5", 180915260], ["6", 171115067],
+                                   ["7", 159138663], ["8", 146364022],
+                                   ["9", 141213431], ["10", 135534747],
+                                   ["11", 135006516], ["12", 133851895],
+                                   ["13", 115169878], ["14", 107349540],
+                                   ["15", 102531392], ["16", 90354753],
+                                   ["17", 81195210], ["18", 78077248],
+                                   ["19", 59128983], ["20", 63025520],
+                                   ["21", 48129895], ["22", 51304566],
+                                   ["X", 155270560], ["Y", 59373566],
+                                   ["MT", 16569]]
+    else:
+        chromosome_lengths_list = [["1", 248956422], ["2", 242193529],
+                                   ["3", 198295559], ["4", 190214555],
+                                   ["5", 181538259], ["6", 170805979],
+                                   ["7", 159345973], ["8", 145138636],
+                                   ["9", 138394717], ["10", 133797422],
+                                   ["11", 135086622], ["12", 133275309],
+                                   ["13", 114364328], ["14", 107043718],
+                                   ["15", 101991189], ["16", 90338345],
+                                   ["17", 83257441], ["18", 80373285],
+                                   ["19", 58617616], ["20", 64444167],
+                                   ["21", 46709983], ["22", 50818468],
+                                   ["X", 156040895], ["Y", 57227415],
+                                   ["MT", 16569]]
 
     position_dict = {}
     mutation_dict = {}
     pos_list = []
     ref_list = []
+    ref_short = []
     alt_list = []
+    alt_short = []
 
     for i in range(len(results)):
         if i == 0:
-            pos_list.append(results[i]["POS"])
+            pos_list.append(int(results[i]["POS"]))
             ref_list.append(results[i]["REF"])
+
+            if len(results[i]["REF"]) > 5:
+                ref_short.append(results[i]["REF"][:5] + "...")
+            else:
+                ref_short.append(results[i]["REF"])
+
             alt_list.append(results[i]["ALT"])
+            if len(results[i]["ALT"]) > 5:
+                alt_short.append(results[i]["ALT"][:5] + "...")
+            else:
+                alt_short.append(results[i]["ALT"])
 
         elif results[i]["CHROM"] == results[i - 1]["CHROM"]:
             pos_list.append(int(results[i]["POS"]))
             ref_list.append(results[i]["REF"])
+
+            if len(results[i]["REF"]) > 5:
+                ref_short.append(results[i]["REF"][:5] + "...")
+            else:
+                ref_short.append(results[i]["REF"])
+
             alt_list.append(results[i]["ALT"])
+            if len(results[i]["ALT"]) > 5:
+                alt_short.append(results[i]["ALT"][:5] + "...")
+            else:
+                alt_short.append(results[i]["ALT"])
 
             if results[i]["POS"] == results[-1]["POS"]:
                 position_dict[results[i]["CHROM"]] = pos_list
                 mutation_dict[results[i]["CHROM"]] = {"REF": ref_list,
-                                                      "ALT": alt_list}
+                                                      "ALT": alt_list,
+                                                      "REF_short": ref_short,
+                                                      "ALT_short": alt_short}
 
         elif results[i]["CHROM"] != results[i - 1]["CHROM"]:
             position_dict[results[i - 1]["CHROM"]] = pos_list
             mutation_dict[results[i - 1]["CHROM"]] = {"REF": ref_list,
-                                                      "ALT": alt_list}
-
+                                                      "ALT": alt_list,
+                                                      "REF_short": ref_short,
+                                                      "ALT_short": alt_short}
             pos_list = [int(results[i]["POS"])]
-            ref_list = [(results[i]["REF"])]
-            alt_list = [(results[i]["ALT"])]
+
+            ref_list = [results[i]["REF"]]
+            if len(results[i]["REF"]) > 5:
+                ref_short = [results[i]["REF"][:5] + "..."]
+            else:
+                ref_short = [results[i]["REF"]]
+
+            alt_list = [results[i]["ALT"]]
+            if len(results[i]["ALT"]) > 5:
+                alt_short = [results[i]["ALT"][:5] + "..."]
+            else:
+                alt_short = [results[i]["ALT"]]
 
             if results[i]["POS"] == results[-1]["POS"]:
                 position_dict[results[i]["CHROM"]] = pos_list
-                mutation_dict[results[i - 1]["CHROM"]] = {"REF": ref_list,
-                                                          "ALT": alt_list}
-
-    # print(mutation_dict)
-    # for key in mutation_dict.keys():
-    #     print(str(key) + "\t\t" + str(mutation_dict[key]))
-
+                mutation_dict[results[i]["CHROM"]] = {"REF": ref_list,
+                                                      "ALT": alt_list,
+                                                      "REF_short": ref_short,
+                                                      "ALT_short": alt_short}
     JSON_dict = {}
     disable_button_dict = {}
-    for i in range(len(chromosome_list)):
+    for i in range(len(chromosome_lengths_list)):
         try:
             y_list = []
-            x_list = position_dict[chromosome_list[i][0]]
+            x_list = position_dict[chromosome_lengths_list[i][0]]
             for j in range(len(x_list)):
                 y_list.append(0)
-            disable_button_dict[chromosome_list[i][0]] = False
-
-            df = pd.DataFrame(data=mutation_dict[chromosome_list[i][0]])
+            disable_button_dict[chromosome_lengths_list[i][0]] = False
+            df = pd.DataFrame(
+                data=mutation_dict[chromosome_lengths_list[i][0]])
             fig = px.scatter(df, x=x_list, y=y_list,
                              labels={"x": "Position",
                                      "y": ""},
-                             custom_data=["REF", "ALT"])
+                             custom_data=["REF", "ALT", "REF_short",
+                                          "ALT_short"])
             fig.update_traces(marker=dict(size=42.5,
                                           symbol='line-ns',
                                           line=dict(width=2,
                                                     color='black')),
                               hovertemplate=
                               '<b>Positie: %{x}' +
-                              '<br>REF > ALT: %{customdata[0]} > %{customdata[1]}</b>'
-                              '<extra></extra>',
+                              '<br>REF > ALT: %{customdata[2]} > %{'
+                              'customdata[3]}</b> <extra></extra>',
                               selector=dict(mode='markers'))
 
             fig.update_xaxes(showgrid=False, fixedrange=False,
-                             range=[0, chromosome_list[i][1]],
+                             range=[0, chromosome_lengths_list[i][1]],
                              tickfont_family="Arial Black", tickformat=',d')
             fig.update_yaxes(showgrid=False, fixedrange=True,
                              zeroline=True, zerolinecolor='#04AA6D',
                              zerolinewidth=60,
                              showticklabels=False)
-            fig.update_layout(height=260, plot_bgcolor='white', font_size=18,
+            fig.update_layout(height=260, plot_bgcolor='white',
+                              font_size=22,
+                              font_family="Arial Black",
+                              font_color="black",
+                              margin=dict(l=0, r=40),
                               hoverlabel=dict(
                                   bgcolor='#e6ffe6',
                                   font_size=22,
@@ -270,25 +337,94 @@ def visualisation_bar(results):
                                   font_color="black"
                               ))
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-            JSON_dict[chromosome_list[i][0]] = graphJSON
+            JSON_dict[chromosome_lengths_list[i][0]] = graphJSON
 
         except KeyError:
-            disable_button_dict[chromosome_list[i][0]] = True
+            disable_button_dict[chromosome_lengths_list[i][0]] = True
 
-    return JSON_dict, disable_button_dict
+    return JSON_dict, disable_button_dict, chromosome_lengths_list, \
+           position_dict
 
 
-@app.route('/calculate.html', methods=["POST", "GET"])
-def calculate():
+def results_table(position_dict):
+    chromosomes = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
+                   "12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
+                   "22", "X", "Y", "MT"]
+
+    variation_length_dict = {}
+    for i in chromosomes:
+        try:
+            variation_length_dict[i] = len(position_dict[i])
+        except KeyError:
+            variation_length_dict[i] = 0
+
+    empty_dict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0,
+                  '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0,
+                  '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0,
+                  '21': 0, '22': 0, 'X': 0, 'Y': 0, 'MT': 0}
+    benign_dict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0,
+                  '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0,
+                  '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0,
+                  '21': 0, '22': 0, 'X': 0, 'Y': 0, 'MT': 0}
+    likely_benign_dict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0,
+                  '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0,
+                  '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0,
+                  '21': 0, '22': 0, 'X': 0, 'Y': 0, 'MT': 0}
+    likely_pathogenic_dict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0,
+                  '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0,
+                  '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0,
+                  '21': 0, '22': 0, 'X': 0, 'Y': 0, 'MT': 0}
+    pathogenic_dict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0,
+                  '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0,
+                  '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0,
+                  '21': 0, '22': 0, 'X': 0, 'Y': 0, 'MT': 0}
+    predicted_benign_dict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0,
+                  '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0,
+                  '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0,
+                  '21': 0, '22': 0, 'X': 0, 'Y': 0, 'MT': 0}
+    predicted_pathogenic_dict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0,
+                  '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0,
+                  '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0,
+                  '21': 0, '22': 0, 'X': 0, 'Y': 0, 'MT': 0}
+
+    for i in results:
+        if "Benign" in i["CLNSIG"] and "Likely" not in i["CLNSIG"]:
+            benign_dict[i["CHROM"]] += 1
+
+        elif "Likely benign" in i["CLNSIG"]:
+            likely_benign_dict[i["CHROM"]] += 1
+
+        elif "Likely pathogenic" in i["CLNSIG"]:
+            likely_pathogenic_dict[i["CHROM"]] += 1
+
+        elif "Pathogenic" in i["CLNSIG"] and "Likely" not in i["CLNSIG"] and \
+                "Conflicting" not in i["CLNSIG"]:
+            pathogenic_dict[i["CHROM"]] += 1
+
+    for i in results:
+        if i["ML prediction"] == "0":
+            predicted_benign_dict[i["CHROM"]] += 1
+        elif i["ML prediction"] == "1":
+            predicted_pathogenic_dict[i["CHROM"]] += 1
+
+    global results_table_list
+    results_table_list = [variation_length_dict, benign_dict,
+                          likely_benign_dict, likely_pathogenic_dict,
+                          pathogenic_dict, predicted_benign_dict,
+                          predicted_pathogenic_dict]
+
+
+@app.route('/calculator.html', methods=["POST", "GET"])
+def calculator():
     """
     This function shows the info page when the user selects it in the
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the calculate.html page to the user
+    :return render template: shows the calculator.html page to the user
     """
     # Returns the info page
-    return render_template('calculate.html')
+    return render_template('calculator.html')
 
 
 @app.route('/results.html', methods=["POST"])
@@ -304,7 +440,9 @@ def select_chromosome():
 
     return render_template("results.html", JSON_graph=JSON_graph,
                            JSON_dict=JSON_dict, selected_chrom=selected_chrom,
-                           disable_button_dict=disable_button_dict)
+                           disable_button_dict=disable_button_dict,
+                           results=results,
+                           results_table_list=results_table_list)
 
 
 @app.route('/disclaimer.html', methods=["POST", "GET"])
@@ -314,7 +452,7 @@ def disclaimer():
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the calculate.html page to the user
+    :return render template: shows the calculator.html page to the user
     """
     # Returns the info page
     return render_template('disclaimer.html')
@@ -322,14 +460,29 @@ def disclaimer():
 
 @app.route('/contact.html', methods=["POST", "GET"])
 def submit_on_contact():
-    """
-    This function shows the info page when the user selects it in the
-    menu bar on the webapplication. The info page contains information
-    about the application
+    if request.method == "POST":
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        message = request.form['message']
+        email = request.form['email']
+        gender = request.form['gender']
+        phonenumber = request.form['phonenumber']
 
-    :return render template: shows the calculate.html page to the user
-    """
-    # Returns the info page
+        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+        mydb = myclient["varpred"]
+        mycol = mydb["contact"]
+
+        mycol.insert_one(
+            {
+                "firstname": firstname,
+                "lastname": lastname,
+                "message": message,
+                "email": email,
+                "gender": gender,
+                "phonenumber": phonenumber,
+            }
+        )
+
     return render_template('contact.html')
 
 
@@ -340,11 +493,11 @@ def whoarewe():
     menu bar on the webapplication. The info page contains information
     about the application
 
-    :return render template: shows the calculate.html page to the user
+    :return render template: shows the calculator.html page to the user
     """
     # Returns the info page
     return render_template('aboutvarpred.html')
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
