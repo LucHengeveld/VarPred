@@ -5,3 +5,5 @@
 *.json
 /venv/
 *.tsv
+*.gz
+*.md5
