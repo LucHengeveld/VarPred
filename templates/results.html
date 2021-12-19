@@ -49,7 +49,7 @@
                 {% set count_benign = namespace(value=0) %}
                 {% for i in results_table_dict %}
                     {% set count_benign.value = count_benign.value + results_table_dict[i][1] %}
-                    <td>{{ results_table_dict[i][1] }}</td>
+                    <td style="background-color: rgb({{color_dict[i][1]}}, 255, {{color_dict[i][1]}})">{{ results_table_dict[i][1] }}</td>
                 {% endfor %}
                 <td>{{ count_benign.value }}</td>
             </tr>
@@ -58,7 +58,7 @@
                 {% set count_likely_benign = namespace(value=0) %}
                 {% for i in results_table_dict %}
                     {% set count_likely_benign.value = count_likely_benign.value + results_table_dict[i][2] %}
-                    <td>{{ results_table_dict[i][2] }}</td>
+                    <td style="background-color: rgb({{color_dict[i][2]}}, 255, {{color_dict[i][2]}})">{{ results_table_dict[i][2] }}</td>
                 {% endfor %}
                 <td>{{ count_likely_benign.value }}</td>
             </tr>
@@ -67,7 +67,7 @@
                 {% set count_likely_pathogenic = namespace(value=0) %}
                 {% for i in results_table_dict %}
                     {% set count_likely_pathogenic.value = count_likely_pathogenic.value + results_table_dict[i][3] %}
-                    <td>{{ results_table_dict[i][3] }}</td>
+                    <td style="background-color: rgb({{color_dict[i][3]}}, 255, {{color_dict[i][3]}})">{{ results_table_dict[i][3] }}</td>
                 {% endfor %}
                 <td>{{ count_likely_pathogenic.value }}</td>
             </tr>
@@ -76,7 +76,7 @@
                 {% set count_pathogenic = namespace(value=0) %}
                 {% for i in results_table_dict %}
                     {% set count_pathogenic.value = count_pathogenic.value + results_table_dict[i][4] %}
-                    <td>{{ results_table_dict[i][4] }}</td>
+                    <td style="background-color: rgb({{color_dict[i][4]}}, 255, {{color_dict[i][4]}})">{{ results_table_dict[i][4] }}</td>
                 {% endfor %}
                 <td>{{ count_pathogenic.value }}</td>
             </tr>
@@ -85,7 +85,7 @@
                 {% set count_predicted_benign = namespace(value=0) %}
                 {% for i in results_table_dict %}
                     {% set count_predicted_benign.value = count_predicted_benign.value + results_table_dict[i][5] %}
-                    <td>{{ results_table_dict[i][5] }}</td>
+                    <td style="background-color: rgb({{color_dict[i][5]}}, 255, {{color_dict[i][5]}})">{{ results_table_dict[i][5] }}</td>
                 {% endfor %}
                 <td>{{ count_predicted_benign.value }}</td>
             </tr>
@@ -94,7 +94,7 @@
                 {% set count_predicted_pathogenic = namespace(value=0) %}
                 {% for i in results_table_dict %}
                     {% set count_predicted_pathogenic.value = count_predicted_pathogenic.value + results_table_dict[i][6] %}
-                    <td>{{ results_table_dict[i][6] }}</td>
+                    <td style="background-color: rgb({{color_dict[i][6]}}, 255, {{color_dict[i][6]}})">{{ results_table_dict[i][6] }}</td>
                 {% endfor %}
                 <td>{{ count_predicted_pathogenic.value }}</td>
             </tr>

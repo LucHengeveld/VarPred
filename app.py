@@ -412,9 +412,8 @@ def heatmap():
                         results_table_dict[chrom][i]
             else:
                 color = 255
-            color_list.append("#" + '{:X}{:X}{:X}'.format(int(color), 255, int(color)))
+            color_list.append(int(color))
         color_dict[chrom] = color_list
-    print(color_dict)
 
 
 @app.route('/calculator.html', methods=["POST", "GET"])
