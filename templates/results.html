@@ -3,29 +3,28 @@
 <link rel="stylesheet" href="../static/style.css"
       xmlns="http://www.w3.org/1999/html">
 <body>
-    <h2>Results:</h2>
     <div class="rectangle_container">
-        <p>Select a chromosome below:</p>
+        <h2>Select a chromosome below:</h2>
         <form action="{{ url_for('select_chromosome') }}" method="POST">
             <div class="btn-group">
                 <input type="hidden" name="JSON_dict" value="{{ JSON_dict }}">
                 <input type="hidden" name="disable_button_dict" value="{{ disable_button_dict }}">
                 {% for i in range(1, 23) %}
-                    <button id="{{ i }}" name="chromosome_button" value="{{ i }}" type="submit">{{ i }}</button>
+                    <button id="{{ i }}" class="grow" name="chromosome_button" value="{{ i }}" type="submit">{{ i }}</button>
                 {% endfor %}
-                <button id="X" name="chromosome_button" value="X" type="submit">X</button>&nbsp;
-                <button id="Y" name="chromosome_button" value="Y" type="submit">Y</button>&nbsp;
-                <button id="MT" name="chromosome_button" value="MT" type="submit">MT</button>
+                <button id="X" class="grow" name="chromosome_button" value="X" type="submit">X</button>&nbsp;
+                <button id="Y" class="grow" name="chromosome_button" value="Y" type="submit">Y</button>&nbsp;
+                <button id="MT" class="grow" name="chromosome_button" value="MT" type="submit">MT</button>
             </div>
             <br>
         </form>
-        <button id="results_per_chromosome_button"
+        <button id="results_per_chromosome_button" class="btn btn-lg btn-primary"
                 onclick="results_per_chromosome()">
             Click for more information per chromosome
         </button>
         <br><br>
 
-        <table id="results_per_chromosome" class="results_table" style="display: none">
+       <table id="results_per_chromosome" class="results_table border border-3 rounded" style="display: none">
             <tr>
                 <th>Chromosome</th>
                 {% for i in range(1, 23) %}
@@ -141,7 +140,14 @@
                             result_dict["POS"] === pos &&
                             result_dict["REF"] === ref &&
                             result_dict["ALT"] === alt) {
-                            text = "<b>Chromosome:</b> " + result_dict["CHROM"] +
+                            if (result_dict["ML prediction"] === 0){
+                                result_dict["ML prediction"] = 'benign'
+                            }else{
+                                result_dict["ML prediction"] = 'pathogenic'
+                            }
+
+                            text = "<h2>Chromosome information</h2>" +
+                                "<br><b>Chromosome:</b> " + result_dict["CHROM"] +
                                 "<br><b>Position:</b> " + result_dict["POS"] +
                                 "<br><b>REF:</b> " + result_dict["REF"] +
                                 "<br><b>ALT:</b> " + result_dict["ALT"] +
@@ -150,32 +156,22 @@
                                 "<br><b>AF_TGP:</b> " + result_dict["AF_TGP"] +
                                 "<br><b>ALLELEID:</b> " + result_dict["ALLELEID"] +
                                 "<br><b>CLNDN:</b> " + result_dict["CLNDN"] +
-                                "<br><b>CLNDNINCL:</b> " + result_dict["CLNDNINCL"] +
                                 "<br><b>CLNDISDB:</b> " + result_dict["CLNDISDB"] +
-                                "<br><b>CLNDISDBINCL:</b> " + result_dict["CLNDISDBINCL"] +
-                                "<br><b>CLNHGVS:</b> " + result_dict["CLNHGVS"] +
                                 "<br><b>CLNREVSTAT:</b> " + result_dict["CLNREVSTAT"] +
                                 "<br><b>CLNSIG:</b> " + result_dict["CLNSIG"] +
-                                "<br><b>CLNSIGCONF:</b> " + result_dict["CLNSIGCONF"] +
-                                "<br><b>CLNSIGINCL:</b> " + result_dict["CLNSIGINCL"] +
                                 "<br><b>CLNVC:</b> " + result_dict["CLNVC"] +
-                                "<br><b>CLNVCSO:</b> " + result_dict["CLNVCSO"] +
-                                "<br><b>CLNVI:</b> " + result_dict["CLNVI"] +
-                                "<br><b>DBVARID:</b> " + result_dict["DBVARID"] +
                                 "<br><b>GENEINFO:</b> " + result_dict["GENEINFO"] +
                                 "<br><b>MC:</b> " + result_dict["MC"] +
-                                "<br><b>ORIGIN:</b> " + result_dict["ORIGIN"] +
                                 "<br><b>RS:</b> " + result_dict["RS"] +
-                                "<br><b>SSR:</b> " + result_dict["SSR"] +
                                 "<br><b>REF LENGTH:</b> " + result_dict["REF LENGTH"] +
                                 "<br><b>ALT LENGTH:</b> " + result_dict["ALT LENGTH"] +
-                                "<br><b>DIFFERENCE REF AND ALT LENGTH:</b> " + result_dict[
-                                    "DIFFERENCE REF AND ALT LENGTH"] +
-                                "<br><b>SC_POS:</b> " + result_dict["SC_POS"] +
-                                "<br><b>CLNSIG NUM:</b> " + result_dict["CLNSIG NUM"] +
-                                "<br><b>ML prediction:</b> " + result_dict["ML prediction"] +
-                                "<br><b>Probability 0:</b> " + result_dict["Probability 0"] +
-                                "<br><b>Probability 1:</b> " + result_dict["Probability 1"]
+                                "<br><b>ML prediction:</b> " + result_dict["ML prediction"]
+                                if (parseFloat(result_dict["Probability 0"]) >= parseFloat(result_dict["Probability 1"])){
+                                    text += "<br><b>Probability benign:</b> " + result_dict["Probability 0"]
+                                } else{
+                                    text += "<br><b>Probability pathogenic:</b> " + result_dict["Probability 1"]
+                                }
+
 
                             document.getElementById("results_textbox").innerHTML = text
                         }
@@ -196,22 +192,3 @@
     {% endfor %}
 </body>
 {% endblock %}
-=========
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <link href="../static/style.css" rel="stylesheet" type="text/css">
-        <TITLE>Results</TITLE>
-    </head>
-
-    <body>
-        <ul>
-            <li><a class="active" href="home.html">Home</a></li>
-            <li><a href="calculator.html">Info</a></li>
-        </ul>
-
-        <h2>Results:</h2>
-        <p>VCF file name: {{ vcf_file_name }}</p>
-    </body>
-</html>
->>>>>>>>> Temporary merge branch 2
