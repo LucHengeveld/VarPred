@@ -1,7 +1,12 @@
 #!/bin/sh
-echo Building ml-container
 
 cd ml_scripts/
+
+echo Checking ClinVar files
+
+source update_clinvar.sh
+
+echo Building ml-container
 
 docker build -t ml/python:1.0 .
 
