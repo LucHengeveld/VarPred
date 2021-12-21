@@ -3,28 +3,28 @@
 <link rel="stylesheet" href="../static/style.css" xmlns="http://www.w3.org/1999/html">
 
 <body>
-    <h2>Results:</h2>
     <div class="rectangle_container">
-        <p>Select a chromosome below:</p>
+        <h2>Select a chromosome below:</h2>
         <form action="{{ url_for('select_chromosome') }}" method="POST">
             <div class="btn-group">
                 <input type="hidden" name="JSON_dict" value="{{ JSON_dict }}">
                 <input type="hidden" name="disable_button_dict" value="{{ disable_button_dict }}">
                 {% for i in range(1, 23) %}
-                <button id="{{ i }}" name="chromosome_button" value="{{ i }}" type="submit">{{ i }}</button>
+                    <button id="{{ i }}" class="grow" name="chromosome_button" value="{{ i }}" type="submit">{{ i }}</button>
                 {% endfor %}
-                <button id="X" name="chromosome_button" value="X" type="submit">X</button>&nbsp;
-                <button id="Y" name="chromosome_button" value="Y" type="submit">Y</button>&nbsp;
-                <button id="MT" name="chromosome_button" value="MT" type="submit">MT</button>
+                <button id="X" class="grow" name="chromosome_button" value="X" type="submit">X</button>&nbsp;
+                <button id="Y" class="grow" name="chromosome_button" value="Y" type="submit">Y</button>&nbsp;
+                <button id="MT" class="grow" name="chromosome_button" value="MT" type="submit">MT</button>
             </div>
             <br>
         </form>
-        <button id="results_per_chromosome_button" onclick="results_per_chromosome()">
+        <button id="results_per_chromosome_button" class="btn btn-lg btn-primary"
+                onclick="results_per_chromosome()">
             Click for more information per chromosome
         </button>
         <br><br>
 
-        <table id="results_per_chromosome" class="results_table" style="display: none">
+       <table id="results_per_chromosome" class="results_table border border-3 rounded" style="display: none">
             <tr>
                 <th>Chromosome</th>
                 {% for i in range(1, 23) %}
@@ -169,10 +169,7 @@
                             "<br><b>DIFFERENCE REF AND ALT LENGTH:</b> " + result_dict[
                             "DIFFERENCE REF AND ALT LENGTH"] +
                             "<br><b>SC_POS:</b> " + result_dict["SC_POS"] +
-                            "<br><b>CLNSIG NUM:</b> " + result_dict["CLNSIG NUM"] +
-                            "<br><b>ML prediction:</b> " + result_dict["ML prediction"] +
-                            "<br><b>Probability 0:</b> " + result_dict["Probability 0"] +
-                            "<br><b>Probability 1:</b> " + result_dict["Probability 1"] + 
+                            "<br><b>CLNSIG NUM:</b> " + result_dict["CLNSIG NUM"]
                             
 `<div class="accordion" id="accordionPanelsStayOpenExample">
   <div class="accordion-item">
@@ -193,13 +190,15 @@
   <div class="accordion-item">
     <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-        Accordion Item #2
+        Variant info
       </button>
     </h2>
     <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
       <div class="accordion-body">
-        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-      </div>
+        <strong>`+
+          
+          +
+      `</div>
     </div>
   </div>
   <div class="accordion-item">
@@ -213,6 +212,24 @@
         <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
       </div>
     </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingFour">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false" aria-controls="panelsStayOpen-collapseFour">
+        Machine learning
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingFour">
+      <div class="accordion-body">
+        <strong>`
+          + "<b>ML prediction:</b> " + result_dict["ML prediction"]
+            if (parseFloat(result_dict["Probability 0"]) >= parseFloat(result_dict["Probability 1"])){
+              text += "<br><b>Probability benign:</b> " + result_dict["Probability 0"]
+              } else{
+                text += "<br><b>Probability pathogenic:</b> " + result_dict["Probability 1"]
+              } +
+      `</div>
+    </div>  
   </div>
 </div>`
 
