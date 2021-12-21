@@ -99,7 +99,6 @@ hr:not([size]) {
     margin-bottom: .5rem;
     font-weight: 500;
     line-height: 1.2;
-    font-family: Fantasy;
 }
 
 .h1, h1 {
@@ -3005,9 +3004,8 @@ textarea.form-control-lg {
 
 .btn-primary {
     color: #fff;
-    background-color: #0b5ed7;
-    border-color: #0a58ca;
-    font-family: Fantasy;
+    background-color: #1c9434;
+    border-color: #1c9434;
 }
 
 .btn-primary:hover {
@@ -6345,7 +6343,7 @@ textarea.form-control-lg {
 
 .carousel-inner {
     position: relative;
-    width: 90%;
+    width: 100%;
     margin: auto;
     overflow: hidden
 }
@@ -11661,7 +11659,6 @@ textarea.form-control-lg {
 }
 
 .container-adjustment-info {
-    background: #DDDDDD;
     margin-top: 5%;
     text-align: center;
 }
