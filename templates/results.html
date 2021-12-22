@@ -1,8 +1,5 @@
 {% extends 'header.html' %}
 {% block content %}
-<link rel="stylesheet" href="../static/style.css"
-      xmlns="http://www.w3.org/1999/html">
-<body>
     <div class="rectangle_container">
         <h2>Select a chromosome below:</h2>
         <form action="{{ url_for('select_chromosome') }}" method="POST">
@@ -140,7 +137,7 @@
                             result_dict["POS"] === pos &&
                             result_dict["REF"] === ref &&
                             result_dict["ALT"] === alt) {
-                            if (result_dict["ML prediction"] === 0){
+                            if (result_dict["ML prediction"] == 0){
                                 result_dict["ML prediction"] = 'benign'
                             }else{
                                 result_dict["ML prediction"] = 'pathogenic'
@@ -166,7 +163,7 @@
                                 "<br><b>REF LENGTH:</b> " + result_dict["REF LENGTH"] +
                                 "<br><b>ALT LENGTH:</b> " + result_dict["ALT LENGTH"] +
                                 "<br><b>ML prediction:</b> " + result_dict["ML prediction"]
-                                if (parseFloat(result_dict["Probability 0"]) >= parseFloat(result_dict["Probability 1"])){
+                                if (parseFloat(result_dict["Probability 0"]) > parseFloat(result_dict["Probability 1"])){
                                     text += "<br><b>Probability benign:</b> " + result_dict["Probability 0"]
                                 } else{
                                     text += "<br><b>Probability pathogenic:</b> " + result_dict["Probability 1"]
@@ -190,5 +187,4 @@
     </script>
     {% endif %}
     {% endfor %}
-</body>
 {% endblock %}
