@@ -14,6 +14,13 @@
         <input  id="{{ i }}" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="{{ i }}" >
         <label id="{{ 'C' + i|string }}" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="btnradio" >{{ i }}</label>
         {% endfor %}
+          <input  id="X" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="X" >
+        <label id="CX" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="btnradio" >X</label>
+        <input  id="Y" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="Y" >
+        <label id="CY" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="btnradio" >Y</label>
+        <input  id="MT" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="MT" >
+        <label id="CMT" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="btnradio" >MT</label>
+
       </div>
     </form>
     <button id="results_per_chromosome_button" class="btn btn-lg btn-primary" onclick="results_per_chromosome()">
