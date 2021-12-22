@@ -3,188 +3,166 @@
 <link rel="stylesheet" href="../static/style.css" xmlns="http://www.w3.org/1999/html">
 
 <body>
-    <div class="rectangle_container">
-        <h2>Select a chromosome below:</h2>
-        <form action="{{ url_for('select_chromosome') }}" method="POST">
-            <div class="btn-group">
-                <input type="hidden" name="JSON_dict" value="{{ JSON_dict }}">
-                <input type="hidden" name="disable_button_dict" value="{{ disable_button_dict }}">
-                {% for i in range(1, 23) %}
-                    <button id="{{ i }}" class="grow" name="chromosome_button" value="{{ i }}" type="submit">{{ i }}</button>
-                {% endfor %}
-                <button id="X" class="grow" name="chromosome_button" value="X" type="submit">X</button>&nbsp;
-                <button id="Y" class="grow" name="chromosome_button" value="Y" type="submit">Y</button>&nbsp;
-                <button id="MT" class="grow" name="chromosome_button" value="MT" type="submit">MT</button>
-            </div>
-            <br>
-        </form>
-        <button id="results_per_chromosome_button" class="btn btn-lg btn-primary"
-                onclick="results_per_chromosome()">
-            Click for more information per chromosome
-        </button>
-        <br><br>
+  <div class="rectangle_container">
+    <div>Select a chromosome below:</div>
+    <form action="{{ url_for('select_chromosome') }}" method="POST">
+      <div class="btn-group">
+        <input type="hidden" name="JSON_dict" value="{{ JSON_dict }}">
+        <input type="hidden" name="disable_button_dict" value="{{ disable_button_dict }}">
+        {% for i in range(1, 23) %}
+        <button id="{{ i }}" class="grow" name="chromosome_button" value="{{ i }}" type="submit">{{ i }}</button>
+        {% endfor %}
+        <button id="X" class="grow" name="chromosome_button" value="X" type="submit">X</button>&nbsp;
+        <button id="Y" class="grow" name="chromosome_button" value="Y" type="submit">Y</button>&nbsp;
+        <button id="MT" class="grow" name="chromosome_button" value="MT" type="submit">MT</button>
+        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+          <label id="1" class="btn btn-outline-primary" for="btnradio1" value="1">1</label>
+        
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+          <label class="btn btn-outline-primary" for="btnradio2">Radio 2</label>
+        
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+          <label class="btn btn-outline-primary" for="btnradio3">Radio 3</label>
+        </div>
+      </div>
+      <br>
+    </form>
+    <button id="results_per_chromosome_button" class="btn btn-lg btn-primary" onclick="results_per_chromosome()">
+      Pathogenicity table
+    </button>
+    <br><br>
 
-       <table id="results_per_chromosome" class="results_table border border-3 rounded" style="display: none">
-            <tr>
-                <th>Chromosome</th>
-                {% for i in range(1, 23) %}
-                <td class="results_table_chromosomes">{{ i }}</td>
-                {% endfor %}
-                <td class="results_table_chromosomes">X</td>
-                <td class="results_table_chromosomes">Y</td>
-                <td class="results_table_chromosomes">MT</td>
-                <td class="results_table_chromosomes">Total</td>
-            </tr>
-            <tr>
-                <th>Total variants</th>
-                {% set count_variants = namespace(value=0) %}
-                {% for i in results_table_list[0] %}
-                {% set count_variants.value = count_variants.value + results_table_list[0][i] %}
-                <td>{{ results_table_list[0][i] }}</td>
-                {% endfor %}
-                <td>{{ count_variants.value }}</td>
-            </tr>
-            <tr>
-                <th>Benign</th>
-                {% set count_benign = namespace(value=0) %}
-                {% for i in results_table_list[1] %}
-                {% set count_benign.value = count_benign.value + results_table_list[1][i] %}
-                <td>{{ results_table_list[1][i] }}</td>
-                {% endfor %}
-                <td>{{ count_benign.value }}</td>
-            </tr>
-            <tr>
-                <th>Likely benign</th>
-                {% set count_likely_benign = namespace(value=0) %}
-                {% for i in results_table_list[2] %}
-                {% set count_likely_benign.value = count_likely_benign.value + results_table_list[2][i] %}
-                <td>{{ results_table_list[2][i] }}</td>
-                {% endfor %}
-                <td>{{ count_likely_benign.value }}</td>
-            </tr>
-            <tr>
-                <th>Likely pathogenic</th>
-                {% set count_likely_pathogenic = namespace(value=0) %}
-                {% for i in results_table_list[3] %}
-                {% set count_likely_pathogenic.value = count_likely_pathogenic.value + results_table_list[3][i] %}
-                <td>{{ results_table_list[3][i] }}</td>
-                {% endfor %}
-                <td>{{ count_likely_pathogenic.value }}</td>
-            </tr>
-            <tr>
-                <th>Pathogenic</th>
-                {% set count_pathogenic = namespace(value=0) %}
-                {% for i in results_table_list[4] %}
-                {% set count_pathogenic.value = count_pathogenic.value + results_table_list[4][i] %}
-                <td>{{ results_table_list[4][i] }}</td>
-                {% endfor %}
-                <td>{{ count_pathogenic.value }}</td>
-            </tr>
-            <tr>
-                <th>Predicted benign</th>
-                {% set count_predicted_benign = namespace(value=0) %}
-                {% for i in results_table_list[5] %}
-                {% set count_predicted_benign.value = count_predicted_benign.value + results_table_list[5][i] %}
-                <td>{{ results_table_list[5][i] }}</td>
-                {% endfor %}
-                <td>{{ count_predicted_benign.value }}</td>
-            </tr>
-            <tr>
-                <th>Predicted pathogenic</th>
-                {% set count_predicted_pathogenic = namespace(value=0) %}
-                {% for i in results_table_list[6] %}
-                {% set count_predicted_pathogenic.value = count_predicted_pathogenic.value + results_table_list[6][i] %}
-                <td>{{ results_table_list[6][i] }}</td>
-                {% endfor %}
-                <td>{{ count_predicted_pathogenic.value }}</td>
-            </tr>
-        </table>
-        <script>
-            function results_per_chromosome() {
-                var x = document.getElementById("results_per_chromosome");
-                if (x.style.display === "none") {
-                    x.style.display = "block";
-                } else {
-                    x.style.display = "none";
-                }
-            }
-        </script>
-        <br>
-        <div class="rectangle_visualisation">
-            <h2 id='selected_chromosome'>Please select a chromosome above to
-                start.</h2>
-            <div id='chart' class='chart'></div>
-            <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-            <script>
-                document.getElementById("selected_chromosome").innerHTML = "Currently showing chromosome " + "{{ selected_chrom }}" + ":";
-                var graph = {{ JSON_graph | safe }};
-                Plotly.plot('chart', graph, {});
-            </script>
+    <table id="results_per_chromosome" class="results_table border border-3 rounded" style="display: none">
+      <tr>
+        <th>Chromosome</th>
+        {% for i in range(1, 23) %}
+        <td class="results_table_chromosomes">{{ i }}</td>
+        {% endfor %}
+        <td class="results_table_chromosomes">X</td>
+        <td class="results_table_chromosomes">Y</td>
+        <td class="results_table_chromosomes">MT</td>
+        <td class="results_table_chromosomes">Total</td>
+      </tr>
+      <tr>
+        <th>Total variants</th>
+        {% set count_variants = namespace(value=0) %}
+        {% for i in results_table_list[0] %}
+        {% set count_variants.value = count_variants.value + results_table_list[0][i] %}
+        <td>{{ results_table_list[0][i] }}</td>
+        {% endfor %}
+        <td>{{ count_variants.value }}</td>
+      </tr>
+      <tr>
+        <th>Benign</th>
+        {% set count_benign = namespace(value=0) %}
+        {% for i in results_table_list[1] %}
+        {% set count_benign.value = count_benign.value + results_table_list[1][i] %}
+        <td>{{ results_table_list[1][i] }}</td>
+        {% endfor %}
+        <td>{{ count_benign.value }}</td>
+      </tr>
+      <tr>
+        <th>Likely benign</th>
+        {% set count_likely_benign = namespace(value=0) %}
+        {% for i in results_table_list[2] %}
+        {% set count_likely_benign.value = count_likely_benign.value + results_table_list[2][i] %}
+        <td>{{ results_table_list[2][i] }}</td>
+        {% endfor %}
+        <td>{{ count_likely_benign.value }}</td>
+      </tr>
+      <tr>
+        <th>Likely pathogenic</th>
+        {% set count_likely_pathogenic = namespace(value=0) %}
+        {% for i in results_table_list[3] %}
+        {% set count_likely_pathogenic.value = count_likely_pathogenic.value + results_table_list[3][i] %}
+        <td>{{ results_table_list[3][i] }}</td>
+        {% endfor %}
+        <td>{{ count_likely_pathogenic.value }}</td>
+      </tr>
+      <tr>
+        <th>Pathogenic</th>
+        {% set count_pathogenic = namespace(value=0) %}
+        {% for i in results_table_list[4] %}
+        {% set count_pathogenic.value = count_pathogenic.value + results_table_list[4][i] %}
+        <td>{{ results_table_list[4][i] }}</td>
+        {% endfor %}
+        <td>{{ count_pathogenic.value }}</td>
+      </tr>
+      <tr>
+        <th>Predicted benign</th>
+        {% set count_predicted_benign = namespace(value=0) %}
+        {% for i in results_table_list[5] %}
+        {% set count_predicted_benign.value = count_predicted_benign.value + results_table_list[5][i] %}
+        <td>{{ results_table_list[5][i] }}</td>
+        {% endfor %}
+        <td>{{ count_predicted_benign.value }}</td>
+      </tr>
+      <tr>
+        <th>Predicted pathogenic</th>
+        {% set count_predicted_pathogenic = namespace(value=0) %}
+        {% for i in results_table_list[6] %}
+        {% set count_predicted_pathogenic.value = count_predicted_pathogenic.value + results_table_list[6][i] %}
+        <td>{{ results_table_list[6][i] }}</td>
+        {% endfor %}
+        <td>{{ count_predicted_pathogenic.value }}</td>
+      </tr>
+    </table>
+    <script>
+      function results_per_chromosome() {
+        var x = document.getElementById("results_per_chromosome");
+        if (x.style.display === "none") {
+          x.style.display = "block";
+        } else {
+          x.style.display = "none";
+        }
+      }
+    </script>
+    <br>
+    <div class="rectangle_visualisation">
+      <div id='selected_chromosome'>Please select a chromosome above to
+        start.</div>
+      <div id='chart' class='chart'></div>
+      <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+      <script>
+        document.getElementById("selected_chromosome").innerHTML = "Currently showing chromosome " + "{{ selected_chrom }}" + ":";
+        var graph = {{ JSON_graph | safe }};
+        Plotly.plot('chart', graph, {});
+      </script>
 
-            <div id="results_textbox"></div>
+      <div id="results_textbox"></div>
 
-            <script>
-                var myPlot = document.getElementById('chart')
-                myPlot.on('plotly_click', function (graph) {
-                    var chrom = "{{ selected_chrom }}"
-                    var pos = graph.points[0].x.toString()
-                    var ref = graph.points[0].customdata[0]
-                    var alt = graph.points[0].customdata[1]
-                    var results = {{ results | tojson
-                }}
-                    console.log(graph)
+      <script>
+        var myPlot = document.getElementById('chart')
+        myPlot.on('plotly_click', function (graph) {
+          var chrom = "{{ selected_chrom }}"
+          var pos = graph.points[0].x.toString()
+          var ref = graph.points[0].customdata[0]
+          var alt = graph.points[0].customdata[1]
+          var results = {{ results | tojson
+        }}
+          console.log(graph)
                     var text = ""
-                results.forEach(checkResult)
+        results.forEach(checkResult)
 
-                function checkResult(result_dict) {
-                    if (result_dict["CHROM"] === chrom &&
-                        result_dict["POS"] === pos &&
-                        result_dict["REF"] === ref &&
-                        result_dict["ALT"] === alt) {
-                        text = 
-                            "<br><b>AF_ESP:</b> " + result_dict["AF_ESP"] +
-                            "<br><b>AF_EXAC:</b> " + result_dict["AF_EXAC"] +
-                            "<br><b>AF_TGP:</b> " + result_dict["AF_TGP"] +
-                            "<br><b>ALLELEID:</b> " + result_dict["ALLELEID"] +
-                            "<br><b>CLNDN:</b> " + result_dict["CLNDN"] +
-                            "<br><b>CLNDNINCL:</b> " + result_dict["CLNDNINCL"] +
-                            "<br><b>CLNDISDB:</b> " + result_dict["CLNDISDB"] +
-                            "<br><b>CLNDISDBINCL:</b> " + result_dict["CLNDISDBINCL"] +
-                            "<br><b>CLNHGVS:</b> " + result_dict["CLNHGVS"] +
-                            "<br><b>CLNREVSTAT:</b> " + result_dict["CLNREVSTAT"] +
-                            "<br><b>CLNSIG:</b> " + result_dict["CLNSIG"] +
-                            "<br><b>CLNSIGCONF:</b> " + result_dict["CLNSIGCONF"] +
-                            "<br><b>CLNSIGINCL:</b> " + result_dict["CLNSIGINCL"] +
-                            "<br><b>CLNVC:</b> " + result_dict["CLNVC"] +
-                            "<br><b>CLNVCSO:</b> " + result_dict["CLNVCSO"] +
-                            "<br><b>CLNVI:</b> " + result_dict["CLNVI"] +
-                            "<br><b>DBVARID:</b> " + result_dict["DBVARID"] +
-                            "<br><b>GENEINFO:</b> " + result_dict["GENEINFO"] +
-                            "<br><b>MC:</b> " + result_dict["MC"] +
-                            "<br><b>ORIGIN:</b> " + result_dict["ORIGIN"] +
-                            "<br><b>RS:</b> " + result_dict["RS"] +
-                            "<br><b>SSR:</b> " + result_dict["SSR"] +
-                            "<br><b>REF LENGTH:</b> " + result_dict["REF LENGTH"] +
-                            "<br><b>ALT LENGTH:</b> " + result_dict["ALT LENGTH"] +
-                            "<br><b>DIFFERENCE REF AND ALT LENGTH:</b> " + result_dict[
-                            "DIFFERENCE REF AND ALT LENGTH"] +
-                            "<br><b>SC_POS:</b> " + result_dict["SC_POS"] +
-                            "<br><b>CLNSIG NUM:</b> " + result_dict["CLNSIG NUM"]
-                            
-`<div class="accordion" id="accordionPanelsStayOpenExample">
+        function checkResult(result_dict) {
+          if (result_dict["CHROM"] === chrom &&
+            result_dict["POS"] === pos &&
+            result_dict["REF"] === ref &&
+            result_dict["ALT"] === alt) {
+            text =
+              `<div class="accordion" id="accordionPanelsStayOpenExample">
   <div class="accordion-item">
     <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
         Location info
       </button>
     </h2>
     <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
       <div class="accordion-body">
         <strong>`+ "<b>Chromosome:</b>" + result_dict["CHROM"] +
-                            "<br><b>Position:</b> " + result_dict["POS"] +
-                            "<br><b>REF:</b> " + result_dict["REF"] +
-                            "<br><b>ALT:</b> " + result_dict["ALT"] +
-      `</div>
+              "<br><b>Position:</b> " + result_dict["POS"] +
+              `</div>
     </div>
   </div>
   <div class="accordion-item">
@@ -195,22 +173,30 @@
     </h2>
     <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
       <div class="accordion-body">
-        <strong>`+
-          
-          +
-      `</div>
+        <strong>`+ "<b>REF:</b> " + result_dict["REF"] +
+              "<br><b>ALT:</b> " + result_dict["ALT"] +
+              "<br><b>REF LENGTH:</b> " + result_dict["REF LENGTH"] +
+              "<br><b>ALT LENGTH:</b> " + result_dict["ALT LENGTH"] +
+              "<br><b>Variant type:</b> " + result_dict["CLNVC"] +
+              "<br><b>Functional consequence:</b> " + result_dict["MC"] +
+
+              `</div>
     </div>
   </div>
   <div class="accordion-item">
     <h2 class="accordion-header" id="panelsStayOpen-headingThree">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
-        Accordion Item #3
+        Annotation info
       </button>
     </h2>
     <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
       <div class="accordion-body">
-        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-      </div>
+        <strong>`+
+              "<b>Clinvar ID:</b> " + result_dict["ID"] +
+              "<br><b>Variant sequence ontology:</b> " + result_dict["CLNVCSO"] +
+              "<br><b>Gene ID:</b> " + result_dict["GENEINFO"] +
+              "<br><b>Medgen ID:</b> " + result_dict["CLNDISDB"] +
+              `</div>
     </div>
   </div>
   <div class="accordion-item">
@@ -222,34 +208,34 @@
     <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingFour">
       <div class="accordion-body">
         <strong>`
-          + "<b>ML prediction:</b> " + result_dict["ML prediction"]
-            if (parseFloat(result_dict["Probability 0"]) >= parseFloat(result_dict["Probability 1"])){
+              + "<b>ML prediction:</b> " + result_dict["ML prediction"]
+            if (parseFloat(result_dict["Probability 0"]) >= parseFloat(result_dict["Probability 1"])) {
               text += "<br><b>Probability benign:</b> " + result_dict["Probability 0"]
-              } else{
-                text += "<br><b>Probability pathogenic:</b> " + result_dict["Probability 1"]
-              } +
+            } else {
+              text += "<br><b>Probability pathogenic:</b> " + result_dict["Probability 1"]
+            } +
       `</div>
     </div>  
   </div>
 </div>`
 
-                        document.getElementById("results_textbox").innerHTML = text
+            document.getElementById("results_textbox").innerHTML = text
 
-                    }
-                }
+          }
+        }
                 });
-            </script>
-        </div>
-    </div><br>
+      </script>
+    </div>
+  </div><br>
 
-    {% for key in disable_button_dict.keys() %}
-    {% if disable_button_dict[key] == True %}
-    <script>
-        document.getElementById("{{ key }}").disabled = true;
-        document.getElementById("{{ key }}").style.backgroundColor = "grey";
-        document.getElementById("{{ key }}").style.borderColor = "grey";
-    </script>
-    {% endif %}
-    {% endfor %}
+  {% for key in disable_button_dict.keys() %}
+  {% if disable_button_dict[key] == True %}
+  <script>
+    document.getElementById("{{ key }}").disabled = true;
+    document.getElementById("{{ key }}").style.backgroundColor = "grey";
+    document.getElementById("{{ key }}").style.borderColor = "grey";
+  </script>
+  {% endif %}
+  {% endfor %}
 </body>
 {% endblock %}

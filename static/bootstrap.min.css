@@ -125,6 +125,11 @@ hr:not([size]) {
     font-size: calc(1.3rem + .6vw)
 }
 
+#vis-text {
+    color: black;
+    font-size: 0.5em;
+}
+
 @media (min-width: 1200px) {
     .h3, h3 {
         font-size: 1.75rem

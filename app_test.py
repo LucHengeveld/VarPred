@@ -320,20 +320,20 @@ def visualisation_bar(reference_build):
 
             fig.update_xaxes(showgrid=False, fixedrange=False,
                              range=[0, chromosome_lengths_list[i][1]],
-                             tickfont_family="Arial Black", tickformat=',d')
+                             tickfont_family="sans-serif", tickformat=',d')
             fig.update_yaxes(showgrid=False, fixedrange=True,
-                             zeroline=True, zerolinecolor='#04AA6D',
+                             zeroline=True, zerolinecolor='#1c9434',
                              zerolinewidth=60,
                              showticklabels=False)
             fig.update_layout(height=260, plot_bgcolor='white',
-                              font_size=22,
-                              font_family="Arial Black",
+                              font_size=16,
+                              font_family="sans-serif",
                               font_color="black",
                               margin=dict(l=0, r=40),
                               hoverlabel=dict(
-                                  bgcolor='#e6ffe6',
+                                  bgcolor='#38b553',
                                   font_size=22,
-                                  font_family="Courier",
+                                  font_family="sans-serif",
                                   font_color="black"
                               ))
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)

@@ -19,8 +19,7 @@
 }
 
 body {
-    margin: 10px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: sans-serif;
 }
 
 .header {
@@ -81,21 +80,17 @@ body {
     padding: 30px;
 }
 
-.btn-group {
-    display: flex;
-}
-
 .btn-group button {
-    background-color: #04AA6D; /* Green background */
-    border: 1px solid green; /* Green border */
+    background-color: #1c9434; /* Green background */
+    border: 1px solid #1c9434; /* Green border */
     color: white; /* White text */
     cursor: pointer; /* Pointer/hand icon */
     float: left; /* Float the buttons side by side */
-    border-radius: 50%;
-    margin: 1px 2px;
-    height: 40px;
-    width: 100%;
-    font-size: 25px;
+    border-radius: 0.25rem;
+    margin-left: 2px;
+    height: 25px;
+    width: 30px;
+    font-size: 16px;
 }
 
 /* Clear floats (clearfix hack) */
@@ -121,19 +116,18 @@ body {
 .rectangle_container {
     height: 100%;
     width: 100%;
-    border: solid 3px;
+    border: 1px solid rgba(0, 0, 0, .125);
     padding: 10px;
-    border-radius: 25px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: .25rem;
 }
 
 .rectangle_visualisation {
     height: 100%;
     min-height: 400px;
     width: 100%;
-    border: solid 3px;
+    border: 1px solid rgba(0, 0, 0, .125);
     padding: 10px;
-    border-radius: 25px;
+    border-radius: .25rem;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     overflow-wrap: break-word;
 }
@@ -165,7 +159,7 @@ body {
 .results_table th {
     padding: 8px;
     text-align: left;
-    background-color: #04AA6D;
+    background-color: #1c9434;
     color: white;
     border: 1px solid black;
     position: relative;
@@ -175,7 +169,7 @@ body {
 .results_table_chromosomes {
     padding: 8px;
     text-align: center;
-    background-color: #04AA6D;
+    background-color: #1c9434;
     color: white;
     border: 1px solid black;
     position: relative;
@@ -196,9 +190,10 @@ body {
 
 #results_per_chromosome_button {
     color: white;
-    background-color: #04AA6D;
-    border-radius: 20px;
-    width: 40%;
+    background-color: #1c9434;
+    border-radius: 0.25rem;
+    width: 15%;
+    font-size: 16px;
 }
 
 .reference_selector {
