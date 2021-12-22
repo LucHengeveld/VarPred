@@ -1,9 +1,6 @@
 import ast
 from flask import Flask, render_template, request
 import pymongo
-import dash
-from dash import dcc
-from dash import html
 import plotly
 import plotly.express as px
 import json
@@ -316,7 +313,7 @@ def visualisation_bar(reference_build):
             fig.update_traces(marker=dict(size=42.5,
                                           symbol='line-ns',
                                           line=dict(width=2,
-                                                    color='black')),
+                                                    color="black")),
                               hovertemplate=
                               '<b>Positie: %{x}' +
                               '<br>REF > ALT: %{customdata[2]} > %{'
@@ -367,7 +364,7 @@ def results_table(position_dict):
     results_table_dict = {}
     for chrom in chromosomes:
         results_table_dict[chrom] = [variation_length_dict[chrom], 0, 0, 0, 0,
-                                     0, 0]
+                                     0, 0, 0, 8]
 
     for result in results:
         if "Benign" in result["CLNSIG"] and "Likely" not in result["CLNSIG"]:
@@ -384,12 +381,15 @@ def results_table(position_dict):
                 "Conflicting" not in result["CLNSIG"]:
             results_table_dict[result["CHROM"]][4] += 1
 
-        elif "Uncertain significance" in result["CLNSIG"] or "not provided" in result["CLNSIG"]:
+        elif not any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
+                     ["benign", "pathogenic"]):
             if result["ML prediction"] == "1":
                 results_table_dict[result["CHROM"]][5] += 1
 
             elif result["ML prediction"] == "0":
                 results_table_dict[result["CHROM"]][6] += 1
+
+            results_table_dict[result["CHROM"]][7] += 1
 
 
 def heatmap():
