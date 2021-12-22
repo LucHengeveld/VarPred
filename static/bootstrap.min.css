@@ -11653,8 +11653,8 @@ textarea.form-control-lg {
 /*own code*/
 
 .resize_carousel {
-    width: 1960px;
-    height: 640px;
+    width: 100%;
+    height: auto;
     margin: center;
 }
 
