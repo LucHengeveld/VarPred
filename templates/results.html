@@ -109,15 +109,24 @@
         console.log(element.id)
         var id = element.id.split("C")[1]; 
         document.getElementById(id).checked = true;
+        
         document.getElementById("chrom_form").submit();
       }
     window.onload = function() { 
-      var id = document.getElementById("selected_chrom").value
+      var id = document.get.ElementById("selected_chrom").value
       document.getElementById(id).checked = true;
     }
+    function reload(){
+    var container = document.getElementById("vis-container");
+    var content = container.innerHTML;
+    container.innerHTML= content; 
+    
+   //this line is to watch the result in console , you can remove it later	
+    console.log("Refreshed"); 
+}
     </script>
     <br>
-    <div class="rectangle_visualisation">
+    <div id="vis-container" class="rectangle_visualisation">
       <div id='selected_chromosome'>Please select a chromosome above to
         start.</div>
       <div id='chart' class='chart'></div>
