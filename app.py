@@ -384,11 +384,12 @@ def results_table(position_dict):
                 "Conflicting" not in result["CLNSIG"]:
             results_table_dict[result["CHROM"]][4] += 1
 
-        if result["ML prediction"] == "1":
-            results_table_dict[result["CHROM"]][5] += 1
+        elif "Uncertain significance" in result["CLNSIG"] or "not provided" in result["CLNSIG"]:
+            if result["ML prediction"] == "1":
+                results_table_dict[result["CHROM"]][5] += 1
 
-        elif result["ML prediction"] == "0":
-            results_table_dict[result["CHROM"]][6] += 1
+            elif result["ML prediction"] == "0":
+                results_table_dict[result["CHROM"]][6] += 1
 
 
 def heatmap():

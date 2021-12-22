@@ -28,21 +28,12 @@
             <tr>
                 <th>Chromosome</th>
                 {% for i in range(1, 23) %}
-                    <td class="results_table_chromosomes">{{ i }}</td>
+                    <td class="results_table_chromosomes"><b>{{ i }}</b></td>
                 {% endfor %}
-                <td class="results_table_chromosomes">X</td>
-                <td class="results_table_chromosomes">Y</td>
-                <td class="results_table_chromosomes">MT</td>
-                <td class="results_table_chromosomes">Total</td>
-            </tr>
-            <tr>
-                <th>Total variants</th>
-                {% set count_variants = namespace(value=0) %}
-                {% for i in results_table_dict %}
-                    {% set count_variants.value = count_variants.value + results_table_dict[i][0] %}
-                    <td>{{ results_table_dict[i][0] }}</td>
-                {% endfor %}
-                <td>{{ count_variants.value }}</td>
+                <td class="results_table_chromosomes"><b>X</b></td>
+                <td class="results_table_chromosomes"><b>Y</b></td>
+                <td class="results_table_chromosomes"><b>MT</b></td>
+                <td class="results_table_chromosomes left_line"><b>Total</b></td>
             </tr>
             <tr>
                 <th>Benign</th>
@@ -51,7 +42,7 @@
                     {% set count_benign.value = count_benign.value + results_table_dict[i][1] %}
                     <td style="background-color: rgb({{color_dict[i][1]}}, 255, {{color_dict[i][1]}})">{{ results_table_dict[i][1] }}</td>
                 {% endfor %}
-                <td>{{ count_benign.value }}</td>
+                <td class="left_line"><b>{{ count_benign.value }}</b></td>
             </tr>
             <tr>
                 <th>Likely benign</th>
@@ -60,7 +51,7 @@
                     {% set count_likely_benign.value = count_likely_benign.value + results_table_dict[i][2] %}
                     <td style="background-color: rgb({{color_dict[i][2]}}, 255, {{color_dict[i][2]}})">{{ results_table_dict[i][2] }}</td>
                 {% endfor %}
-                <td>{{ count_likely_benign.value }}</td>
+                <td class="left_line"><b>{{ count_likely_benign.value }}</b></td>
             </tr>
             <tr>
                 <th>Likely pathogenic</th>
@@ -69,7 +60,7 @@
                     {% set count_likely_pathogenic.value = count_likely_pathogenic.value + results_table_dict[i][3] %}
                     <td style="background-color: rgb({{color_dict[i][3]}}, 255, {{color_dict[i][3]}})">{{ results_table_dict[i][3] }}</td>
                 {% endfor %}
-                <td>{{ count_likely_pathogenic.value }}</td>
+                <td class="left_line"><b>{{ count_likely_pathogenic.value }}</b></td>
             </tr>
             <tr>
                 <th>Pathogenic</th>
@@ -78,16 +69,16 @@
                     {% set count_pathogenic.value = count_pathogenic.value + results_table_dict[i][4] %}
                     <td style="background-color: rgb({{color_dict[i][4]}}, 255, {{color_dict[i][4]}})">{{ results_table_dict[i][4] }}</td>
                 {% endfor %}
-                <td>{{ count_pathogenic.value }}</td>
+                <td class="left_line"><b>{{ count_pathogenic.value }}</b></td>
             </tr>
             <tr>
-                <th>Predicted benign</th>
+                <th class="top_line">Predicted benign</th>
                 {% set count_predicted_benign = namespace(value=0) %}
                 {% for i in results_table_dict %}
                     {% set count_predicted_benign.value = count_predicted_benign.value + results_table_dict[i][5] %}
-                    <td style="background-color: rgb({{color_dict[i][5]}}, 255, {{color_dict[i][5]}})">{{ results_table_dict[i][5] }}</td>
+                    <td class="top_line" style="background-color: rgb({{color_dict[i][5]}}, 255, {{color_dict[i][5]}})">{{ results_table_dict[i][5] }}</td>
                 {% endfor %}
-                <td>{{ count_predicted_benign.value }}</td>
+                <td class="top_line left_line"><b>{{ count_predicted_benign.value }}</b></td>
             </tr>
             <tr>
                 <th>Predicted pathogenic</th>
@@ -96,8 +87,17 @@
                     {% set count_predicted_pathogenic.value = count_predicted_pathogenic.value + results_table_dict[i][6] %}
                     <td style="background-color: rgb({{color_dict[i][6]}}, 255, {{color_dict[i][6]}})">{{ results_table_dict[i][6] }}</td>
                 {% endfor %}
-                <td>{{ count_predicted_pathogenic.value }}</td>
-            </tr>
+                <td class="left_line"><b>{{ count_predicted_pathogenic.value }}</b></td>
+            </tr >
+           <tr>
+                <th class="top_line">Total variants</th>
+                {% set count_variants = namespace(value=0) %}
+                {% for i in results_table_dict %}
+                    {% set count_variants.value = count_variants.value + results_table_dict[i][0] %}
+                    <td class="top_line"><b>{{ results_table_dict[i][0] }}</b></td>
+                {% endfor %}
+                <td class="top_line left_line"><b>{{ count_variants.value }}</b></td>
+           </tr>
         </table>
         <script>
             function results_per_chromosome() {
@@ -140,7 +140,7 @@
                             result_dict["POS"] === pos &&
                             result_dict["REF"] === ref &&
                             result_dict["ALT"] === alt) {
-                            if (result_dict["ML prediction"] === 0){
+                            if (result_dict["ML prediction"] == 0){
                                 result_dict["ML prediction"] = 'benign'
                             }else{
                                 result_dict["ML prediction"] = 'pathogenic'
@@ -166,7 +166,7 @@
                                 "<br><b>REF LENGTH:</b> " + result_dict["REF LENGTH"] +
                                 "<br><b>ALT LENGTH:</b> " + result_dict["ALT LENGTH"] +
                                 "<br><b>ML prediction:</b> " + result_dict["ML prediction"]
-                                if (parseFloat(result_dict["Probability 0"]) >= parseFloat(result_dict["Probability 1"])){
+                                if (parseFloat(result_dict["Probability 0"]) > parseFloat(result_dict["Probability 1"])){
                                     text += "<br><b>Probability benign:</b> " + result_dict["Probability 0"]
                                 } else{
                                     text += "<br><b>Probability pathogenic:</b> " + result_dict["Probability 1"]
