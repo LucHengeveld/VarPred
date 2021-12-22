@@ -2,6 +2,7 @@ import os
 import sys
 import pickle
 import vcf
+import warnings
 
 
 def read_file(filename):
@@ -116,6 +117,8 @@ def write_file(file_dictionary):
 
 
 if __name__ == '__main__':
+    warnings.filterwarnings("ignore")
+    warnings.simplefilter(action="ignore", category=FutureWarning)
     file = sys.argv[1]
     if os.path.isfile(f"{file}.p"):
         print("Pickle found, loading pickle...")
@@ -123,6 +126,8 @@ if __name__ == '__main__':
         print("Pickle parsed and loaded...")
     else:
         print("No pickle found, parsing data...")
-        fd = read_file(file)
+        fd = read_file(f"clinvar-{file}.vcf")
     file_dictionary = change_dict(fd)
     write_file(file_dictionary)
+    print("File parsed successfully!")
+    print("-----------------------------------------------------------")

@@ -1,5 +1,6 @@
 import pandas as pd
-from chrom_dict import chromosome_length
+import os
+import warnings
 
 
 def open_tsv(location):
@@ -249,6 +250,13 @@ def get_first_value(data, column):
 
 
 if __name__ == '__main__':
+    warnings.filterwarnings("ignore")
+    warnings.simplefilter(action="ignore", category=FutureWarning)
+    if str(os.environ["assembly"]) == "37":
+        from chrom_dict_37 import chromosome_length
+    else:
+        from chrom_dict_38 import chromosome_length
+    print("Preprocessing ML data...")
     dataset = open_tsv("results_new.tsv")
     dataset = scale_pos(dataset)
     dataset = clin_sig(dataset)
@@ -259,8 +267,10 @@ if __name__ == '__main__':
     dataset = one_hot_encoding(dataset, "MC")
     dataset = one_hot_encoding(dataset, "CHROM")
 
-    # dataset = one_hot_encoding(dataset, "GENECODE")
-
-    write_tsv(dataset, "OHE ClinVar data.tsv")
+    # dataset = one_hot_encoding(dataset, "GENECO  DE")
+    os.remove("results_new.tsv")
+    write_tsv(dataset, "OHE_ClinVar_data.tsv")
     dataset = filter_data(dataset)
-    write_tsv(dataset, "ML data.tsv")
+    write_tsv(dataset, "ML_data.tsv")
+    print("ML data preprocessed successfully!")
+    print("-----------------------------------------------------------")

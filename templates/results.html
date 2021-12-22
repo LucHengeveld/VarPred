@@ -25,7 +25,7 @@
             <tr>
                 <th>Chromosome</th>
                 {% for i in range(1, 23) %}
-                    <td class="results_table_chromosomes">{{ i }}</td>
+                <td class="results_table_chromosomes">{{ i }}</td>
                 {% endfor %}
                 <td class="results_table_chromosomes">X</td>
                 <td class="results_table_chromosomes">Y</td>
@@ -38,15 +38,22 @@
                 {% for i in results_table_dict %}
                     {% set count_variants.value = count_variants.value + results_table_dict[i][0] %}
                     <td>{{ results_table_dict[i][0] }}</td>
+                {% for i in results_table_list[0] %}
+                {% set count_variants.value = count_variants.value + results_table_list[0][i] %}
+                <td>{{ results_table_list[0][i] }}</td>
                 {% endfor %}
                 <td>{{ count_variants.value }}</td>
             </tr>
             <tr>
                 <th>Benign</th>
                 {% set count_benign = namespace(value=0) %}
+
                 {% for i in results_table_dict %}
                     {% set count_benign.value = count_benign.value + results_table_dict[i][1] %}
                     <td style="background-color: rgb({{color_dict[i][1]}}, 255, {{color_dict[i][1]}})">{{ results_table_dict[i][1] }}</td>
+                {% for i in results_table_list[1] %}
+                {% set count_benign.value = count_benign.value + results_table_list[1][i] %}
+                <td>{{ results_table_list[1][i] }}</td>
                 {% endfor %}
                 <td>{{ count_benign.value }}</td>
             </tr>
@@ -56,6 +63,9 @@
                 {% for i in results_table_dict %}
                     {% set count_likely_benign.value = count_likely_benign.value + results_table_dict[i][2] %}
                     <td style="background-color: rgb({{color_dict[i][2]}}, 255, {{color_dict[i][2]}})">{{ results_table_dict[i][2] }}</td>
+                {% for i in results_table_list[2] %}
+                {% set count_likely_benign.value = count_likely_benign.value + results_table_list[2][i] %}
+                <td>{{ results_table_list[2][i] }}</td>
                 {% endfor %}
                 <td>{{ count_likely_benign.value }}</td>
             </tr>
@@ -65,6 +75,9 @@
                 {% for i in results_table_dict %}
                     {% set count_likely_pathogenic.value = count_likely_pathogenic.value + results_table_dict[i][3] %}
                     <td style="background-color: rgb({{color_dict[i][3]}}, 255, {{color_dict[i][3]}})">{{ results_table_dict[i][3] }}</td>
+                {% for i in results_table_list[3] %}
+                {% set count_likely_pathogenic.value = count_likely_pathogenic.value + results_table_list[3][i] %}
+                <td>{{ results_table_list[3][i] }}</td>
                 {% endfor %}
                 <td>{{ count_likely_pathogenic.value }}</td>
             </tr>
@@ -74,6 +87,9 @@
                 {% for i in results_table_dict %}
                     {% set count_pathogenic.value = count_pathogenic.value + results_table_dict[i][4] %}
                     <td style="background-color: rgb({{color_dict[i][4]}}, 255, {{color_dict[i][4]}})">{{ results_table_dict[i][4] }}</td>
+                {% for i in results_table_list[4] %}
+                {% set count_pathogenic.value = count_pathogenic.value + results_table_list[4][i] %}
+                <td>{{ results_table_list[4][i] }}</td>
                 {% endfor %}
                 <td>{{ count_pathogenic.value }}</td>
             </tr>
@@ -83,6 +99,9 @@
                 {% for i in results_table_dict %}
                     {% set count_predicted_benign.value = count_predicted_benign.value + results_table_dict[i][5] %}
                     <td style="background-color: rgb({{color_dict[i][5]}}, 255, {{color_dict[i][5]}})">{{ results_table_dict[i][5] }}</td>
+                {% for i in results_table_list[5] %}
+                {% set count_predicted_benign.value = count_predicted_benign.value + results_table_list[5][i] %}
+                <td>{{ results_table_list[5][i] }}</td>
                 {% endfor %}
                 <td>{{ count_predicted_benign.value }}</td>
             </tr>
@@ -92,6 +111,9 @@
                 {% for i in results_table_dict %}
                     {% set count_predicted_pathogenic.value = count_predicted_pathogenic.value + results_table_dict[i][6] %}
                     <td style="background-color: rgb({{color_dict[i][6]}}, 255, {{color_dict[i][6]}})">{{ results_table_dict[i][6] }}</td>
+                {% for i in results_table_list[6] %}
+                {% set count_predicted_pathogenic.value = count_predicted_pathogenic.value + results_table_list[6][i] %}
+                <td>{{ results_table_list[6][i] }}</td>
                 {% endfor %}
                 <td>{{ count_predicted_pathogenic.value }}</td>
             </tr>
@@ -127,7 +149,8 @@
                     var pos = graph.points[0].x.toString()
                     var ref = graph.points[0].customdata[0]
                     var alt = graph.points[0].customdata[1]
-                    var results = {{ results | tojson }}
+                    var results = {{ results | tojson
+                }}
                     console.log(graph)
                     var text = ""
                     results.forEach(checkResult)
@@ -137,9 +160,9 @@
                             result_dict["POS"] === pos &&
                             result_dict["REF"] === ref &&
                             result_dict["ALT"] === alt) {
-                            if (result_dict["ML prediction"] == 0){
+                            if (result_dict["ML prediction"] == 0) {
                                 result_dict["ML prediction"] = 'benign'
-                            }else{
+                            } else {
                                 result_dict["ML prediction"] = 'pathogenic'
                             }
 
@@ -163,17 +186,116 @@
                                 "<br><b>REF LENGTH:</b> " + result_dict["REF LENGTH"] +
                                 "<br><b>ALT LENGTH:</b> " + result_dict["ALT LENGTH"] +
                                 "<br><b>ML prediction:</b> " + result_dict["ML prediction"]
-                                if (parseFloat(result_dict["Probability 0"]) > parseFloat(result_dict["Probability 1"])){
-                                    text += "<br><b>Probability benign:</b> " + result_dict["Probability 0"]
-                                } else{
-                                    text += "<br><b>Probability pathogenic:</b> " + result_dict["Probability 1"]
+                            if (parseFloat(result_dict["Probability 0"]) > parseFloat(result_dict["Probability 1"])) {
+                                text += "<br><b>Probability benign:</b> " + result_dict["Probability 0"]
+                            } else {
+                                text += "<br><b>Probability pathogenic:</b> " + result_dict["Probability 1"]
+                            }
+                            results.forEach(checkResult)
+
+                            function checkResult(result_dict) {
+                                if (result_dict["CHROM"] === chrom &&
+                                    result_dict["POS"] === pos &&
+                                    result_dict["REF"] === ref &&
+                                    result_dict["ALT"] === alt) {
+                                    text =
+                                        "<br><b>AF_ESP:</b> " + result_dict["AF_ESP"] +
+                                        "<br><b>AF_EXAC:</b> " + result_dict["AF_EXAC"] +
+                                        "<br><b>AF_TGP:</b> " + result_dict["AF_TGP"] +
+                                        "<br><b>ALLELEID:</b> " + result_dict["ALLELEID"] +
+                                        "<br><b>CLNDN:</b> " + result_dict["CLNDN"] +
+                                        "<br><b>CLNDNINCL:</b> " + result_dict["CLNDNINCL"] +
+                                        "<br><b>CLNDISDB:</b> " + result_dict["CLNDISDB"] +
+                                        "<br><b>CLNDISDBINCL:</b> " + result_dict["CLNDISDBINCL"] +
+                                        "<br><b>CLNHGVS:</b> " + result_dict["CLNHGVS"] +
+                                        "<br><b>CLNREVSTAT:</b> " + result_dict["CLNREVSTAT"] +
+                                        "<br><b>CLNSIG:</b> " + result_dict["CLNSIG"] +
+                                        "<br><b>CLNSIGCONF:</b> " + result_dict["CLNSIGCONF"] +
+                                        "<br><b>CLNSIGINCL:</b> " + result_dict["CLNSIGINCL"] +
+                                        "<br><b>CLNVC:</b> " + result_dict["CLNVC"] +
+                                        "<br><b>CLNVCSO:</b> " + result_dict["CLNVCSO"] +
+                                        "<br><b>CLNVI:</b> " + result_dict["CLNVI"] +
+                                        "<br><b>DBVARID:</b> " + result_dict["DBVARID"] +
+                                        "<br><b>GENEINFO:</b> " + result_dict["GENEINFO"] +
+                                        "<br><b>MC:</b> " + result_dict["MC"] +
+                                        "<br><b>ORIGIN:</b> " + result_dict["ORIGIN"] +
+                                        "<br><b>RS:</b> " + result_dict["RS"] +
+                                        "<br><b>SSR:</b> " + result_dict["SSR"] +
+                                        "<br><b>REF LENGTH:</b> " + result_dict["REF LENGTH"] +
+                                        "<br><b>ALT LENGTH:</b> " + result_dict["ALT LENGTH"] +
+                                        "<br><b>DIFFERENCE REF AND ALT LENGTH:</b> " + result_dict[
+                                            "DIFFERENCE REF AND ALT LENGTH"] +
+                                        "<br><b>SC_POS:</b> " + result_dict["SC_POS"] +
+                                        "<br><b>CLNSIG NUM:</b> " + result_dict["CLNSIG NUM"]
+
+                                            `<div class="accordion" id="accordionPanelsStayOpenExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+        Location info
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
+      <div class="accordion-body">
+        <strong>` + "<b>Chromosome:</b>" + result_dict["CHROM"] +
+                                        "<br><b>Position:</b> " + result_dict["POS"] +
+                                        "<br><b>REF:</b> " + result_dict["REF"] +
+                                        "<br><b>ALT:</b> " + result_dict["ALT"] +
+                                        `</div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+        Variant info
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
+      <div class="accordion-body">
+        <strong>` +
+
+                                        +
+                                            `</div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+        Accordion Item #3
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
+      <div class="accordion-body">
+        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingFour">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false" aria-controls="panelsStayOpen-collapseFour">
+        Machine learning
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingFour">
+      <div class="accordion-body">
+        <strong>`
+                                        + "<b>ML prediction:</b> " + result_dict["ML prediction"]
+                                    if (parseFloat(result_dict["Probability 0"]) >= parseFloat(result_dict["Probability 1"])) {
+                                        text += "<br><b>Probability benign:</b> " + result_dict["Probability 0"]
+                                    } else {
+                                        text += "<br><b>Probability pathogenic:</b> " + result_dict["Probability 1"]
+                                    }
+                                    +
+                                        `</div>
+    </div>  
+  </div>
+</div>`
+
+                                    document.getElementById("results_textbox").innerHTML = text
                                 }
-
-
-                            document.getElementById("results_textbox").innerHTML = text
+                            }
                         }
                     }
-                });
             </script>
         </div>
     </div><br>
