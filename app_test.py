@@ -97,7 +97,7 @@ def verify_vcf(vcf_file_name):
     # Checks if file has a line with all the vcf columns
     with open(vcf_file_name) as file:
         for line in file:
-            if line == "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n":
+            if line.startswith("#CHROM\tPOS\tID\tREF\tALT"):
                 correct_vcf = True
                 break
     file.close()
@@ -431,7 +431,6 @@ def calculator():
 def select_chromosome():
     JSON_dict = request.form['JSON_dict']
     JSON_dict = ast.literal_eval(JSON_dict)
-
     selected_chrom = request.form["chromosome_button"]
     JSON_graph = JSON_dict[selected_chrom]
 

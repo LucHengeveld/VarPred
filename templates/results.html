@@ -5,28 +5,16 @@
 <body>
   <div class="rectangle_container">
     <div>Select a chromosome below:</div>
-    <form action="{{ url_for('select_chromosome') }}" method="POST">
-      <div class="btn-group">
+    <form id="chrom_form" action="{{ url_for('select_chromosome') }}" method="POST", onsubmit="return false">
+      <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
         <input type="hidden" name="JSON_dict" value="{{ JSON_dict }}">
         <input type="hidden" name="disable_button_dict" value="{{ disable_button_dict }}">
+        <input type="hidden" id="selected_chrom" value="{{ selected_chrom }}">
         {% for i in range(1, 23) %}
-        <button id="{{ i }}" class="grow" name="chromosome_button" value="{{ i }}" type="submit">{{ i }}</button>
+        <input  id="{{ i }}" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="{{ i }}" >
+        <label id="{{ 'C' + i|string }}" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="btnradio" >{{ i }}</label>
         {% endfor %}
-        <button id="X" class="grow" name="chromosome_button" value="X" type="submit">X</button>&nbsp;
-        <button id="Y" class="grow" name="chromosome_button" value="Y" type="submit">Y</button>&nbsp;
-        <button id="MT" class="grow" name="chromosome_button" value="MT" type="submit">MT</button>
-        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-          <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-          <label id="1" class="btn btn-outline-primary" for="btnradio1" value="1">1</label>
-        
-          <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-          <label class="btn btn-outline-primary" for="btnradio2">Radio 2</label>
-        
-          <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-          <label class="btn btn-outline-primary" for="btnradio3">Radio 3</label>
-        </div>
       </div>
-      <br>
     </form>
     <button id="results_per_chromosome_button" class="btn btn-lg btn-primary" onclick="results_per_chromosome()">
       Pathogenicity table
@@ -117,6 +105,16 @@
           x.style.display = "none";
         }
       }
+      function chrom_button_clicked(element) {
+        console.log(element.id)
+        var id = element.id.split("C")[1]; 
+        document.getElementById(id).checked = true;
+        document.getElementById("chrom_form").submit();
+      }
+    window.onload = function() { 
+      var id = document.getElementById("selected_chrom").value
+      document.getElementById(id).checked = true;
+    }
     </script>
     <br>
     <div class="rectangle_visualisation">
@@ -232,7 +230,7 @@
   {% if disable_button_dict[key] == True %}
   <script>
     document.getElementById("{{ key }}").disabled = true;
-    document.getElementById("{{ key }}").style.backgroundColor = "grey";
+    document.getElementById("{{ key }}").style.color = "grey";
     document.getElementById("{{ key }}").style.borderColor = "grey";
   </script>
   {% endif %}
