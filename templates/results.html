@@ -147,8 +147,8 @@
             {% set count_predicted = namespace(value=0) %}
             {% for i in results_table_dict %}
                 {% set count_predicted.value = count_predicted.value +
-                results_table_dict[i][7] %}
-                <td class="top_line bot_line bg_grey"><b>{{ results_table_dict[i][7] }}</b></td>
+                results_table_dict[i][8] %}
+                <td class="top_line bot_line bg_grey"><b>{{ results_table_dict[i][8] }}</b></td>
             {% endfor %}
             <td class="border_line_all bg_grey"><b>{{ count_predicted.value }}</b>
             </td>

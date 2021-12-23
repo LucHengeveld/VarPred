@@ -364,7 +364,7 @@ def results_table(position_dict):
     results_table_dict = {}
     for chrom in chromosomes:
         results_table_dict[chrom] = [variation_length_dict[chrom], 0, 0, 0, 0,
-                                     0, 0, 0, 8]
+                                     0, 0, 0, 0]
 
     for result in results:
         if "Benign" in result["CLNSIG"] and "Likely" not in result["CLNSIG"]:
@@ -383,13 +383,20 @@ def results_table(position_dict):
 
         elif not any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
                      ["benign", "pathogenic"]):
-            if result["ML prediction"] == "1":
-                results_table_dict[result["CHROM"]][5] += 1
-
-            elif result["ML prediction"] == "0":
-                results_table_dict[result["CHROM"]][6] += 1
-
             results_table_dict[result["CHROM"]][7] += 1
+
+            if any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
+                     ["uncertain significance", "not provided"]):
+                results_table_dict[result["CHROM"]][8] += 1
+                if result["ML prediction"] == "1":
+                    results_table_dict[result["CHROM"]][5] += 1
+
+                elif result["ML prediction"] == "0":
+                    results_table_dict[result["CHROM"]][6] += 1
+
+
+
+
 
 
 def heatmap():
