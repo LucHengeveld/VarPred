@@ -170,12 +170,12 @@ def compare_dataset(compare_list, reference_build):
     :return results: List with data of the found mutations
     """
     # Connect to the local database
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    myclient = pymongo.MongoClient("mongodb")
     mydb = myclient["varpred"]
     if reference_build == "37":
-        mycol = mydb["variants-37"]
+        mycol = mydb["variants37"]
     else:
-        mycol = mydb["variants-38"]
+        mycol = mydb["variants38"]
 
     # Create an empty list
     global results
@@ -294,7 +294,12 @@ def visualisation_bar(reference_build):
                                                       "ALT": alt_list,
                                                       "REF_short": ref_short,
                                                       "ALT_short": alt_short}
-        
+            if 'Medgen' in results[i]['CLNDISDB']:
+                medgen_id = results[i]['CLNDISDB']
+                print(medgen_id)
+                myclient = pymongo.MongoClient("mongodb")
+                mydb = myclient["varpred"]
+                mycol = mydb["medgen"]
         
     JSON_dict = {}
     disable_button_dict = {}
@@ -326,16 +331,16 @@ def visualisation_bar(reference_build):
                              range=[0, chromosome_lengths_list[i][1]],
                              tickfont_family="sans-serif", tickformat=',d')
             fig.update_yaxes(showgrid=False, fixedrange=True,
-                             zeroline=True, zerolinecolor='#04AA6D',
+                             zeroline=True, zerolinecolor='#1c9434',
                              zerolinewidth=60,
                              showticklabels=False)
             fig.update_layout(height=260, plot_bgcolor='white',
-                              font_size=22,
+                              font_size=16,
                               font_family="sans-serif",
                               font_color="black",
                               margin=dict(l=0, r=40),
                               hoverlabel=dict(
-                                  bgcolor='#e6ffe6',
+                                  bgcolor='#38b553',
                                   font_size=22,
                                   font_family="sans-serif",
                                   font_color="black"
@@ -446,7 +451,6 @@ def select_chromosome():
 
     selected_chrom = request.form["chromosome_button"]
     JSON_graph = JSON_dict[selected_chrom]
-    getGenes()
     disable_button_dict = request.form['disable_button_dict']
     disable_button_dict = ast.literal_eval(disable_button_dict)
 
@@ -456,9 +460,6 @@ def select_chromosome():
                            results=results,
                            results_table_dict=results_table_dict,
                            color_dict=color_dict)
-
-def getGenes():
-    print(results)
 
 @app.route('/disclaimer.html', methods=["POST", "GET"])
 def disclaimer():
@@ -515,4 +516,4 @@ def whoarewe():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True, host='0.0.0.0', port=5000)

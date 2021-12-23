@@ -11773,8 +11773,8 @@ input[type=text]{
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #1c9434};
-}
+  background: #1c9434
+};
 
 /* Zoom In #1 */
 i {
