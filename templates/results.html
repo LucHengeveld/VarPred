@@ -27,81 +27,131 @@
     </button>
     <br><br>
 
-    <table id="results_per_chromosome" class="results_table border border-3 rounded" style="display: none">
-      <tr>
-        <th>Chromosome</th>
-        {% for i in range(1, 23) %}
-        <td class="results_table_chromosomes">{{ i }}</td>
-        {% endfor %}
-        <td class="results_table_chromosomes">X</td>
-        <td class="results_table_chromosomes">Y</td>
-        <td class="results_table_chromosomes">MT</td>
-        <td class="results_table_chromosomes">Total</td>
-      </tr>
-      <tr>
-        <th>Total variants</th>
-        {% set count_variants = namespace(value=0) %}
-        {% for i in results_table_list[0] %}
-        {% set count_variants.value = count_variants.value + results_table_list[0][i] %}
-        <td>{{ results_table_list[0][i] }}</td>
-        {% endfor %}
-        <td>{{ count_variants.value }}</td>
-      </tr>
-      <tr>
-        <th>Benign</th>
-        {% set count_benign = namespace(value=0) %}
-        {% for i in results_table_list[1] %}
-        {% set count_benign.value = count_benign.value + results_table_list[1][i] %}
-        <td>{{ results_table_list[1][i] }}</td>
-        {% endfor %}
-        <td>{{ count_benign.value }}</td>
-      </tr>
-      <tr>
-        <th>Likely benign</th>
-        {% set count_likely_benign = namespace(value=0) %}
-        {% for i in results_table_list[2] %}
-        {% set count_likely_benign.value = count_likely_benign.value + results_table_list[2][i] %}
-        <td>{{ results_table_list[2][i] }}</td>
-        {% endfor %}
-        <td>{{ count_likely_benign.value }}</td>
-      </tr>
-      <tr>
-        <th>Likely pathogenic</th>
-        {% set count_likely_pathogenic = namespace(value=0) %}
-        {% for i in results_table_list[3] %}
-        {% set count_likely_pathogenic.value = count_likely_pathogenic.value + results_table_list[3][i] %}
-        <td>{{ results_table_list[3][i] }}</td>
-        {% endfor %}
-        <td>{{ count_likely_pathogenic.value }}</td>
-      </tr>
-      <tr>
-        <th>Pathogenic</th>
-        {% set count_pathogenic = namespace(value=0) %}
-        {% for i in results_table_list[4] %}
-        {% set count_pathogenic.value = count_pathogenic.value + results_table_list[4][i] %}
-        <td>{{ results_table_list[4][i] }}</td>
-        {% endfor %}
-        <td>{{ count_pathogenic.value }}</td>
-      </tr>
-      <tr>
-        <th>Predicted benign</th>
-        {% set count_predicted_benign = namespace(value=0) %}
-        {% for i in results_table_list[5] %}
-        {% set count_predicted_benign.value = count_predicted_benign.value + results_table_list[5][i] %}
-        <td>{{ results_table_list[5][i] }}</td>
-        {% endfor %}
-        <td>{{ count_predicted_benign.value }}</td>
-      </tr>
-      <tr>
-        <th>Predicted pathogenic</th>
-        {% set count_predicted_pathogenic = namespace(value=0) %}
-        {% for i in results_table_list[6] %}
-        {% set count_predicted_pathogenic.value = count_predicted_pathogenic.value + results_table_list[6][i] %}
-        <td>{{ results_table_list[6][i] }}</td>
-        {% endfor %}
-        <td>{{ count_predicted_pathogenic.value }}</td>
-      </tr>
-    </table>
+    <table id="results_per_chromosome"
+    class="results_table border border-3 rounded"
+    style="display: none">
+ <tr>
+     <th>Chromosome</th>
+     {% for i in range(1, 23) %}
+         <td class="results_table_chromosomes top_line bot_line"><b>{{ i }}</b></td>
+     {% endfor %}
+     <td class="results_table_chromosomes top_line bot_line"><b>X</b></td>
+     <td class="results_table_chromosomes top_line bot_line"><b>Y</b></td>
+     <td class="results_table_chromosomes top_line bot_line"><b>MT</b></td>
+     <td class="results_table_chromosomes border_line_all"><b>Total</b>
+     </td>
+ </tr>
+ <tr>
+     <th>Benign</th>
+     {% set count_benign = namespace(value=0) %}
+     {% for i in results_table_dict %}
+         {% set count_benign.value = count_benign.value +
+         results_table_dict[i][1] %}
+         <td style="background-color: rgb({{color_dict[i][1]}}, 255, {{color_dict[i][1]}})">
+             {{ results_table_dict[i][1] }}
+         </td>
+     {% endfor %}
+     <td class="left_line right_line bg_grey"><b>{{ count_benign.value }}</b></td>
+ </tr>
+ <tr>
+     <th>Likely benign</th>
+     {% set count_likely_benign = namespace(value=0) %}
+     {% for i in results_table_dict %}
+         {% set count_likely_benign.value = count_likely_benign.value +
+         results_table_dict[i][2] %}
+         <td style="background-color: rgb({{color_dict[i][2]}}, 255, {{color_dict[i][2]}})">
+             {{ results_table_dict[i][2] }}
+         </td>
+     {% endfor %}
+     <td class="left_line right_line bg_grey"><b>{{ count_likely_benign.value }}</b>
+     </td>
+ </tr>
+ <tr>
+     <th>Likely pathogenic</th>
+     {% set count_likely_pathogenic = namespace(value=0) %}
+     {% for i in results_table_dict %}
+         {% set count_likely_pathogenic.value =
+         count_likely_pathogenic.value + results_table_dict[i][3] %}
+         <td style="background-color: rgb(255, {{color_dict[i][3]}}, {{color_dict[i][3]}})">
+             {{ results_table_dict[i][3] }}
+         </td>
+     {% endfor %}
+     <td class="left_line right_line bg_grey"><b>{{ count_likely_pathogenic.value }}</b>
+     </td>
+ </tr>
+ <tr>
+     <th>Pathogenic</th>
+     {% set count_pathogenic = namespace(value=0) %}
+     {% for i in results_table_dict %}
+         {% set count_pathogenic.value = count_pathogenic.value +
+         results_table_dict[i][4] %}
+         <td style="background-color: rgb(255, {{color_dict[i][4]}}, {{color_dict[i][4]}})">
+             {{ results_table_dict[i][4] }}
+         </td>
+     {% endfor %}
+     <td class="left_line right_line bg_grey"><b>{{ count_pathogenic.value }}</b></td>
+ </tr>
+ <tr>
+     <th>Other</th>
+     {% set count_other = namespace(value=0) %}
+     {% for i in results_table_dict %}
+         {% set count_other.value =
+         count_other.value + results_table_dict[i][7] %}
+         <td style="background-color: rgb(255, 255, {{color_dict[i][7]}})">
+             {{ results_table_dict[i][7] }}
+         </td>
+     {% endfor %}
+     <td class="left_line right_line bg_grey"><b>{{ count_other.value }}</b>
+     </td>
+ </tr>
+ <tr>
+     <th>Total variants</th>
+     {% set count_variants = namespace(value=0) %}
+     {% for i in results_table_dict %}
+         {% set count_variants.value = count_variants.value +
+         results_table_dict[i][0] %}
+         <td class="top_line bot_line bg_grey"><b>{{ results_table_dict[i][0] }}</b></td>
+     {% endfor %}
+     <td class="border_line_all bg_grey"><b>{{ count_variants.value }}</b>
+     </td>
+ </tr>
+ <tr>
+     <th>Predicted benign</th>
+     {% set count_predicted_benign = namespace(value=0) %}
+     {% for i in results_table_dict %}
+         {% set count_predicted_benign.value =
+         count_predicted_benign.value + results_table_dict[i][5] %}
+         <td style="background-color: rgb({{color_dict[i][5]}}, 255, {{color_dict[i][5]}})">
+             {{ results_table_dict[i][5] }}
+         </td>
+     {% endfor %}
+     <td class="left_line right_line bg_grey"><b>{{
+         count_predicted_benign.value }}</b></td>
+ </tr>
+ <tr>
+     <th>Predicted pathogenic</th>
+     {% set count_predicted_pathogenic = namespace(value=0) %}
+     {% for i in results_table_dict %}
+         {% set count_predicted_pathogenic.value =
+         count_predicted_pathogenic.value + results_table_dict[i][6] %}
+         <td style="background-color: rgb(255, {{color_dict[i][6]}}, {{color_dict[i][6]}})">
+             {{ results_table_dict[i][6] }}
+         </td>
+     {% endfor %}
+     <td class="left_line right_line bg_grey"><b>{{ count_predicted_pathogenic.value }}</b></td>
+ </tr>
+ <tr>
+     <th>Total predicted variants</th>
+     {% set count_predicted = namespace(value=0) %}
+     {% for i in results_table_dict %}
+         {% set count_predicted.value = count_predicted.value +
+         results_table_dict[i][8] %}
+         <td class="top_line bot_line bg_grey"><b>{{ results_table_dict[i][8] }}</b></td>
+     {% endfor %}
+     <td class="border_line_all bg_grey"><b>{{ count_predicted.value }}</b>
+     </td>
+ </tr>
+</table>
     <script>
       function results_per_chromosome() {
         var x = document.getElementById("results_per_chromosome");
@@ -115,6 +165,7 @@
         console.log(element.id)
         var id = element.id.split("C")[1];
         document.getElementById(id).checked = true;
+
         document.getElementById("chrom_form").submit();
       }
     window.onload = function() {
@@ -123,7 +174,7 @@
     }
     </script>
     <br>
-    <div class="rectangle_visualisation">
+    <div id="vis-container" class="rectangle_visualisation">
       <div id='selected_chromosome'>Please select a chromosome above to
         start.</div>
       <div id='chart' class='chart'></div>
@@ -218,7 +269,7 @@
             } else {
               text += "<br><b>Probability pathogenic:</b> " + result_dict["Probability 1"]
             } +
-      `</div>
+              `</div>
     </div>  
   </div>
 </div>`
@@ -237,6 +288,26 @@
   <script>
     document.getElementById("{{ key }}").disabled = true;
     document.getElementById("{{ key }}").style.color = "grey";
+    document.getElementById("{{ key }}").style.borderColor = "grey";
+  </script>
+  {% endif %}
+  {% endfor %}
+    <script>
+      function results_per_chromosome() {
+        var x = document.getElementById("results_per_chromosome");
+        if (x.style.display === "none") {
+          x.style.display = "block";
+        } else {
+          x.style.display = "none";
+        }
+      }
+    </script>
+  </div>
+  {% for key in disable_button_dict.keys() %}
+  {% if disable_button_dict[key] == True %}
+  <script>
+    document.getElementById("{{ key }}").disabled = true;
+    document.getElementById("{{ key }}").style.backgroundColor = "grey";
     document.getElementById("{{ key }}").style.borderColor = "grey";
   </script>
   {% endif %}

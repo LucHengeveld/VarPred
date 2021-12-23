@@ -53,13 +53,14 @@ def get_input():
                     reference_build)
 
                 results_table(position_dict)
-
+                heatmap()
                 # Returns the results page
                 return render_template('results.html',
                                        results=results,
                                        JSON_dict=JSON_dict,
                                        disable_button_dict=disable_button_dict,
-                                       results_table_list=results_table_list)
+                                    results_table_dict=results_table_dict,
+                                       color_dict=color_dict)
 
             else:
                 # Returns an error if the file format is incorrect.
@@ -292,6 +293,13 @@ def visualisation_bar(reference_build):
                                                       "ALT": alt_list,
                                                       "REF_short": ref_short,
                                                       "ALT_short": alt_short}
+            if 'Medgen' in results[i]['CLNDISDB']:
+                medgen_id = results[i]['CLNDISDB']
+                print(medgen_id)
+                myclient = pymongo.MongoClient("mongodb")
+                mydb = myclient["varpred"]
+                mycol = mydb["medgen"]
+
     JSON_dict = {}
     disable_button_dict = {}
     for i in range(len(chromosome_lengths_list)):
@@ -357,61 +365,71 @@ def results_table(position_dict):
             variation_length_dict[i] = len(position_dict[i])
         except KeyError:
             variation_length_dict[i] = 0
+    global results_table_dict
+    results_table_dict = {}
+    for chrom in chromosomes:
+        results_table_dict[chrom] = [variation_length_dict[chrom], 0, 0, 0, 0,
+                                     0, 0, 0, 0]
 
-    empty_dict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0,
-                  '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0,
-                  '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0,
-                  '21': 0, '22': 0, 'X': 0, 'Y': 0, 'MT': 0}
-    benign_dict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0,
-                  '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0,
-                  '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0,
-                  '21': 0, '22': 0, 'X': 0, 'Y': 0, 'MT': 0}
-    likely_benign_dict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0,
-                  '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0,
-                  '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0,
-                  '21': 0, '22': 0, 'X': 0, 'Y': 0, 'MT': 0}
-    likely_pathogenic_dict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0,
-                  '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0,
-                  '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0,
-                  '21': 0, '22': 0, 'X': 0, 'Y': 0, 'MT': 0}
-    pathogenic_dict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0,
-                  '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0,
-                  '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0,
-                  '21': 0, '22': 0, 'X': 0, 'Y': 0, 'MT': 0}
-    predicted_benign_dict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0,
-                  '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0,
-                  '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0,
-                  '21': 0, '22': 0, 'X': 0, 'Y': 0, 'MT': 0}
-    predicted_pathogenic_dict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0,
-                  '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0,
-                  '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0,
-                  '21': 0, '22': 0, 'X': 0, 'Y': 0, 'MT': 0}
+    for result in results:
+        if "Benign" in result["CLNSIG"] and "Likely" not in result["CLNSIG"]:
+            results_table_dict[result["CHROM"]][1] += 1
 
-    for i in results:
-        if "Benign" in i["CLNSIG"] and "Likely" not in i["CLNSIG"]:
-            benign_dict[i["CHROM"]] += 1
+        elif "Likely benign" in result["CLNSIG"]:
+            results_table_dict[result["CHROM"]][2] += 1
 
-        elif "Likely benign" in i["CLNSIG"]:
-            likely_benign_dict[i["CHROM"]] += 1
+        elif "Likely pathogenic" in result["CLNSIG"]:
+            results_table_dict[result["CHROM"]][3] += 1
 
-        elif "Likely pathogenic" in i["CLNSIG"]:
-            likely_pathogenic_dict[i["CHROM"]] += 1
+        elif "Pathogenic" in result["CLNSIG"] and "Likely" not in result[
+            "CLNSIG"] and \
+                "Conflicting" not in result["CLNSIG"]:
+            results_table_dict[result["CHROM"]][4] += 1
 
-        elif "Pathogenic" in i["CLNSIG"] and "Likely" not in i["CLNSIG"] and \
-                "Conflicting" not in i["CLNSIG"]:
-            pathogenic_dict[i["CHROM"]] += 1
+        elif not any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
+                     ["benign", "pathogenic"]):
+            results_table_dict[result["CHROM"]][7] += 1
 
-    for i in results:
-        if i["ML prediction"] == "0":
-            predicted_benign_dict[i["CHROM"]] += 1
-        elif i["ML prediction"] == "1":
-            predicted_pathogenic_dict[i["CHROM"]] += 1
 
-    global results_table_list
-    results_table_list = [variation_length_dict, benign_dict,
-                          likely_benign_dict, likely_pathogenic_dict,
-                          pathogenic_dict, predicted_benign_dict,
-                          predicted_pathogenic_dict]
+
+
+            if any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
+                     ["uncertain significance", "not provided"]):
+                results_table_dict[result["CHROM"]][8] += 1
+                if result["ML prediction"] == "1":
+                    results_table_dict[result["CHROM"]][5] += 1
+
+                elif result["ML prediction"] == "0":
+                    results_table_dict[result["CHROM"]][6] += 1
+
+
+
+
+
+
+def heatmap():
+    chromosomes = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
+                   "12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
+                   "22", "X", "Y", "MT"]
+
+    global color_dict
+    color_dict = {}
+    for chrom in chromosomes:
+        color_dict[chrom] = [0, 0, 0, 0, 0, 0, 0]
+
+    for chrom in results_table_dict:
+        total_variants = results_table_dict[chrom][0]
+        color_list = []
+        for i in range(len(results_table_dict[chrom])):
+            if i == 0:
+                color = 255
+            elif total_variants != 0:
+                color = 255 - (255 / total_variants) * \
+                        results_table_dict[chrom][i]
+            else:
+                color = 255
+            color_list.append(int(color))
+        color_dict[chrom] = color_list
 
 
 @app.route('/calculator.html', methods=["POST", "GET"])
@@ -436,13 +454,12 @@ def select_chromosome():
 
     disable_button_dict = request.form['disable_button_dict']
     disable_button_dict = ast.literal_eval(disable_button_dict)
-
     return render_template("results.html", JSON_graph=JSON_graph,
                            JSON_dict=JSON_dict, selected_chrom=selected_chrom,
                            disable_button_dict=disable_button_dict,
                            results=results,
-                           results_table_list=results_table_list)
-
+                            results_table_dict=results_table_dict,
+                           color_dict=color_dict)
 
 @app.route('/disclaimer.html', methods=["POST", "GET"])
 def disclaimer():
