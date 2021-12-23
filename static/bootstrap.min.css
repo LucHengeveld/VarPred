@@ -69,6 +69,7 @@
     }
 }
 
+
 body {
     margin: 0;
     font-family: var(--bs-body-font-family);
@@ -123,6 +124,11 @@ hr:not([size]) {
 
 .h3, h3 {
     font-size: calc(1.3rem + .6vw)
+}
+
+#vis-text {
+    color: black;
+    font-size: 0.5em;
 }
 
 @media (min-width: 1200px) {
@@ -11755,26 +11761,20 @@ input[type=text]{
 
 /* width */
 ::-webkit-scrollbar {
-  width: 10px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px grey;
-  border-radius: 10px;
+    width: 2mm;
+    height: 2mm;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #0d6efd;
-  border-radius: 10px;
+  background: #adadad;
+  border-radius: 0.5rem;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #50c878};
-  border-radius: 10px;
-}
+  background: #1c9434
+};
 
 /* Zoom In #1 */
 i {

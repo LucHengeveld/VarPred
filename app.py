@@ -1,9 +1,6 @@
 import ast
 from flask import Flask, render_template, request
 import pymongo
-import dash
-from dash import dcc
-from dash import html
 import plotly
 import plotly.express as px
 import json
@@ -173,12 +170,12 @@ def compare_dataset(compare_list, reference_build):
     :return results: List with data of the found mutations
     """
     # Connect to the local database
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    myclient = pymongo.MongoClient("mongodb")
     mydb = myclient["varpred"]
     if reference_build == "37":
-        mycol = mydb["variants-37"]
+        mycol = mydb["variants37"]
     else:
-        mycol = mydb["variants-38"]
+        mycol = mydb["variants38"]
 
     # Create an empty list
     global results
@@ -297,6 +294,13 @@ def visualisation_bar(reference_build):
                                                       "ALT": alt_list,
                                                       "REF_short": ref_short,
                                                       "ALT_short": alt_short}
+            if 'Medgen' in results[i]['CLNDISDB']:
+                medgen_id = results[i]['CLNDISDB']
+                print(medgen_id)
+                myclient = pymongo.MongoClient("mongodb")
+                mydb = myclient["varpred"]
+                mycol = mydb["medgen"]
+        
     JSON_dict = {}
     disable_button_dict = {}
     for i in range(len(chromosome_lengths_list)):
@@ -316,7 +320,7 @@ def visualisation_bar(reference_build):
             fig.update_traces(marker=dict(size=42.5,
                                           symbol='line-ns',
                                           line=dict(width=2,
-                                                    color='black')),
+                                                    color="black")),
                               hovertemplate=
                               '<b>Positie: %{x}' +
                               '<br>REF > ALT: %{customdata[2]} > %{'
@@ -325,20 +329,20 @@ def visualisation_bar(reference_build):
 
             fig.update_xaxes(showgrid=False, fixedrange=False,
                              range=[0, chromosome_lengths_list[i][1]],
-                             tickfont_family="Arial Black", tickformat=',d')
+                             tickfont_family="sans-serif", tickformat=',d')
             fig.update_yaxes(showgrid=False, fixedrange=True,
-                             zeroline=True, zerolinecolor='#04AA6D',
+                             zeroline=True, zerolinecolor='#1c9434',
                              zerolinewidth=60,
                              showticklabels=False)
             fig.update_layout(height=260, plot_bgcolor='white',
-                              font_size=22,
-                              font_family="Arial Black",
+                              font_size=16,
+                              font_family="sans-serif",
                               font_color="black",
                               margin=dict(l=0, r=40),
                               hoverlabel=dict(
-                                  bgcolor='#e6ffe6',
+                                  bgcolor='#38b553',
                                   font_size=22,
-                                  font_family="Courier",
+                                  font_family="sans-serif",
                                   font_color="black"
                               ))
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
@@ -367,7 +371,7 @@ def results_table(position_dict):
     results_table_dict = {}
     for chrom in chromosomes:
         results_table_dict[chrom] = [variation_length_dict[chrom], 0, 0, 0, 0,
-                                     0, 0]
+                                     0, 0, 0, 0]
 
     for result in results:
         if "Benign" in result["CLNSIG"] and "Likely" not in result["CLNSIG"]:
@@ -384,11 +388,22 @@ def results_table(position_dict):
                 "Conflicting" not in result["CLNSIG"]:
             results_table_dict[result["CHROM"]][4] += 1
 
-        if result["ML prediction"] == "1":
-            results_table_dict[result["CHROM"]][5] += 1
+        elif not any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
+                     ["benign", "pathogenic"]):
+            results_table_dict[result["CHROM"]][7] += 1
 
-        elif result["ML prediction"] == "0":
-            results_table_dict[result["CHROM"]][6] += 1
+            if any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
+                     ["uncertain significance", "not provided"]):
+                results_table_dict[result["CHROM"]][8] += 1
+                if result["ML prediction"] == "1":
+                    results_table_dict[result["CHROM"]][5] += 1
+
+                elif result["ML prediction"] == "0":
+                    results_table_dict[result["CHROM"]][6] += 1
+
+
+
+
 
 
 def heatmap():
@@ -436,7 +451,6 @@ def select_chromosome():
 
     selected_chrom = request.form["chromosome_button"]
     JSON_graph = JSON_dict[selected_chrom]
-
     disable_button_dict = request.form['disable_button_dict']
     disable_button_dict = ast.literal_eval(disable_button_dict)
 
@@ -446,7 +460,6 @@ def select_chromosome():
                            results=results,
                            results_table_dict=results_table_dict,
                            color_dict=color_dict)
-
 
 @app.route('/disclaimer.html', methods=["POST", "GET"])
 def disclaimer():
@@ -503,4 +516,4 @@ def whoarewe():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True, host='0.0.0.0', port=5000)
