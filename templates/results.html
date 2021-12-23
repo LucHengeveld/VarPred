@@ -5,22 +5,21 @@
 <body>
   <div class="rectangle_container">
     <div>Select a chromosome below:</div>
-    <form id="chrom_form" action="{{ url_for('select_chromosome') }}" method="POST" , onsubmit="return false">
-      <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+    <form id="chrom_form" action="{{ url_for('select_chromosome') }}" method="POST", onsubmit="return false">
         <input type="hidden" name="JSON_dict" value="{{ JSON_dict }}">
         <input type="hidden" name="disable_button_dict" value="{{ disable_button_dict }}">
-        {% for i in range(1, 23) %}
-        <input id="{{ i }}" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="{{ i }}">
-        <label id="{{ 'C' + i|string }}" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary"
-          for="btnradio">{{ i }}</label>
+        <input type="hidden" id="selected_chrom" value="{{ selected_chrom }}">
+      <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+          {% for i in range(1, 23) %}
+              <input  id="{{ i }}" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="{{ i }}" >
+              <label id="{{ 'C' + i|string }}" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="{{ i }}" >{{ i }}</label>
         {% endfor %}
-        <input id="X" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="X">
-        <label id="CX" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="btnradio">X</label>
-        <input id="Y" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="Y">
-        <label id="CY" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="btnradio">Y</label>
-        <input id="MT" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="MT">
-        <label id="CMT" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="btnradio">MT</label>
-
+          <input  id="X" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="X" >
+        <label id="CX" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="X" >X</label>
+        <input  id="Y" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="Y" >
+        <label id="CY" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="Y" >Y</label>
+        <input  id="MT" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="MT" >
+        <label id="CMT" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="MT" >MT</label>
       </div>
     </form>
     <button id="results_per_chromosome_button" class="btn btn-lg btn-primary" onclick="results_per_chromosome()">
@@ -169,18 +168,10 @@
 
         document.getElementById("chrom_form").submit();
       }
-      window.onload = function () {
-        var id = document.get.ElementById("selected_chrom").value
-        document.getElementById(id).checked = true;
-      }
-      function reload() {
-        var container = document.getElementById("vis-container");
-        var content = container.innerHTML;
-        container.innerHTML = content;
-
-        //this line is to watch the result in console , you can remove it later	
-        console.log("Refreshed");
-      }
+    window.onload = function() {
+      var id = document.getElementById("selected_chrom").value
+      document.getElementById(id).checked = true;
+    }
     </script>
     <br>
     <div id="vis-container" class="rectangle_visualisation">

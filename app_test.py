@@ -321,7 +321,7 @@ def visualisation_bar(reference_build):
                                           line=dict(width=2,
                                                     color='black')),
                               hovertemplate=
-                              '<b>Positie: %{x}' +
+                              '<b>Position: %{x}' +
                               '<br>REF > ALT: %{customdata[2]} > %{'
                               'customdata[3]}</b> <extra></extra>',
                               selector=dict(mode='markers'))
