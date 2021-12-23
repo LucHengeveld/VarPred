@@ -152,16 +152,12 @@ body {
     width: 3.4%;
 }
 
-.results_table tr:hover {
-    background-color: #ddd;
-}
-
 .results_table th {
     padding: 8px;
     text-align: left;
     background-color: #1c9434;
     color: white;
-    border: 1px solid black;
+    border: 2px solid black;
     position: relative;
     width: 1%;
 }
@@ -171,21 +167,9 @@ body {
     text-align: center;
     background-color: #1c9434;
     color: white;
-    border: 1px solid black;
+    border: 2px solid black;
     position: relative;
     width: 1%;
-}
-
-.results_table td:hover::after,
-.results_table th:hover::after {
-    content: "";
-    position: absolute;
-    background-color: #ddd;
-    left: 0;
-    top: -5000px;
-    height: 10000px;
-    width: 100%;
-    z-index: -1;
 }
 
 #results_per_chromosome_button {
@@ -209,4 +193,26 @@ body {
 
 .dropdown-text {
     color: white;
+td.bg_grey {
+    background-color: #eaeaea;
+}
+
+td.top_line {
+    border-top: 2px solid black;
+}
+
+td.bot_line {
+    border-bottom: 2px solid black;
+}
+
+td.left_line {
+    border-left: 2px solid black;
+}
+
+td.right_line {
+    border-right: 2px solid black;
+}
+
+td.border_line_all {
+    border: 2px solid black;
 }
