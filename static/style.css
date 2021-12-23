@@ -210,3 +210,9 @@ body {
 .dropdown-text {
     color: white;
 }
+
+label#C1 {
+    border-radius: 0.25rem 0 0 0.25rem;
+    border-left: 0;
+}
+
