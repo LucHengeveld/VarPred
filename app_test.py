@@ -292,6 +292,13 @@ def visualisation_bar(reference_build):
                                                       "ALT": alt_list,
                                                       "REF_short": ref_short,
                                                       "ALT_short": alt_short}
+            if 'Medgen' in results[i]['CLNDISDB']:
+                medgen_id = results[i]['CLNDISDB']
+                print(medgen_id)
+                myclient = pymongo.MongoClient("mongodb")
+                mydb = myclient["varpred"]
+                mycol = mydb["medgen"]
+
     JSON_dict = {}
     disable_button_dict = {}
     for i in range(len(chromosome_lengths_list)):
@@ -436,13 +443,11 @@ def select_chromosome():
 
     disable_button_dict = request.form['disable_button_dict']
     disable_button_dict = ast.literal_eval(disable_button_dict)
-
     return render_template("results.html", JSON_graph=JSON_graph,
                            JSON_dict=JSON_dict, selected_chrom=selected_chrom,
                            disable_button_dict=disable_button_dict,
                            results=results,
                            results_table_list=results_table_list)
-
 
 @app.route('/disclaimer.html', methods=["POST", "GET"])
 def disclaimer():

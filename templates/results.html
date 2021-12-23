@@ -9,7 +9,6 @@
       <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
         <input type="hidden" name="JSON_dict" value="{{ JSON_dict }}">
         <input type="hidden" name="disable_button_dict" value="{{ disable_button_dict }}">
-        <input type="hidden" id="selected_chrom" value="{{ selected_chrom }}">
         {% for i in range(1, 23) %}
         <input  id="{{ i }}" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="{{ i }}" >
         <label id="{{ 'C' + i|string }}" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="btnradio" >{{ i }}</label>

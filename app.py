@@ -292,6 +292,8 @@ def visualisation_bar(reference_build):
                                                       "ALT": alt_list,
                                                       "REF_short": ref_short,
                                                       "ALT_short": alt_short}
+        
+        
     JSON_dict = {}
     disable_button_dict = {}
     for i in range(len(chromosome_lengths_list)):
@@ -434,7 +436,7 @@ def select_chromosome():
 
     selected_chrom = request.form["chromosome_button"]
     JSON_graph = JSON_dict[selected_chrom]
-
+    getGenes()
     disable_button_dict = request.form['disable_button_dict']
     disable_button_dict = ast.literal_eval(disable_button_dict)
 
@@ -444,6 +446,8 @@ def select_chromosome():
                            results=results,
                            results_table_list=results_table_list)
 
+def getGenes():
+    print(results)
 
 @app.route('/disclaimer.html', methods=["POST", "GET"])
 def disclaimer():
