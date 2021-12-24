@@ -1,8 +1,11 @@
+{#Including header to the page#}
 {% extends 'header.html' %}
 {% block title %}Contact{% endblock %}
 {% block content %}
+
+{#    Contact form to fill in#}
     <form class= "container-adjustment-contact border border-3 rounded" action="{{ url_for('submit_on_contact') }}"  method="POST" >
-    <h2>Contact Form</h2>
+        <h2>Contact Form</h2>
         <div class="col-md-4">
             <label for="Firstname" class="form-label">Firstname</label>
             <input type="text" class="form-control" id="firstname" name="firstname" required>
@@ -50,8 +53,7 @@
         <div class="col-md-3">
             <label for="Phonenumber" class="form-label">Phonenumber</label>
             <label for="phonenumber"></label>
-            <input type="text" pattern="[0-100][0-9]{9}" class="form-control" id="phonenumber" name="phonenumber"
-                   required>
+            <input type="text" pattern="[0-100][0-9]{9}" class="form-control" id="phonenumber" name="phonenumber" required>
             <div class="valid-feedback">
                 Looks good!
             </div>
