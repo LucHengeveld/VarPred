@@ -1,9 +1,9 @@
-{#Including header to the page#}
+<!-- Including header to the page -->
 {% extends 'header.html' %}
 {% block title %}Contact{% endblock %}
 {% block content %}
 
-{#    Contact form to fill in#}
+<!-- Contact form to fill in -->
     <form class= "container-adjustment-contact border border-3 rounded" action="{{ url_for('submit_on_contact') }}"  method="POST" >
         <h2>Contact Form</h2>
         <div class="col-md-4">
