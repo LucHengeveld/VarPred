@@ -1,34 +1,58 @@
 import os
+import sys
 import pickle
-import pandas as pd
 import vcf
+import warnings
 
 
-def read_file():
+def read_file(filename):
+    """Opens and parses a ClinVar .vcf file and converts it to a dictionary;
+    this dictionary is pickled and returned.
+
+    Returns:
+        Dictionary of a ClinVar .vcf file
+    """
+    # read file
     column_list = ["AF_ESP", "AF_EXAC", "AF_TGP", "ALLELEID", "CLNDN",
                    "CLNDNINCL", "CLNDISDB", "CLNDISDBINCL", "CLNHGVS",
                    "CLNREVSTAT", "CLNSIG", "CLNSIGCONF", "CLNSIGINCL", "CLNVC",
                    "CLNVCSO", "CLNVI", "DBVARID", "GENEINFO", "MC", "ORIGIN",
                    "RS", "SSR"]
-    file_dictionary = dict()
-    file = vcf.Reader(open("../clinvar.vcf"))
+    file = vcf.Reader(open(filename))
 
+    # convert to dictionary
+    file_dictionary = dict()
     for entry in file:
         file_dictionary[int(entry.ID)] = list()
-        file_dictionary[int(entry.ID)].extend([entry.CHROM, entry.POS, entry.REF, entry.ALT])
+        file_dictionary[int(entry.ID)].extend([entry.CHROM, entry.POS,
+                                               entry.REF, entry.ALT])
         for column in column_list:
             try:
                 file_dictionary[int(entry.ID)].append(entry.INFO[column])
             except KeyError:
                 file_dictionary[int(entry.ID)].append("N/A")
 
-    pickle.dump(file_dictionary, open("file_dictionary.p", "wb"))
+    # pickle dictionary
+    pickle.dump(file_dictionary, open(f"{file}.p", "wb"))
+
     return file_dictionary
 
 
 def change_dict(file_dictionary):
+    """Iterates over the ClinVar dictionary and formats cells to a
+    standard.
+
+    Args:
+        file_dictionary: Dictionary of the ClinVar file.
+
+    Returns:
+        Organised dictionary of the ClinVar file.
+    """
+
     for key, value in file_dictionary.items():
         for i in range(len(value)):
+
+            # if the value in the cell is a list, this list is removed.
             if isinstance(value[i], list):
                 temp = ""
                 for cell in value[i]:
@@ -37,29 +61,44 @@ def change_dict(file_dictionary):
                     temp = temp.replace("_", " ")
                     temp = temp.rstrip("_")
                 value[i] = temp.lstrip(",")
+
+            # if the value in the cell is a string, it is manipulated
+            # to a new standard.
             elif isinstance(value[i], str):
+
                 value[i] = value[i].lstrip("_")
                 value[i] = value[i].replace("_", " ")
                 value[i] = value[i].rstrip("_")
 
         # ref length appended to the end
-        value.append(len(value[2]))
+        reflen = len(value[2])
+        value.append(reflen)
 
         # alt length appended to the end
-        value.append(len(value[3]))
+        altlen = len(value[3])
+        value.append(altlen)
+        value.append((reflen - altlen))
         file_dictionary[key] = value
 
     return file_dictionary
 
 
 def write_file(file_dictionary):
-    with open("results_temp.tsv", "w") as file:
+    """Writes the ClinVar dictionary to a .tsv file.
+
+    Args:
+        file_dictionary: Dictionary of the ClinVar file.
+    """
+
+    # write to temporary file
+    with open("results.temp", "w") as file:
         column_list = ["ID", "CHROM", "POS", "REF", "ALT", "AF_ESP", "AF_EXAC",
                        "AF_TGP", "ALLELEID", "CLNDN", "CLNDNINCL", "CLNDISDB",
                        "CLNDISDBINCL", "CLNHGVS", "CLNREVSTAT", "CLNSIG",
                        "CLNSIGCONF", "CLNSIGINCL", "CLNVC", "CLNVCSO", "CLNVI",
                        "DBVARID", "GENEINFO", "MC", "ORIGIN", "RS", "SSR",
-                       "REF LENGTH", "ALT LENGTH"]
+                       "REF LENGTH", "ALT LENGTH",
+                       "DIFFERENCE REF AND ALT LENGTH"]
         for value in column_list:
             file.write(f"{value}\t")
         file.write("\n")
@@ -68,22 +107,27 @@ def write_file(file_dictionary):
             for value in file_dictionary[key]:
                 file.write(f"{value}\t")
             file.write("\n")
-    with open("results_temp.tsv", "r") as file1:
+
+    # convert temporary file to final file
+    with open("results.temp", "r") as file1:
         with open("results_new.tsv", "w") as file2:
             for line in file1:
                 file2.write(line.replace("\t\n", "\n"))
-    os.remove("results_temp.tsv")
-    file.close()
+    os.remove("results.temp")
 
 
 if __name__ == '__main__':
-    if os.path.isfile("file_dictionary.p"):
+    warnings.filterwarnings("ignore")
+    warnings.simplefilter(action="ignore", category=FutureWarning)
+    file = sys.argv[1]
+    if os.path.isfile(f"{file}.p"):
         print("Pickle found, loading pickle...")
-        fd = pickle.load(open("file_dictionary.p", "rb"))
+        fd = pickle.load(open(f"{file}.p", "rb"))
         print("Pickle parsed and loaded...")
     else:
         print("No pickle found, parsing data...")
-        fd = read_file()
+        fd = read_file(f"clinvar-{file}.vcf")
     file_dictionary = change_dict(fd)
-    print(file_dictionary.get(899438))
     write_file(file_dictionary)
+    print("File parsed successfully!")
+    print("-----------------------------------------------------------")
