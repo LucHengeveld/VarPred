@@ -229,13 +229,11 @@ def visualisation_bar(reference_build):
     ref_short = []
     alt_list = []
     alt_short = []
-    CLNSIG = []
 
     for i in range(len(results)):
         if i == 0:
             pos_list.append(int(results[i]["POS"]))
             ref_list.append(results[i]["REF"])
-            CLNSIG_category()
 
             if len(results[i]["REF"]) > 5:
                 ref_short.append(results[i]["REF"][:5] + "...")
@@ -296,8 +294,7 @@ def visualisation_bar(reference_build):
                                                       "ALT": alt_list,
                                                       "REF_short": ref_short,
                                                       "ALT_short": alt_short}
-
-    print(mutation_dict)
+    CLNSIG_dict = CLNSIG_category()
     JSON_dict = {}
     disable_button_dict = {}
     for i in range(len(chromosome_lengths_list)):
@@ -307,18 +304,18 @@ def visualisation_bar(reference_build):
             for j in range(len(x_list)):
                 y_list.append(0)
             disable_button_dict[chromosome_lengths_list[i][0]] = False
-            df = pd.DataFrame(
-                data=mutation_dict[chromosome_lengths_list[i][0]])
+            df = pd.DataFrame(data=mutation_dict[chromosome_lengths_list[i][0]])
+            df["CLNSIG"] = CLNSIG_dict[chromosome_lengths_list[i][0]]
             print(df)
             fig = px.scatter(df, x=x_list, y=y_list,
                              labels={"x": "Position",
                                      "y": ""},
                              custom_data=["REF", "ALT", "REF_short",
-                                          "ALT_short", "CLNSIG"])
+                                          "ALT_short", "CLNSIG"],
+                             color="CLNSIG")
             fig.update_traces(marker=dict(size=42.5,
                                           symbol='line-ns',
-                                          line=dict(width=2,
-                                                    color="black")),
+                                          line=dict(width=2, color="black")),
                               hovertemplate=
                               '<b>Positie: %{x}' +
                               '<br>REF > ALT: %{customdata[2]} > %{'
@@ -385,8 +382,7 @@ def results_table(position_dict):
             "CLNSIG"] and "Conflicting" not in result["CLNSIG"]:
             results_table_dict[result["CHROM"]][4] += 1
 
-        elif not any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
-                     ["benign", "pathogenic"]):
+        else:
             results_table_dict[result["CHROM"]][7] += 1
 
             if any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
@@ -425,26 +421,32 @@ def heatmap():
 
 
 def CLNSIG_category():
-    CLNSIG_list = []
+    CLNSIG_dict = {}
+    chromosomes = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
+     "12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
+     "22", "X", "Y", "MT"]
+
+    for chrom in chromosomes:
+        CLNSIG_dict[chrom] = []
+
     for result in results:
         if "Benign" in result["CLNSIG"] and "Likely" not in result["CLNSIG"]:
-            CLNSIG_list.append("Benign")
+            CLNSIG_dict[result["CHROM"]].append("Benign")
 
         elif "Likely benign" in result["CLNSIG"]:
-            CLNSIG_list.append("Likely benign")
+            CLNSIG_dict[result["CHROM"]].append("Likely benign")
 
         elif "Likely pathogenic" in result["CLNSIG"]:
-            CLNSIG_list.append("Likely pathogenic")
+            CLNSIG_dict[result["CHROM"]].append("Likely pathogenic")
 
         elif "Pathogenic" in result["CLNSIG"] and "Likely" not in result[
-            "CLNSIG"] and "Conflicting" not in result["CLNSIG"]:
-            CLNSIG_list.append("Pathogenic")
+            "CLNSIG"] and "Conflicting interpretations" not in result["CLNSIG"]:
+            CLNSIG_dict[result["CHROM"]].append("Pathogenic")
 
-        elif not any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
-                     ["benign", "pathogenic"]):
-            CLNSIG_list.append("Other")
+        else:
+            CLNSIG_dict[result["CHROM"]].append("Other")
 
-    return CLNSIG_list
+    return CLNSIG_dict
 
 
 @app.route('/calculator.html', methods=["POST", "GET"])
