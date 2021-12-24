@@ -377,8 +377,7 @@ def results_table(position_dict):
             results_table_dict[result["CHROM"]][3] += 1
 
         elif "Pathogenic" in result["CLNSIG"] and "Likely" not in result[
-            "CLNSIG"] and \
-                "Conflicting" not in result["CLNSIG"]:
+            "CLNSIG"] and "Conflicting" not in result["CLNSIG"]:
             results_table_dict[result["CHROM"]][4] += 1
 
         elif not any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
@@ -386,17 +385,13 @@ def results_table(position_dict):
             results_table_dict[result["CHROM"]][7] += 1
 
             if any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
-                     ["uncertain significance", "not provided"]):
+                   ["uncertain significance", "not provided", "nan"]):
                 results_table_dict[result["CHROM"]][8] += 1
                 if result["ML prediction"] == "1":
                     results_table_dict[result["CHROM"]][5] += 1
 
                 elif result["ML prediction"] == "0":
                     results_table_dict[result["CHROM"]][6] += 1
-
-
-
-
 
 
 def heatmap():
