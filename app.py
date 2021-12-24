@@ -229,11 +229,13 @@ def visualisation_bar(reference_build):
     ref_short = []
     alt_list = []
     alt_short = []
+    CLNSIG = []
 
     for i in range(len(results)):
         if i == 0:
             pos_list.append(int(results[i]["POS"]))
             ref_list.append(results[i]["REF"])
+            CLNSIG_category()
 
             if len(results[i]["REF"]) > 5:
                 ref_short.append(results[i]["REF"][:5] + "...")
@@ -294,6 +296,8 @@ def visualisation_bar(reference_build):
                                                       "ALT": alt_list,
                                                       "REF_short": ref_short,
                                                       "ALT_short": alt_short}
+
+    print(mutation_dict)
     JSON_dict = {}
     disable_button_dict = {}
     for i in range(len(chromosome_lengths_list)):
@@ -305,11 +309,12 @@ def visualisation_bar(reference_build):
             disable_button_dict[chromosome_lengths_list[i][0]] = False
             df = pd.DataFrame(
                 data=mutation_dict[chromosome_lengths_list[i][0]])
+            print(df)
             fig = px.scatter(df, x=x_list, y=y_list,
                              labels={"x": "Position",
                                      "y": ""},
                              custom_data=["REF", "ALT", "REF_short",
-                                          "ALT_short"])
+                                          "ALT_short", "CLNSIG"])
             fig.update_traces(marker=dict(size=42.5,
                                           symbol='line-ns',
                                           line=dict(width=2,
@@ -417,6 +422,29 @@ def heatmap():
                 color = 255
             color_list.append(int(color))
         color_dict[chrom] = color_list
+
+
+def CLNSIG_category():
+    CLNSIG_list = []
+    for result in results:
+        if "Benign" in result["CLNSIG"] and "Likely" not in result["CLNSIG"]:
+            CLNSIG_list.append("Benign")
+
+        elif "Likely benign" in result["CLNSIG"]:
+            CLNSIG_list.append("Likely benign")
+
+        elif "Likely pathogenic" in result["CLNSIG"]:
+            CLNSIG_list.append("Likely pathogenic")
+
+        elif "Pathogenic" in result["CLNSIG"] and "Likely" not in result[
+            "CLNSIG"] and "Conflicting" not in result["CLNSIG"]:
+            CLNSIG_list.append("Pathogenic")
+
+        elif not any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
+                     ["benign", "pathogenic"]):
+            CLNSIG_list.append("Other")
+
+    return CLNSIG_list
 
 
 @app.route('/calculator.html', methods=["POST", "GET"])
