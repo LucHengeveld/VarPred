@@ -300,27 +300,28 @@ def visualisation_bar(reference_build):
     for i in range(len(chromosome_lengths_list)):
         try:
             y_list = []
-            x_list = position_dict[chromosome_lengths_list[i][0]]
-            for j in range(len(x_list)):
+            positions = position_dict[chromosome_lengths_list[i][0]]
+            for j in range(len(positions)):
                 y_list.append(0)
             disable_button_dict[chromosome_lengths_list[i][0]] = False
-            df = pd.DataFrame(data=mutation_dict[chromosome_lengths_list[i][0]])
+            df = pd.DataFrame(
+                data=mutation_dict[chromosome_lengths_list[i][0]])
             df["CLNSIG"] = CLNSIG_dict[chromosome_lengths_list[i][0]]
-            print(df)
-            fig = px.scatter(df, x=x_list, y=y_list,
+            fig = px.scatter(df, x=positions, y=y_list,
                              labels={"x": "Position",
-                                     "y": ""},
+                                     "y": "",
+                                     "CLNSIG": "Clinical significance"},
                              custom_data=["REF", "ALT", "REF_short",
                                           "ALT_short", "CLNSIG"],
                              color="CLNSIG")
-            fig.update_traces(marker=dict(size=42.5,
-                                          symbol='line-ns',
-                                          line=dict(width=2, color="black")),
-                              hovertemplate=
-                              '<b>Positie: %{x}' +
+            fig.update_traces(
+                marker=dict(size=42.5,
+                            symbol='line-ns-open',
+                            line=dict(width=2)),
+                hovertemplate='<b>Position: %{x}' +
                               '<br>REF > ALT: %{customdata[2]} > %{'
                               'customdata[3]}</b> <extra></extra>',
-                              selector=dict(mode='markers'))
+                selector=dict(mode='markers'))
 
             fig.update_xaxes(showgrid=False, fixedrange=False,
                              range=[0, chromosome_lengths_list[i][1]],
@@ -423,8 +424,8 @@ def heatmap():
 def CLNSIG_category():
     CLNSIG_dict = {}
     chromosomes = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
-     "12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
-     "22", "X", "Y", "MT"]
+                   "12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
+                   "22", "X", "Y", "MT"]
 
     for chrom in chromosomes:
         CLNSIG_dict[chrom] = []
@@ -440,7 +441,8 @@ def CLNSIG_category():
             CLNSIG_dict[result["CHROM"]].append("Likely pathogenic")
 
         elif "Pathogenic" in result["CLNSIG"] and "Likely" not in result[
-            "CLNSIG"] and "Conflicting interpretations" not in result["CLNSIG"]:
+            "CLNSIG"] and "Conflicting interpretations" not in result[
+            "CLNSIG"]:
             CLNSIG_dict[result["CHROM"]].append("Pathogenic")
 
         else:
