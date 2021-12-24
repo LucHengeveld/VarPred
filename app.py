@@ -313,7 +313,12 @@ def visualisation_bar(reference_build):
                                      "CLNSIG": "Clinical significance"},
                              custom_data=["REF", "ALT", "REF_short",
                                           "ALT_short", "CLNSIG"],
-                             color="CLNSIG")
+                             color="CLNSIG",
+                             color_discrete_map={"Benign": "green",
+                                                 "Likely benign": "green",
+                                                 "Pathogenic": 'red',
+                                                 "Likely pathogenic": 'red',
+                                                  "Other": 'yellow'})
             fig.update_traces(
                 marker=dict(size=42.5,
                             symbol='line-ns-open',
