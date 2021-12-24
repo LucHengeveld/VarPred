@@ -316,9 +316,9 @@ def visualisation_bar(reference_build):
                              color="CLNSIG",
                              color_discrete_map={"Benign": "green",
                                                  "Likely benign": "green",
-                                                 "Pathogenic": 'red',
-                                                 "Likely pathogenic": 'red',
-                                                  "Other": 'yellow'})
+                                                 "Pathogenic": "red",
+                                                 "Likely pathogenic": "red",
+                                                  "Other": "yellow"})
             fig.update_traces(
                 marker=dict(size=42.5,
                             symbol='line-ns-open',
