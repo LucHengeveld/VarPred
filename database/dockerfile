@@ -1,4 +1,7 @@
 FROM mongo
-
-COPY variant.json /variant.json
-CMD mongoimport --host mongodb --db varpred --collection variant --type json --file /variant.json --jsonArray
+COPY seed-script.sh seed-script.sh
+COPY variant-37.json variant-37.json
+COPY variant-38.json variant-38.json
+COPY medgen.json medgen.json
+EXPOSE 27017
+CMD ["/bin/bash", "seed-script.sh"]

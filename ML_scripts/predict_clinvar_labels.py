@@ -1,6 +1,9 @@
 import pickle
 import pandas as pd
 import numpy as np
+import os
+import sys
+import warnings
 
 
 def load_ml_model(model_name):
@@ -58,11 +61,21 @@ def write_file(data, filename):
         data: Dataframe that gets written to dataframe
         filename: String of the filename
     """
-    data.to_csv(filename, sep="\t", index=False)
+    for column in data.columns:
+        data[column]= data[column].map(str)
+    data.to_json(filename, orient='records')
 
 
 if __name__ == '__main__':
+    warnings.filterwarnings("ignore")
+    warnings.simplefilter(action="ignore", category=FutureWarning)
+    print("Predicting pathogenicity for ClinVar entries...")
+    file = sys.argv[1]
     model = load_ml_model("model.p")
-    data = open_tsv_file("testbestand.tsv")
+    data = open_tsv_file("OHE_ClinVar_data.tsv")
     data = predict_labels(data)
-    write_file(data, "testbestand2.tsv")
+    os.remove("OHE_ClinVar_data.tsv")
+    # f"{file}.p"
+    write_file(data, f"variant-{file}.json")
+    print("Pathogenicity predicted successfully!")
+    print("-----------------------------------------------------------")

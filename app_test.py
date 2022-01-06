@@ -54,13 +54,12 @@ def get_input():
 
                 results_table(position_dict)
                 heatmap()
-
                 # Returns the results page
                 return render_template('results.html',
                                        results=results,
                                        JSON_dict=JSON_dict,
                                        disable_button_dict=disable_button_dict,
-                                       results_table_dict=results_table_dict,
+                                    results_table_dict=results_table_dict,
                                        color_dict=color_dict)
 
             else:
@@ -170,12 +169,12 @@ def compare_dataset(compare_list, reference_build):
     :return results: List with data of the found mutations
     """
     # Connect to the local database
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    myclient = pymongo.MongoClient("mongodb")
     mydb = myclient["varpred"]
     if reference_build == "37":
-        mycol = mydb["variants-37"]
+        mycol = mydb["variants37"]
     else:
-        mycol = mydb["variants-38"]
+        mycol = mydb["variants38"]
 
     # Create an empty list
     global results
@@ -294,42 +293,38 @@ def visualisation_bar(reference_build):
                                                       "ALT": alt_list,
                                                       "REF_short": ref_short,
                                                       "ALT_short": alt_short}
-                if 'Medgen' in results[i]['CLNDISDB']:
-                    medgen_id = results[i]['CLNDISDB']
-                    print(medgen_id)
-                    myclient = pymongo.MongoClient("mongodb")
-                    mydb = myclient["varpred"]
-                    mycol = mydb["medgen"]
-
-    CLNSIG_dict = CLNSIG_category()
+            if 'Medgen' in results[i]['CLNDISDB']:
+                medgen_id = results[i]['CLNDISDB']
+                print(medgen_id)
+                myclient = pymongo.MongoClient("mongodb")
+                mydb = myclient["varpred"]
+                mycol = mydb["medgen"]
 
     JSON_dict = {}
     disable_button_dict = {}
     for i in range(len(chromosome_lengths_list)):
         try:
             y_list = []
-            positions = position_dict[chromosome_lengths_list[i][0]]
-            for j in range(len(positions)):
+            x_list = position_dict[chromosome_lengths_list[i][0]]
+            for j in range(len(x_list)):
                 y_list.append(0)
             disable_button_dict[chromosome_lengths_list[i][0]] = False
             df = pd.DataFrame(
                 data=mutation_dict[chromosome_lengths_list[i][0]])
-            df["CLNSIG"] = CLNSIG_dict[chromosome_lengths_list[i][0]]
-            fig = px.scatter(df, x=positions, y=y_list,
+            fig = px.scatter(df, x=x_list, y=y_list,
                              labels={"x": "Position",
-                                     "y": "",
-                                     "CLNSIG": "Clinical significance"},
+                                     "y": ""},
                              custom_data=["REF", "ALT", "REF_short",
-                                          "ALT_short", "CLNSIG"],
-                             color="CLNSIG")
-            fig.update_traces(
-                marker=dict(size=42.5,
-                            symbol='line-ns-open',
-                            line=dict(width=2)),
-                hovertemplate='<b>Position: %{x}' +
+                                          "ALT_short"])
+            fig.update_traces(marker=dict(size=42.5,
+                                          symbol='line-ns',
+                                          line=dict(width=2,
+                                                    color='black')),
+                              hovertemplate=
+                              '<b>Position: %{x}' +
                               '<br>REF > ALT: %{customdata[2]} > %{'
                               'customdata[3]}</b> <extra></extra>',
-                selector=dict(mode='markers'))
+                              selector=dict(mode='markers'))
 
             fig.update_xaxes(showgrid=False, fixedrange=False,
                              range=[0, chromosome_lengths_list[i][1]],
@@ -370,7 +365,6 @@ def results_table(position_dict):
             variation_length_dict[i] = len(position_dict[i])
         except KeyError:
             variation_length_dict[i] = 0
-
     global results_table_dict
     results_table_dict = {}
     for chrom in chromosomes:
@@ -388,20 +382,29 @@ def results_table(position_dict):
             results_table_dict[result["CHROM"]][3] += 1
 
         elif "Pathogenic" in result["CLNSIG"] and "Likely" not in result[
-            "CLNSIG"] and "Conflicting" not in result["CLNSIG"]:
+            "CLNSIG"] and \
+                "Conflicting" not in result["CLNSIG"]:
             results_table_dict[result["CHROM"]][4] += 1
 
-        else:
+        elif not any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
+                     ["benign", "pathogenic"]):
             results_table_dict[result["CHROM"]][7] += 1
 
+
+
+
             if any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
-                   ["uncertain significance", "not provided", "nan"]):
+                     ["uncertain significance", "not provided"]):
                 results_table_dict[result["CHROM"]][8] += 1
                 if result["ML prediction"] == "1":
                     results_table_dict[result["CHROM"]][5] += 1
 
                 elif result["ML prediction"] == "0":
                     results_table_dict[result["CHROM"]][6] += 1
+
+
+
+
 
 
 def heatmap():
@@ -429,36 +432,6 @@ def heatmap():
         color_dict[chrom] = color_list
 
 
-def CLNSIG_category():
-    CLNSIG_dict = {}
-    chromosomes = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
-                   "12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
-                   "22", "X", "Y", "MT"]
-
-    for chrom in chromosomes:
-        CLNSIG_dict[chrom] = []
-
-    for result in results:
-        if "Benign" in result["CLNSIG"] and "Likely" not in result["CLNSIG"]:
-            CLNSIG_dict[result["CHROM"]].append("Benign")
-
-        elif "Likely benign" in result["CLNSIG"]:
-            CLNSIG_dict[result["CHROM"]].append("Likely benign")
-
-        elif "Likely pathogenic" in result["CLNSIG"]:
-            CLNSIG_dict[result["CHROM"]].append("Likely pathogenic")
-
-        elif "Pathogenic" in result["CLNSIG"] and "Likely" not in result[
-            "CLNSIG"] and "Conflicting interpretations" not in result[
-            "CLNSIG"]:
-            CLNSIG_dict[result["CHROM"]].append("Pathogenic")
-
-        else:
-            CLNSIG_dict[result["CHROM"]].append("Other")
-
-    return CLNSIG_dict
-
-
 @app.route('/calculator.html', methods=["POST", "GET"])
 def calculator():
     """
@@ -476,19 +449,17 @@ def calculator():
 def select_chromosome():
     JSON_dict = request.form['JSON_dict']
     JSON_dict = ast.literal_eval(JSON_dict)
-
     selected_chrom = request.form["chromosome_button"]
     JSON_graph = JSON_dict[selected_chrom]
+
     disable_button_dict = request.form['disable_button_dict']
     disable_button_dict = ast.literal_eval(disable_button_dict)
-
     return render_template("results.html", JSON_graph=JSON_graph,
                            JSON_dict=JSON_dict, selected_chrom=selected_chrom,
                            disable_button_dict=disable_button_dict,
                            results=results,
-                           results_table_dict=results_table_dict,
+                            results_table_dict=results_table_dict,
                            color_dict=color_dict)
-
 
 @app.route('/disclaimer.html', methods=["POST", "GET"])
 def disclaimer():
@@ -543,6 +514,5 @@ def whoarewe():
     # Returns the info page
     return render_template('aboutvarpred.html')
 
-
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True, host='0.0.0.0', port=5000)
