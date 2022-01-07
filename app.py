@@ -49,8 +49,8 @@ def get_input():
                 compare_dataset(compare_list, reference_build)
 
                 # Creates the visualisation bar
-                JSON_dict, disable_button_dict, chromosome_lengths_list, position_dict = visualisation_bar(
-                    reference_build)
+                JSON_dict, disable_button_dict, chromosome_lengths_list, \
+                position_dict = visualisation_bar(reference_build)
 
                 results_table(position_dict)
                 heatmap()
@@ -322,11 +322,17 @@ def visualisation_bar(reference_build):
                              custom_data=["REF", "ALT", "REF_short",
                                           "ALT_short", "CLNSIG"],
                              color="CLNSIG",
-                             color_discrete_map={"Benign": "green",
-                                                 "Likely benign": "green",
+                             color_discrete_map={"Benign": "darkgreen",
+                                                 "Likely benign": "darkgreen",
                                                  "Pathogenic": "red",
                                                  "Likely pathogenic": "red",
-                                                  "Other": "yellow"})
+                                                 "Other": "yellow"},
+                             category_orders={"CLNSIG": ["Benign",
+                                                         "Likely benign",
+                                                         "Likely pathogenic",
+                                                         "Pathogenic",
+                                                         "Other"]})
+
             fig.update_traces(
                 marker=dict(size=42.5,
                             symbol='line-ns-open',
@@ -339,15 +345,17 @@ def visualisation_bar(reference_build):
             fig.update_xaxes(showgrid=False, fixedrange=False,
                              range=[0, chromosome_lengths_list[i][1]],
                              tickfont_family="sans-serif", tickformat=',d')
+
             fig.update_yaxes(showgrid=False, fixedrange=True,
                              zeroline=True, zerolinecolor='#1c9434',
                              zerolinewidth=60,
                              showticklabels=False)
-            fig.update_layout(height=260, plot_bgcolor='white',
+
+            fig.update_layout(height=300, plot_bgcolor='white',
                               font_size=16,
                               font_family="sans-serif",
                               font_color="black",
-                              margin=dict(l=0, r=40),
+                              margin=dict(l=0, r=40, t=100, b=20),
                               hoverlabel=dict(
                                   bgcolor='#38b553',
                                   font_size=22,

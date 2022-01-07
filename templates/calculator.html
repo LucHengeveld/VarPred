@@ -2,52 +2,55 @@
 {% block title %}Calculator{% endblock %}
 {% block content %}
 
-    <link rel="stylesheet" href="../static/style.css"
-          xmlns="http://www.w3.org/1999/html">
+<link rel="stylesheet" href="../static/style.css"
+      xmlns="http://www.w3.org/1999/html">
 
-    <div class="container container-adjustment-info p-3 mb-2 border border-1 rounded-pill bg-light">
-        <h2>Clinical significance predictor:</h2>
-        <form action="{{ url_for('get_input') }}" method="POST"
-              enctype="multipart/form-data">
-            <div class="button-container">
+<div class="container container-adjustment-info p-3 mb-2 border border-1
+rounded-pill bg-light">
+    <h2>Clinical significance predictor:</h2>
+    <form action="{{ url_for('get_input') }}" method="POST"
+          enctype="multipart/form-data">
+        <div class="button-container">
             <div class="button-group">
-            <label>Enter the VCF file below:<br>
-                <div class="mb-3">
-                    <input class="form-control" type="file" name="vcf_file"
-                           accept=".vcf">
-                </div>
-            </label><br>
+                <label>Enter the VCF file below:<br>
+                    <div class="mb-3">
+                        <input class="form-control" type="file" name="vcf_file"
+                               accept=".vcf">
+                    </div>
+                </label><br>
+            </div>
+            <div class="button-group">
+                <label>
+                    <select name="reference_selector"
+                            class="reference_selector dropdown-text">
+                        <option value=37>GRCh37, hg19</option>
+                        <option value=38>GRCh38, hg38</option>
+                    </select>
+                </label><br><br>
+            </div>
         </div>
-        <div class="button-group">
-            <label>
-                <select name="reference_selector" class="reference_selector dropdown-text">
-                    <option value=37>GRCh37, hg19</option>
-                    <option value=38>GRCh38, hg38</option>
-                </select>
-            </label><br><br>
-        </div>
-        </div>
-            <button id="calculate" class="btn btn-primary btn-lg" onclick="main()"
-                    type="submit">Calculate results
-            </button>
-            <span id="error">{{ errormsg }}</span>
-        </form>
-    </div>
+        <button id="calculate" class="btn btn-primary btn-lg" onclick="main()"
+                type="submit">Calculate results
+        </button>
+        <span id="error">{{ errormsg }}</span>
+    </form>
+</div>
 
-    <script>
-        function main() {
-            changeTxt()
-            hideErrorMsg()
-        }
+<script>
+    function main() {
+        changeTxt()
+        hideErrorMsg()
+    }
 
-        function changeTxt() {
-            var calculate = document.getElementById("calculate")
-            calculate.innerHTML = '<span class=\"spinner-border spinner-border-sm\"></span> Loading...';
-        }
+    function changeTxt() {
+        var calculate = document.getElementById("calculate")
+        calculate.innerHTML = '<span class=\"spinner-border' +
+            'spinner-border-sm"></span> Loading...';
+    }
 
-        function hideErrorMsg() {
-            var errorDiv = document.getElementById("error");
-            errorDiv.style.display = "none";
-        }
-    </script>
+    function hideErrorMsg() {
+        var errorDiv = document.getElementById("error");
+        errorDiv.style.display = "none";
+    }
+</script>
 {% endblock %}
