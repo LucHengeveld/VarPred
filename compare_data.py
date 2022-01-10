@@ -43,7 +43,7 @@ def compare_dataset(compare_list):
     Compares the compare_list to the variants in the database.
     :param compare_list: List with all the chromosome numbers and positions out
         of the vcf_list
-    :return results: List with data of the found variants
+    :return results: List with data of the found variants from the database
     :return reference_build: The selected reference build from the
         webapplication
     """

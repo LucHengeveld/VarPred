@@ -1,3 +1,13 @@
+"""
+Description:
+
+Authors: Furkan Sengül, Inge van Vugt, Mark de Korte, Teun van Dorp, Erik Ma
+    and Luc Hengeveld
+
+Last updated: 11-01-2022
+"""
+
+# Imports the required packages for app.py
 import ast
 from flask import Flask, render_template, request
 import pymongo
@@ -16,10 +26,12 @@ import heatmap as hm
 
 Nog doen:
     Docstrings en commentaar voor:
-        - app.py
-        - visualisation_bar.py
-        - heatmap.py
-    Bovenaan app.py authors, date etc toevoegen
+        - app.py functies
+        - app.py description bovenaan het bestand
+    Bovenaan app.py description toevoegen
+    Try / excepts toevoegen in app.py voor de error msgs (bv bij het niet
+        invoeren van een bestand)
+
 
 ======================================================================================================================================================
 """
@@ -54,7 +66,7 @@ def main():
                 results, reference_build = cd.compare_dataset(compare_list)
 
                 variant_dict = vb.variants(results)
-                CLNSIG_dict = vb.CLNSIG_category(results)
+                CLNSIG_dict = vb.clnsig_category(results)
                 chromosome_lengths_list = vb.chromosome_lengths(
                     reference_build)
                 JSON_dict, disable_button_dict = vb.graphs(
@@ -110,7 +122,8 @@ def select_chromosome():
     disable_button_dict = ast.literal_eval(request.form['disable_button_dict'])
 
     return render_template("results.html", JSON_graph=JSON_graph,
-                           JSON_dict=JSON_dict, selected_chrom=request.form["chromosome_button"],
+                           JSON_dict=JSON_dict,
+                           selected_chrom=request.form["chromosome_button"],
                            disable_button_dict=disable_button_dict,
                            results=results,
                            results_table_dict=results_table_dict,
