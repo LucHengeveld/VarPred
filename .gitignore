@@ -7,3 +7,4 @@
 *.tsv
 *.gz
 *.md5
+/webapplication/__pycache__/
