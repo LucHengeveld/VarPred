@@ -1,83 +1,79 @@
+<!-- Including header to the page -->
 {% extends 'header.html' %}
 {% block title %}Contact{% endblock %}
 {% block content %}
-<form class="container-adjustment-contact border border-3 rounded"
-      action="{{ url_for('submit_on_contact') }}" method="POST">
-    <h2>Contact Form</h2>
-    <div class="col-md-4">
-        <label for="Firstname" class="form-label">Firstname</label>
-        <input type="text" class="form-control" id="firstname" name="firstname"
-               required>
-        <div class="valid-feedback">
-            Looks good!
-        </div>
-        <div class="invalid-feedback">
-            Please fill your firstname.
-        </div>
-    </div>
-    <div class="col-md-4">
-        <label for="Lastname" class="form-label">Lastname</label>
-        <input type="text" class="form-control" id="lastname" name="lastname"
-               required>
-        <div class="valid-feedback">
-            Looks good!
-        </div>
-        <div class="invalid-feedback">
-            Please fill your lastname.
-        </div>
-    </div>
-    <div class="col-md-4">
-        <label class="form-label">Message (optioneel)</label>
-        <textarea class="form-control" id="message" name="message"></textarea>
-    </div>
-    <div class="col-md-6">
-        <label for="Email" class="form-label">E-mail</label>
-        <label for="email"></label>
-        <input type="email" class="form-control" id="email" name="email"
-               required>
-        <div class="invalid-feedback">
-            Please fill your e-mail.
-        </div>
-    </div>
-    <div class="col-md-3">
-        <label for="Gender" class="form-label">Gender</label>
-        <select class="form-select" id="gender" name="gender" required>
-            <option selected disabled value="">Choose...</option>
-            <option>Male</option>
-            <option>Female</option>
-            <option>Non-binary</option>
-        </select>
-        <div class="invalid-feedback">
-            Please choose a gender
-        </div>
-    </div>
-    <div class="col-md-3">
-        <label for="Phonenumber" class="form-label">Phonenumber</label>
-        <label for="phonenumber"></label>
-        <input type="text" pattern="[0-100][0-9]{9}" class="form-control"
-               id="phonenumber" name="phonenumber"
-               required>
-        <div class="valid-feedback">
-            Looks good!
-        </div>
-        <div class="invalid-feedback">
-            Please fill your phonenumber.
-        </div>
-    </div>
-    <div class="col-12">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value=""
-                   id="invalidCheck" required>
-            <label class="form-check-label" for="invalidCheck">
-                Agree to terms and conditions
-            </label>
+
+<!-- Contact form to fill in -->
+    <form class= "container-adjustment-contact border border-3 rounded" action="{{ url_for('submit_on_contact') }}"  method="POST" >
+        <h2>Contact Form</h2>
+        <div class="col-md-4">
+            <label for="Firstname" class="form-label">Firstname</label>
+            <input type="text" class="form-control" id="firstname" name="firstname" required>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
             <div class="invalid-feedback">
-                You must agree before submitting.
+                Please fill your firstname.
             </div>
         </div>
-    </div>
-    <div class="col-12">
-        <button class="btn btn-primary" type="submit">Submit form</button>
-    </div>
-</form>
+        <div class="col-md-4">
+            <label for="Lastname" class="form-label">Lastname</label>
+            <input type="text" class="form-control" id="lastname" name="lastname" required>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
+            <div class="invalid-feedback">
+                Please fill your lastname.
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Message (optioneel)</label>
+            <textarea class="form-control" id="message" name="message"></textarea>
+        </div>
+        <div class="col-md-6">
+            <label for="Email" class="form-label">E-mail</label>
+            <label for="email"></label>
+            <input type="email" class="form-control" id="email" name="email" required>
+            <div class="invalid-feedback">
+                Please fill your e-mail.
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label for="Gender" class="form-label">Gender</label>
+            <select class="form-select" id="gender" name="gender" required>
+                <option selected disabled value="">Choose...</option>
+                <option>Man</option>
+                <option>Woman</option>
+                <option>Non-binair</option>
+            </select>
+            <div class="invalid-feedback">
+                Please choose a gender
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label for="Phonenumber" class="form-label">Phonenumber</label>
+            <label for="phonenumber"></label>
+            <input type="text" pattern="[0-100][0-9]{9}" class="form-control" id="phonenumber" name="phonenumber" required>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
+            <div class="invalid-feedback">
+                Please fill your phonenumber.
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                <label class="form-check-label" for="invalidCheck">
+                    Agree to terms and conditions
+                </label>
+                <div class="invalid-feedback">
+                    You must agree before submitting.
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <button class="btn btn-primary" type="submit">Submit form</button>
+        </div>
+    </form>
 {% endblock %}
