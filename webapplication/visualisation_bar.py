@@ -154,8 +154,8 @@ def clnsig_category(results):
             CLNSIG_dict[result["CHROM"]].append("Likely pathogenic")
 
         elif "Pathogenic" in result["CLNSIG"] and "Likely" not in result[
-            "CLNSIG"] and "Conflicting interpretations" not in result[
-            "CLNSIG"]:
+            "CLNSIG"] and "Conflicting interpretations" not in \
+                ["CLNSIG"]:
             CLNSIG_dict[result["CHROM"]].append("Pathogenic")
 
         else:

@@ -31,7 +31,7 @@ def check_file_extension():
         return True, vcf_file_name
     else:
         # Returns false if the file extension is incorrect
-        return False
+        return False, vcf_file_name
 
 
 def check_file_format(vcf_file_name):

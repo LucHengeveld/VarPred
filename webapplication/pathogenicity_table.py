@@ -3,6 +3,7 @@ This module creates the variables in the pathogenicity table for the
 webapplication.
 """
 
+
 def results_table(results, variant_dict):
     """
     Saves lists with the amount of variants per chromosome to a dictionary for
@@ -63,8 +64,8 @@ def results_table(results, variant_dict):
         elif "Likely pathogenic" in result["CLNSIG"]:
             results_table_dict[result["CHROM"]][3] += 1
 
-        elif "Pathogenic" in result["CLNSIG"] and "Likely" not in result[
-            "CLNSIG"] and "Conflicting" not in result["CLNSIG"]:
+        elif "Pathogenic" in result["CLNSIG"] and "Likely" not in \
+                result["CLNSIG"] and "Conflicting" not in result["CLNSIG"]:
             results_table_dict[result["CHROM"]][4] += 1
 
         else:
