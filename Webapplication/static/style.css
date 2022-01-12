@@ -172,12 +172,15 @@ body {
     width: 1%;
 }
 
+.results_table {
+    margin-top: 1em;
+}
+
 #results_per_chromosome_button {
     color: white;
     background-color: #1c9434;
     border-radius: 0.25rem;
-    width: 15%;
-    min-width: 5cm;
+    width: 5cm;
     font-size: 16px;
 }
 
@@ -222,4 +225,6 @@ label#C1 {
     border-radius: 0.25rem 0 0 0.25rem;
     border-left: 0;
 }
-
+.btn-check:disabled+label {
+    color: #6e6e6e;
+}

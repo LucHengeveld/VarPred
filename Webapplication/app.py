@@ -145,7 +145,7 @@ def submit_on_contact():
         gender = request.form['gender']
         phonenumber = request.form['phonenumber']
 
-        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+        myclient = pymongo.MongoClient("mongodb")
         mydb = myclient["varpred"]
         mycol = mydb["contact"]
 
@@ -169,4 +169,4 @@ def whoarewe():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True, host='0.0.0.0', port=5000)
