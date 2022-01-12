@@ -1,6 +1,10 @@
 FROM python:3.9
-ADD . /code
+ADD /pictures /code
+ADD /static /code
+ADD /templates /code
+ADD app.py /code
+ADD requirements.txt /code
 WORKDIR /code
 RUN pip install -r requirements.txt
 EXPOSE 5000
-CMD python flask/app.py 
+CMD python app.py
