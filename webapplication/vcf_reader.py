@@ -18,10 +18,19 @@ def vcf_to_list(vcf_file_name):
     # Loops through the vcf file line by line
     with open(vcf_file_name) as file:
         for line in file:
+
             # If the line does not start with an # it appends the
             # variant information to a list
             if not line.startswith("#"):
-                vcf_list.append(line.split("\t"))
+
+                # Checks if the line starts with chr or M\t, incase
+                # a different chromosome column format was used
+                if line.startswith("chr"):
+                    vcf_list.append(line.replace("chr", "", 1).split("\t"))
+                elif line.startswith("M\t"):
+                    vcf_list.append(line.replace("M", "MT", 1).split("\t"))
+                else:
+                    vcf_list.append(line.split("\t"))
 
     # Closes the file
     file.close()
