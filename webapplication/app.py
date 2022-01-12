@@ -16,12 +16,12 @@ from flask import Flask, render_template, request
 import pymongo
 
 # Imports the python functions from other .py files
-import file_checker as fc
-import vcf_reader as vr
-import compare_data as cd
-import visualisation_bar as vb
-import pathogenicity_table as pt
-import heatmap as hm
+from lib import file_checker as fc
+from lib import vcf_reader as vr
+from lib import compare_data as cd
+from lib import visualisation_bar as vb
+from lib import pathogenicity_table as pt
+from lib import heatmap as hm
 
 
 app = Flask(__name__)
@@ -230,5 +230,4 @@ def whoarewe():
 
 
 if __name__ == '__main__':
-    # app.run(debug=True, host='0.0.0.0', port=5000)
-    app.run()
+    app.run(debug=True, host='0.0.0.0', port=5000)
