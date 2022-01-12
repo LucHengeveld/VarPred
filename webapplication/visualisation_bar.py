@@ -7,7 +7,7 @@ import plotly
 import plotly.express as px
 import json
 import pandas as pd
-
+import pymongo
 
 def variants(results):
     """
@@ -28,6 +28,10 @@ def variants(results):
     ref_short = []
     alt_list = []
     alt_short = []
+    medgen_info = {}
+    myclient = pymongo.MongoClient("mongodb")
+    mydb = myclient["varpred"]
+    mycol = mydb["medgen"]
 
     # Loops through all variants in results
     for i in range(len(results)):
@@ -112,6 +116,20 @@ def variants(results):
                                                      "ALT": alt_list,
                                                      "REF_short": ref_short,
                                                      "ALT_short": alt_short}
+        if "MedGen" in results[i]['CLNDISDB']:
+            medgen = results[i]['CLNDISDB'].split(",")
+            for x in medgen:
+                if "MedGen" in x:
+                    medgen_id = x.split(":")[1]
+            print(medgen_id)
+            if medgen_id in medgen_info.keys():
+                results[i]["medgen_info"] = medgen_info[medgen_id]
+            else:
+                medgen_results = mycol.find_one({"medgen id": medgen_id})
+                if medgen_results != None:
+                    medgen_info[medgen_id] = medgen_results
+                    medgen_results.pop('_id', None)
+                    results[i]["medgen_info"] = medgen_results
 
     # Returns the variant dictionary
     return variant_dict

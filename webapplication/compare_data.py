@@ -52,14 +52,14 @@ def compare_dataset(compare_list):
     reference_build = request.form.get("reference_selector")
 
     # Connects to the local database
-    client = pymongo.MongoClient("mongodb://localhost:27017/")
+    client = pymongo.MongoClient("mongodb")
     db = client["varpred"]
 
     # Uses the selected reference build as collection
     if reference_build == "37":
-        col = db["variants-37"]
+        col = db["variants37"]
     else:
-        col = db["variants-38"]
+        col = db["variants38"]
 
     # Create an empty list
     results = []

@@ -1,335 +1,167 @@
+<!--
+This is the page given when the given VCF file from 'calculator.html' is being calculated
+On this page you can interact by choosing the available chromosome
+Within that chromosome you can choose the variants that appear from your given VCF-file
+There is also an option to filter down the different variants into 'benign', 'likely benign', 'pathogenic', 'likely pathogenic' and 'other'
+In an accordion will the information about the variant being shown
+ -->
+
+<!-- Including header.html to the page -->
 {% extends 'header.html' %}
 {% block content %}
-<link rel="stylesheet" href="../static/style.css"
-      xmlns="http://www.w3.org/1999/html">
 
-<body>
-    <div class="rectangle_container">
-        <div>Select a chromosome below:</div>
-        <form id="chrom_form" action="{{ url_for('select_chromosome') }}"
-              method="POST" onsubmit="return false">
-            <input type="hidden" name="JSON_dict" value="{{ JSON_dict }}">
-            <input type="hidden" name="disable_button_dict"
-                   value="{{ disable_button_dict }}">
-            <input type="hidden" id="selected_chrom"
-                   value="{{ selected_chrom }}">
-            <div class="btn-group" role="group"
-                 aria-label="Basic radio toggle button group">
-                {% for i in range(1, 23) %}
-                    <input id="{{ i }}" type="radio" class="btn-check"
-                           name="chromosome_button" autocomplete="off"
-                           value="{{ i }}">
-                    <label id="{{ 'C' + i|string }}"
-                           onclick="chrom_button_clicked(this)"
-                           class="btn btn-outline-primary" for="{{ i }}">
-                        {{ i }}</label>
-                {% endfor %}
-                <input id="X" type="radio" class="btn-check"
-                       name="chromosome_button" autocomplete="off" value="X">
-                <label id="CX" onclick="chrom_button_clicked(this)"
-                       class="btn btn-outline-primary" for="X">X</label>
-                <input id="Y" type="radio" class="btn-check"
-                       name="chromosome_button" autocomplete="off" value="Y">
-                <label id="CY" onclick="chrom_button_clicked(this)"
-                       class="btn btn-outline-primary" for="Y">Y</label>
-                <input id="MT" type="radio" class="btn-check"
-                       name="chromosome_button" autocomplete="off" value="MT">
-                <label id="CMT" onclick="chrom_button_clicked(this)"
-                       class="btn btn-outline-primary" for="MT">MT</label>
-            </div>
-        </form><br><br>
-        <button id="results_per_chromosome_button"
-                class="btn btn-lg btn-primary"
-                onclick="results_per_chromosome()">
-            Pathogenicity table
-        </button>
-        <br><br>
-
-        <table id="results_per_chromosome"
-               class="results_table border border-3 rounded"
-               style="display: none">
-            <tr>
-                <th>Chromosome</th>
-                {% for i in range(1, 23) %}
-                    <td class="results_table_chromosomes top_line bot_line">
-                        <b>{{ i }}</b></td>
-                {% endfor %}
-                <td class="results_table_chromosomes top_line bot_line">
-                    <b>X</b></td>
-                <td class="results_table_chromosomes top_line bot_line">
-                    <b>Y</b></td>
-                <td class="results_table_chromosomes top_line bot_line">
-                    <b>MT</b></td>
-                <td class="results_table_chromosomes border_line_all">
-                    <b>Total</b></td>
-            </tr>
-            <tr>
-                <th>Benign</th>
-                {% set count_benign = namespace(value=0) %}
-                {% for i in results_table_dict %}
-                    {% set count_benign.value = count_benign.value +
-                    results_table_dict[i][1] %}
-                    <td style="background-color: rgb({{color_dict[i][1]}}, 255,
-                     {{color_dict[i][1]}})">{{ results_table_dict[i][1] }}
-                    </td>
-                {% endfor %}
-                <td class="left_line right_line bg_grey">
-                    <b>{{ count_benign.value }}</b></td>
-            </tr>
-            <tr>
-                <th>Likely benign</th>
-                {% set count_likely_benign = namespace(value=0) %}
-                {% for i in results_table_dict %}
-                    {% set count_likely_benign.value = count_likely_benign.value +
-                    results_table_dict[i][2] %}
-                    <td style="background-color: rgb({{color_dict[i][2]}}, 255,
-                    {{color_dict[i][2]}})">{{ results_table_dict[i][2] }}
-                    </td>
-                {% endfor %}
-                <td class="left_line right_line bg_grey"><b>{{
-                    count_likely_benign.value }}</b>
-                </td>
-            </tr>
-            <tr>
-                <th>Likely pathogenic</th>
-                {% set count_likely_pathogenic = namespace(value=0) %}
-                {% for i in results_table_dict %}
-                    {% set count_likely_pathogenic.value =
-                    count_likely_pathogenic.value + results_table_dict[i][3] %}
-                    <td style="background-color: rgb(255, {{color_dict[i][3]}},
-                     {{color_dict[i][3]}})">{{ results_table_dict[i][3] }}
-                    </td>
-                {% endfor %}
-                <td class="left_line right_line bg_grey">
-                    <b>{{ count_likely_pathogenic.value }}</b>
-                </td>
-            </tr>
-            <tr>
-                <th>Pathogenic</th>
-                {% set count_pathogenic = namespace(value=0) %}
-                {% for i in results_table_dict %}
-                    {% set count_pathogenic.value = count_pathogenic.value +
-                    results_table_dict[i][4] %}
-                    <td style="background-color: rgb(255, {{color_dict[i][4]}},
-                    {{color_dict[i][4]}})">{{ results_table_dict[i][4] }}
-                    </td>
-                {% endfor %}
-                <td class="left_line right_line bg_grey">
-                    <b>{{ count_pathogenic.value }}</b>
-                </td>
-            </tr>
-            <tr>
-                <th>Other</th>
-                {% set count_other = namespace(value=0) %}
-                {% for i in results_table_dict %}
-                    {% set count_other.value =
-                    count_other.value + results_table_dict[i][7] %}
-                    <td style="background-color: rgb(255, 255,
-                    {{color_dict[i][7]}})">{{ results_table_dict[i][7] }}
-                    </td>
-                {% endfor %}
-                <td class="left_line right_line bg_grey">
-                    <b>{{ count_other.value}}</b>
-                </td>
-            </tr>
-            <tr>
-                <th>Total variants</th>
-                {% set count_variants = namespace(value=0) %}
-                {% for i in results_table_dict %}
-                    {% set count_variants.value = count_variants.value +
-                    results_table_dict[i][0] %}
-                    <td class="top_line bot_line bg_grey">
-                        <b>{{ results_table_dict[i][0] }}</b></td>
-                {% endfor %}
-                <td class="border_line_all bg_grey">
-                    <b>{{ count_variants.value }}</b>
-                </td>
-            </tr>
-            <tr>
-                <th>Predicted benign</th>
-                {% set count_predicted_benign = namespace(value=0) %}
-                {% for i in results_table_dict %}
-                    {% set count_predicted_benign.value =
-                    count_predicted_benign.value + results_table_dict[i][5] %}
-                    <td style="background-color: rgb({{color_dict[i][5]}}, 255,
-                    {{color_dict[i][5]}})">{{ results_table_dict[i][5] }}
-                    </td>
-                {% endfor %}
-                <td class="left_line right_line bg_grey">
-                    <b>{{ count_predicted_benign.value }}</b></td>
-            </tr>
-            <tr>
-                <th>Predicted pathogenic</th>
-                {% set count_predicted_pathogenic = namespace(value=0) %}
-                {% for i in results_table_dict %}
-                    {% set count_predicted_pathogenic.value =
-                    count_predicted_pathogenic.value + results_table_dict[i][6] %}
-                    <td style="background-color: rgb(255, {{color_dict[i][6]}},
-                    {{color_dict[i][6]}})">{{ results_table_dict[i][6] }}
-                    </td>
-                {% endfor %}
-                <td class="left_line right_line bg_grey">
-                    <b>{{ count_predicted_pathogenic.value }}</b></td>
-            </tr>
-            <tr>
-                <th>Total predicted variants</th>
-                {% set count_predicted = namespace(value=0) %}
-                {% for i in results_table_dict %}
-                    {% set count_predicted.value = count_predicted.value +
-                    results_table_dict[i][8] %}
-                    <td class="top_line bot_line bg_grey">
-                        <b>{{ results_table_dict[i][8] }}</b></td>
-                {% endfor %}
-                <td class="border_line_all bg_grey">
-                    <b>{{ count_predicted.value }}</b>
-                </td>
-            </tr>
-        </table>
-        <script>
-            function results_per_chromosome() {
-                var x = document.getElementById("results_per_chromosome");
-                if (x.style.display === "none") {
-                    x.style.display = "block";
-                } else {
-                    x.style.display = "none";
-                }
-            }
-
-            function chrom_button_clicked(element) {
-                console.log(element.id)
-                var id = element.id.split("C")[1];
-                document.getElementById(id).checked = true;
-
-                document.getElementById("chrom_form").submit();
-            }
-
-            window.onload = function () {
-                var id = document.getElementById("selected_chrom").value
-                document.getElementById(id).checked = true;
-            }
-        </script>
-        <br>
-        <div id="vis-container" class="rectangle_visualisation">
-            <div id='selected_chromosome'>Please select a chromosome above to
-                start.
-            </div>
-            <div id='chart' class='chart'></div>
-            <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-            <script>
-                document.getElementById("selected_chromosome").innerHTML = "Currently showing chromosome " + "{{ selected_chrom }}" + ":";
-                var graph = {{ JSON_graph | safe }};
-                Plotly.plot('chart', graph, {});
-            </script>
-
-            <div id="results_textbox"></div>
-
-            <script>
-                var myPlot = document.getElementById('chart')
-                myPlot.on('plotly_click', function (graph) {
-                    var chrom = "{{ selected_chrom }}"
-                    var pos = graph.points[0].x.toString()
-                    var ref = graph.points[0].customdata[0]
-                    var alt = graph.points[0].customdata[1]
-                    var results = {{ results | tojson }}
-                    console.log(graph)
-                    var text = ""
-                    results.forEach(checkResult)
-
-                    function checkResult(result_dict) {
-                        if (result_dict["CHROM"] === chrom &&
-                            result_dict["POS"] === pos &&
-                            result_dict["REF"] === ref &&
-                            result_dict["ALT"] === alt) {
-                            text =
-                                `<div class="accordion" id="accordionPanelsStayOpenExample">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
-            Location info
-          </button>
-        </h2>
-        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
-          <div class="accordion-body">
-            <strong>` + "<b>Chromosome:</b>" + result_dict["CHROM"] +
-                                "<br><b>Position:</b> " + result_dict["POS"] +
-                                `</div>
+<!-- Results page -->
+<div class="rectangle_container">
+    <!-- Chromosome buttons -->
+    <div>Select a chromosome below:</div>
+    <form id="chrom_form" action="{{ url_for('select_chromosome') }}" method="POST" , onsubmit="return false">
+        <input type="hidden" name="JSON_dict" value="{{ JSON_dict }}">
+        <input type="hidden" name="disable_button_dict" value="{{ disable_button_dict }}">
+        <input type="hidden" id="selected_chrom" value="{{ selected_chrom }}">
+        <!-- Select an available chromosome fetched from VCF-file -->
+        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+            {% for i in range(1, 23) %}
+            <input id="{{ i }}" type="radio" class="btn-check" name="chromosome_button" autocomplete="off"
+                value="{{ i }}">
+            <label id="{{ 'C' + i|string }}" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary"
+                for="{{ i }}">{{ i }}</label>
+            {% endfor %}
+            <input id="X" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="X">
+            <label id="CX" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="X">X</label>
+            <input id="Y" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="Y">
+            <label id="CY" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="Y">Y</label>
+            <input id="MT" type="radio" class="btn-check" name="chromosome_button" autocomplete="off" value="MT">
+            <label id="CMT" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="MT">MT</label>
         </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-            Variant info
-          </button>
-        </h2>
-        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
-          <div class="accordion-body">
-            <strong>` + "<b>REF:</b> " + result_dict["REF"] +
-                                "<br><b>ALT:</b> " + result_dict["ALT"] +
-                                "<br><b>REF LENGTH:</b> " + result_dict["REF LENGTH"] +
-                                "<br><b>ALT LENGTH:</b> " + result_dict["ALT LENGTH"] +
-                                "<br><b>Variant type:</b> " + result_dict["CLNVC"] +
-                                "<br><b>Functional consequence:</b> " + result_dict["MC"] +
-
-                                `</div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="panelsStayOpen-headingThree">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
-            Annotation info
-          </button>
-        </h2>
-        <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
-          <div class="accordion-body">
-            <strong>` +
-                                "<b>Clinvar ID:</b> " + result_dict["ID"] +
-                                "<br><b>Variant sequence ontology:</b> " + result_dict["CLNVCSO"] +
-                                "<br><b>Gene ID:</b> " + result_dict["GENEINFO"] +
-                                "<br><b>Medgen ID:</b> " + result_dict["CLNDISDB"] +
-                                `</div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="panelsStayOpen-headingFour">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false" aria-controls="panelsStayOpen-collapseFour">
-            Machine learning
-          </button>
-        </h2>
-        <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingFour">
-          <div class="accordion-body">
-            <strong>`
-                                + "<b>ML prediction:</b> " + result_dict["ML prediction"]
-                            if (parseFloat(result_dict["Probability 0"]) >= parseFloat(result_dict["Probability 1"])) {
-                                text += "<br><b>Probability benign:</b> " + result_dict["Probability 0"]
-                            } else {
-                                text += "<br><b>Probability pathogenic:</b> " + result_dict["Probability 1"]
-                            }
-                            +
-                                `</div>
-        </div>
-      </div>
-    </div>`
-
-                            document.getElementById("results_textbox").
-                                innerHTML = text
-
-                        }
-                    }
-                });
-            </script>
-        </div>
-    </div>
+    </form>
     <br>
-
-    {% for key in disable_button_dict.keys() %}
-        {% if disable_button_dict[key] == True %}
-            <script>
-                document.getElementById("{{ key }}").disabled = true;
-                document.getElementById("{{ key }}").style.color = "grey";
-                document.getElementById("{{ key }}").style.borderColor = "grey";
-            </script>
-        {% endif %}
-    {% endfor %}
+    <button id="results_per_chromosome_button" class="btn btn-lg btn-primary" onclick="results_per_chromosome()">
+        Pathogenicity table
+    </button>
+    <br>
+    <table id="results_per_chromosome" class="results_table border border-3 rounded" style="display: none">
+        <tr>
+            <th>Chromosome</th>
+            {% for i in range(1, 23) %}
+            <td class="results_table_chromosomes top_line bot_line"><b>{{ i }}</b></td>
+            {% endfor %}
+            <td class="results_table_chromosomes top_line bot_line"><b>X</b></td>
+            <td class="results_table_chromosomes top_line bot_line"><b>Y</b></td>
+            <td class="results_table_chromosomes top_line bot_line"><b>MT</b></td>
+            <td class="results_table_chromosomes border_line_all"><b>Total</b>
+            </td>
+        </tr>
+        <tr>
+            <th>Benign</th>
+            {% set count_benign = namespace(value=0) %}
+            {% for i in results_table_dict %}
+            {% set count_benign.value = count_benign.value +
+            results_table_dict[i][1] %}
+            <td style="background-color: rgb({{color_dict[i][1]}}, 255, {{color_dict[i][1]}})">
+                {{ results_table_dict[i][1] }}
+            </td>
+            {% endfor %}
+            <td class="left_line right_line bg_grey"><b>{{ count_benign.value }}</b></td>
+        </tr>
+        <tr>
+            <th>Likely benign</th>
+            {% set count_likely_benign = namespace(value=0) %}
+            {% for i in results_table_dict %}
+            {% set count_likely_benign.value = count_likely_benign.value +
+            results_table_dict[i][2] %}
+            <td style="background-color: rgb({{color_dict[i][2]}}, 255, {{color_dict[i][2]}})">
+                {{ results_table_dict[i][2] }}
+            </td>
+            {% endfor %}
+            <td class="left_line right_line bg_grey"><b>{{ count_likely_benign.value }}</b>
+            </td>
+        </tr>
+        <tr>
+            <th>Likely pathogenic</th>
+            {% set count_likely_pathogenic = namespace(value=0) %}
+            {% for i in results_table_dict %}
+            {% set count_likely_pathogenic.value =
+            count_likely_pathogenic.value + results_table_dict[i][3] %}
+            <td style="background-color: rgb(255, {{color_dict[i][3]}}, {{color_dict[i][3]}})">
+                {{ results_table_dict[i][3] }}
+            </td>
+            {% endfor %}
+            <td class="left_line right_line bg_grey"><b>{{ count_likely_pathogenic.value }}</b>
+            </td>
+        </tr>
+        <tr>
+            <th>Pathogenic</th>
+            {% set count_pathogenic = namespace(value=0) %}
+            {% for i in results_table_dict %}
+            {% set count_pathogenic.value = count_pathogenic.value +
+            results_table_dict[i][4] %}
+            <td style="background-color: rgb(255, {{color_dict[i][4]}}, {{color_dict[i][4]}})">
+                {{ results_table_dict[i][4] }}
+            </td>
+            {% endfor %}
+            <td class="left_line right_line bg_grey"><b>{{ count_pathogenic.value }}</b></td>
+        </tr>
+        <tr>
+            <th>Other</th>
+            {% set count_other = namespace(value=0) %}
+            {% for i in results_table_dict %}
+            {% set count_other.value =
+            count_other.value + results_table_dict[i][7] %}
+            <td style="background-color: rgb(255, 255, {{color_dict[i][7]}})">
+                {{ results_table_dict[i][7] }}
+            </td>
+            {% endfor %}
+            <td class="left_line right_line bg_grey"><b>{{ count_other.value }}</b>
+            </td>
+        </tr>
+        <tr>
+            <th>Total variants</th>
+            {% set count_variants = namespace(value=0) %}
+            {% for i in results_table_dict %}
+            {% set count_variants.value = count_variants.value +
+            results_table_dict[i][0] %}
+            <td class="top_line bot_line bg_grey"><b>{{ results_table_dict[i][0] }}</b></td>
+            {% endfor %}
+            <td class="border_line_all bg_grey"><b>{{ count_variants.value }}</b>
+            </td>
+        </tr>
+        <tr>
+            <th>Predicted benign</th>
+            {% set count_predicted_benign = namespace(value=0) %}
+            {% for i in results_table_dict %}
+            {% set count_predicted_benign.value =
+            count_predicted_benign.value + results_table_dict[i][5] %}
+            <td style="background-color: rgb({{color_dict[i][5]}}, 255, {{color_dict[i][5]}})">
+                {{ results_table_dict[i][5] }}
+            </td>
+            {% endfor %}
+            <td class="left_line right_line bg_grey"><b>{{
+                    count_predicted_benign.value }}</b></td>
+        </tr>
+        <tr>
+            <th>Predicted pathogenic</th>
+            {% set count_predicted_pathogenic = namespace(value=0) %}
+            {% for i in results_table_dict %}
+            {% set count_predicted_pathogenic.value =
+            count_predicted_pathogenic.value + results_table_dict[i][6] %}
+            <td style="background-color: rgb(255, {{color_dict[i][6]}}, {{color_dict[i][6]}})">
+                {{ results_table_dict[i][6] }}
+            </td>
+            {% endfor %}
+            <td class="left_line right_line bg_grey"><b>{{ count_predicted_pathogenic.value }}</b></td>
+        </tr>
+        <tr>
+            <th>Total predicted variants</th>
+            {% set count_predicted = namespace(value=0) %}
+            {% for i in results_table_dict %}
+            {% set count_predicted.value = count_predicted.value +
+            results_table_dict[i][8] %}
+            <td class="top_line bot_line bg_grey"><b>{{ results_table_dict[i][8] }}</b></td>
+            {% endfor %}
+            <td class="border_line_all bg_grey"><b>{{ count_predicted.value }}</b>
+            </td>
+        </tr>
+    </table>
     <script>
         function results_per_chromosome() {
             var x = document.getElementById("results_per_chromosome");
@@ -339,16 +171,155 @@
                 x.style.display = "none";
             }
         }
+        function chrom_button_clicked(element) {
+            console.log(element.id)
+            var id = element.id.split("C")[1];
+            document.getElementById(id).checked = true;
+
+            document.getElementById("chrom_form").submit();
+        }
+        window.onload = function () {
+            var id = document.getElementById("selected_chrom").value
+            document.getElementById(id).checked = true;
+        }
     </script>
+    <br>
+    <div id="vis-container" class="rectangle_visualisation">
+        <div id='chart' class='chart'></div>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script>
+            var graph = {{ JSON_graph | safe }};
+            Plotly.plot('chart', graph, {});
+        </script>
+
+        <div id="results_textbox"></div>
+
+        <script>
+            var myPlot = document.getElementById('chart')
+            myPlot.on('plotly_click', function (graph) {
+                var chrom = "{{ selected_chrom }}"
+                var pos = graph.points[0].x.toString()
+                var ref = graph.points[0].customdata[0]
+                var alt = graph.points[0].customdata[1]
+                var results = {{ results | tojson
+            }}
+                console.log(graph)
+                        var text = ""
+            results.forEach(checkResult)
+
+            function checkResult(result_dict) {
+                if (result_dict["CHROM"] === chrom &&
+                    result_dict["POS"] === pos &&
+                    result_dict["REF"] === ref &&
+                    result_dict["ALT"] === alt) {
+                    text =
+`<br><div class="accordion" id="accordionPanelsStayOpenExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+        Variant info
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+      <div class="accordion-body">
+        `+ "<b>Chromosome: </b>" + result_dict["CHROM"] +
+                        "<br><b>Position:</b> " + result_dict["POS"] +
+                        "<br><b>REF: </b> " + result_dict["REF"] +
+                        "<br><b>ALT: </b> " + result_dict["ALT"] +
+                        "<br><b>REF LENGTH: </b> " + result_dict["REF LENGTH"] +
+                        "<br><b>ALT LENGTH: </b> " + result_dict["ALT LENGTH"] +
+                        "<br><b>Variant type:</b> " + result_dict["CLNVC"] +
+                        "<br><b>Functional consequence:</b> " + result_dict["MC"] +
+
+                        `</div>
     </div>
-    {% for key in disable_button_dict.keys() %}
-        {% if disable_button_dict[key] == True %}
-            <script>
-                document.getElementById("{{ key }}").disabled = true;
-                document.getElementById("{{ key }}").style.backgroundColor = "grey";
-                document.getElementById("{{ key }}").style.borderColor = "grey";
-            </script>
-        {% endif %}
-    {% endfor %}
-</body>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+        Annotation info
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
+      <div class="accordion-body">
+        `+
+                        "<b>Clinvar ID:</b> " + result_dict["ID"] +
+                        "<br><b>Variant sequence ontology:</b> " + result_dict["CLNVCSO"] +
+                        "<br><b>Gene ID:</b> " + result_dict["GENEINFO"] +
+                        "<br><b>Medgen ID:</b> " + result_dict["CLNDISDB"] +
+                        `</div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingFour">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false" aria-controls="panelsStayOpen-collapseFour">
+        MedGen Info
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingFour">
+      <div class="accordion-body">`
+                        + "<b>Name: </b>" + result_dict["medgen_info"]['title']
+                        + "<br><b>Inheritance: </b>" + result_dict["medgen_info"]['name inheritance']
+                        + "<br><b>Description: </b> " + result_dict["medgen_info"]['description'] +
+                        `</div>
+    </div>
+  </div>
+    <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingFive">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFive" aria-expanded="false" aria-controls="panelsStayOpen-collapseFive">
+        Machine learning
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingFive">
+      <div class="accordion-body">`
+                        + "<b>ML prediction:</b> " + result_dict["ML prediction"]
+                    if (parseFloat(result_dict["Probability 0"]) >= parseFloat(result_dict["Probability 1"])) {
+                        text += "<br><b>Probability benign:</b> " + result_dict["Probability 0"]
+                    } else {
+                        text += "<br><b>Probability pathogenic:</b> " + result_dict["Probability 1"]
+                    } +
+                        `</div>
+    </div>
+</div>
+</div>`
+
+document.getElementById("results_textbox").innerHTML = text
+
+                }
+            }
+                    });
+        </script>
+    </div>
+</div><br>
+
+{% for key in disable_button_dict.keys() %}
+{% if disable_button_dict[key] == True %}
+<script>
+    document.getElementById("{{ key }}").disabled = true;
+    document.getElementById("{{ key }}").style.color = "grey";
+    document.getElementById("{{ key }}").style.borderColor = "grey";
+</script>
+{% endif %}
+{% endfor %}
+<script>
+    function results_per_chromosome() {
+        var x = document.getElementById("results_per_chromosome");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+</script>
+</div>
+
+{% for key in disable_button_dict.keys() %}
+{% if disable_button_dict[key] == True %}
+<script>
+    document.getElementById("{{ key }}").disabled = true;
+    document.getElementById("{{ key }}").style.backgroundColor = "grey";
+    document.getElementById("{{ key }}").style.borderColor = "grey";
+</script>
+{% endif %}
+{% endfor %}
 {% endblock %}
