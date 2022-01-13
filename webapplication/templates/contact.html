@@ -1,9 +1,19 @@
+<!--
+This page lets the user submit a request through our contact form
+This information will be stored in our database
+Hereby we can perhaps improve our tool(s) with the given feedback or help the user out for any questions
+-->
+
+<!-- Including header.html to the page -->
 {% extends 'header.html' %}
 {% block title %}Contact{% endblock %}
 {% block content %}
+
+<!-- Contact form to fill in -->
     <form class= "container-adjustment-contact border border-3 rounded" action="{{ url_for('submit_on_contact') }}"  method="POST" >
-    <h2>Contact Form</h2>
+        <h2>Contact Form</h2>
         <div class="col-md-4">
+            <!-- Firstname -->
             <label for="Firstname" class="form-label">Firstname</label>
             <input type="text" class="form-control" id="firstname" name="firstname" required>
             <div class="valid-feedback">
@@ -14,6 +24,7 @@
             </div>
         </div>
         <div class="col-md-4">
+            <!-- Lastname -->
             <label for="Lastname" class="form-label">Lastname</label>
             <input type="text" class="form-control" id="lastname" name="lastname" required>
             <div class="valid-feedback">
@@ -24,10 +35,12 @@
             </div>
         </div>
         <div class="col-md-4">
+            <!-- Message -->
             <label class="form-label">Message (optioneel)</label>
             <textarea class="form-control" id="message" name="message"></textarea>
         </div>
         <div class="col-md-6">
+            <!-- Email -->
             <label for="Email" class="form-label">E-mail</label>
             <label for="email"></label>
             <input type="email" class="form-control" id="email" name="email" required>
@@ -36,6 +49,7 @@
             </div>
         </div>
         <div class="col-md-3">
+            <!-- Gender -->
             <label for="Gender" class="form-label">Gender</label>
             <select class="form-select" id="gender" name="gender" required>
                 <option selected disabled value="">Choose...</option>
@@ -48,10 +62,10 @@
             </div>
         </div>
         <div class="col-md-3">
+            <!-- Phonenumber -->
             <label for="Phonenumber" class="form-label">Phonenumber</label>
             <label for="phonenumber"></label>
-            <input type="text" pattern="[0-100][0-9]{9}" class="form-control" id="phonenumber" name="phonenumber"
-                   required>
+            <input type="text" pattern="[0-100][0-9]{9}" class="form-control" id="phonenumber" name="phonenumber" required>
             <div class="valid-feedback">
                 Looks good!
             </div>
@@ -60,6 +74,7 @@
             </div>
         </div>
         <div class="col-12">
+            <!-- checkbox -->
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
                 <label class="form-check-label" for="invalidCheck">

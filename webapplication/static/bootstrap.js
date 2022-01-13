@@ -5043,7 +5043,6 @@
   return index_umd;
 
 }));
-//# sourceMappingURL=bootstrap.js.map
 
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 (function() {

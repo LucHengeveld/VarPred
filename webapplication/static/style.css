@@ -172,6 +172,10 @@ body {
     width: 1%;
 }
 
+.results_table {
+    margin-top: 1em;
+}
+
 #results_per_chromosome_button {
     color: white;
     background-color: #1c9434;
@@ -224,4 +228,3 @@ label#C1 {
 .btn-check:disabled+label {
     color: #6e6e6e;
 }
-
