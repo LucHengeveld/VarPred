@@ -40,7 +40,7 @@ If everything is set up correctly the application should now be building, this m
 While running VarPred on Windows we encountered a few issues:
 1. Windows and Linux both use diffrent line seperators (\r\n for Windows and \n for Linux). It is possible that your bash files (files with the extention ".sh") are formatted for the wrong operating system.
 You can change the line seperator for each files individually in applications like [Notepad++](https://notepad-plus-plus.org/) or [PyCharm](https://www.jetbrains.com/pycharm/). 
-In these programs there is a button in the lower right section containing the letters "CR", "LF' or "CRLF". 
+In these programs there is a button in the lower right section containing the letters "CR", "LF" or "CRLF". 
 Make sure this option is set to "LF". If it isn't. Click on the button, set it to "LF" and save the file. 
 Do this for all of the following files: build.sh (project root), seed-script.sh (/database), pipeline.sh (/ml_scripts), update_clinvar.sh (/ml_scripts).
 2. If you have already installed a Linux command line, this commandline might run on WSL version 1. In order for the commandline to integrate WSL should be updated.
