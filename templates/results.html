@@ -22,10 +22,11 @@
         <label id="CMT" onclick="chrom_button_clicked(this)" class="btn btn-outline-primary" for="MT" >MT</label>
       </div>
     </form>
+    <br>
     <button id="results_per_chromosome_button" class="btn btn-lg btn-primary" onclick="results_per_chromosome()">
       Pathogenicity table
     </button>
-    <br><br>
+    <br>
 
     <table id="results_per_chromosome"
     class="results_table border border-3 rounded"
@@ -175,12 +176,10 @@
     </script>
     <br>
     <div id="vis-container" class="rectangle_visualisation">
-      <div id='selected_chromosome'>Please select a chromosome above to
-        start.</div>
+
       <div id='chart' class='chart'></div>
       <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
       <script>
-        document.getElementById("selected_chromosome").innerHTML = "Currently showing chromosome " + "{{ selected_chrom }}" + ":";
         var graph = {{ JSON_graph | safe }};
         Plotly.plot('chart', graph, {});
       </script>
@@ -234,7 +233,7 @@
               "<br><b>ALT LENGTH:</b> " + result_dict["ALT LENGTH"] +
               "<br><b>Variant type:</b> " + result_dict["CLNVC"] +
               "<br><b>Functional consequence:</b> " + result_dict["MC"] +
-
+              "<br><b>Clinical Significance:</b> " + result_dict["CLNSIG"] +
               `</div>
     </div>
   </div>
