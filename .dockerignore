@@ -2,3 +2,8 @@
 .cache
 .idea
 *.md
+*.vcf
+/ml_scripts/
+/database/
+/genescraper/
+/mongodb/
