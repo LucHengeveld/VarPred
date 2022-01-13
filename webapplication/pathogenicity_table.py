@@ -13,10 +13,10 @@ def results_table(results, variant_dict):
         pos_list, "REF": ref_list, "ALT": alt_list, "REF_short": ref_short,
         "ALT_short": alt_short}.
     :return results_table_dict: Dictionary with the structure {Chromosome:
-        [Total Benign variants, Total Likely benign variants, Total Likely
-        pathogenic variants, Total Pathogenic variants, Total Predicted benign
-        variants, Total Predicted Pathogenic variants, Total Other variants,
-        Total predicted variants]}
+        [Total variants, Total Benign variants, Total Likely benign variants,
+        Total Likely pathogenic variants, Total Pathogenic variants, Total
+        Predicted benign variants, Total Predicted Pathogenic variants, Total
+        Other variants, Total predicted variants]}
     """
 
     # Creates a list with all the chromosomes
@@ -77,10 +77,10 @@ def results_table(results, variant_dict):
             if any(CLNSIG in result["CLNSIG"].lower() for CLNSIG in
                    ["uncertain significance", "not provided", "nan"]):
                 results_table_dict[result["CHROM"]][8] += 1
-                if result["ML prediction"] == "1":
+                if result["ML prediction"] == "0":
                     results_table_dict[result["CHROM"]][5] += 1
 
-                elif result["ML prediction"] == "0":
+                elif result["ML prediction"] == "1":
                     results_table_dict[result["CHROM"]][6] += 1
 
     # Returns the result table dictionary

@@ -210,13 +210,10 @@
         </script>
         <br>
         <div id="vis-container" class="rectangle_visualisation">
-            <div id='selected_chromosome'>Please select a chromosome above to
-                start.
-            </div>
+
             <div id='chart' class='chart'></div>
             <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
             <script>
-                document.getElementById("selected_chromosome").innerHTML = "Currently showing chromosome " + "{{ selected_chrom }}" + ":";
                 var graph = {{ JSON_graph | safe }};
                 Plotly.plot('chart', graph, {});
             </script>
