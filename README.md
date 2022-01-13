@@ -15,6 +15,7 @@ If everything is set up correctly the application should now be building, this m
 
 ## Windows 10 & 11
 ### Step 1: Setting up and installing WSL2
+Before you start make sure you have enabled hardware assisted virtualisation (Intel) or svm (AMD) in the BIOS settings.
 * Run a PowerShell window as administrator and allow it to make changes to your device. This can be done by pressing Start and searching for PowerShell.
 Once you found PowerShell, right click and slelect `Run as administrator`.
 * Run the following command: `wsl --install`. This should install both WSL2 and Ubuntu.
