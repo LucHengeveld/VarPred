@@ -4,5 +4,6 @@ COPY variant-37.json variant-37.json
 COPY variant-38.json variant-38.json
 COPY medgen.json medgen.json
 COPY gene.json gene.json
+COPY clnvcso.json clnvcso.json
 EXPOSE 27017
 CMD ["/bin/bash", "seed-script.sh"]
