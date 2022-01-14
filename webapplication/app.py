@@ -197,7 +197,7 @@ def submit_on_contact():
         phonenumber = request.form['phonenumber']
 
         # Connects to the Mongo database
-        client = pymongo.MongoClient("mongodb://localhost:27017/")
+        client = pymongo.MongoClient("mongodb")
         db = client["varpred"]
         col = db["contact"]
 

@@ -29,10 +29,13 @@ def variants(results):
     alt_list = []
     alt_short = []
     medgen_info = {}
+    gene_info = {}
+    so_info = {}
     myclient = pymongo.MongoClient("mongodb")
     mydb = myclient["varpred"]
-    mycol = mydb["medgen"]
-
+    medgen_collection = mydb["medgen"]
+    genes_collection = mydb["genes"]
+    so_collection = mydb["so"]
     # Loops through all variants in results
     for i in range(len(results)):
 
@@ -118,19 +121,47 @@ def variants(results):
                                                      "ALT_short": alt_short}
         if "MedGen" in results[i]['CLNDISDB']:
             medgen = results[i]['CLNDISDB'].split(",")
+            medgen_id_list = []
+            medgen_info_list = []
             for x in medgen:
                 if "MedGen" in x:
                     medgen_id = x.split(":")[1]
-            print(medgen_id)
-            if medgen_id in medgen_info.keys():
-                results[i]["medgen_info"] = medgen_info[medgen_id]
+                    medgen_id_list.append(medgen_id)
+            for mg_id in medgen_id_list:
+                if mg_id in medgen_info.keys():
+                    medgen_info_list.append(medgen_info[mg_id])
+                    results[i]["medgen_info"] = medgen_info[mg_id]
+                else:
+                    medgen_results = medgen_collection.find_one({"medgen id": mg_id})
+                    if medgen_results != None:
+                        medgen_info[mg_id] = medgen_results
+                        medgen_results.pop('_id', None)
+                        medgen_info_list.append(medgen_results)
+            if medgen_results != None:
+                results[i]["medgen_info"] = medgen_info_list
+                
+        if ":" in results[i]['GENEINFO']:
+            gene_id = results[i]['GENEINFO'].split(":")[1]
+            if gene_id in gene_info.keys():
+                results[i]["geneinfo"] = gene_info[gene_id]
             else:
-                medgen_results = mycol.find_one({"medgen id": medgen_id})
-                if medgen_results != None:
-                    medgen_info[medgen_id] = medgen_results
-                    medgen_results.pop('_id', None)
-                    results[i]["medgen_info"] = medgen_results
+                genes_results = genes_collection.find_one({"Gene id": gene_id})
+                if genes_results != None:
+                    gene_info[gene_id] = genes_results
+                    genes_results.pop('_id', None)
+                    results[i]["gene_info"] = genes_results
 
+        if results[i]['CLNVCSO'] != '':
+            so_id = results[i]['CLNVCSO']
+            print(so_id)
+            if so_id in so_info.keys():
+                results[i]["so_info"] = so_info[so_id]
+            else:
+                so_results = so_collection.find_one({"id": so_id})
+                if so_results != None:
+                    so_info[so_id] = so_results
+                    so_results.pop('_id', None)
+                    results[i]["so_info"] = so_results
     # Returns the variant dictionary
     return variant_dict
 

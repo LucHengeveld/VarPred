@@ -175,7 +175,6 @@ In an accordion will the information about the variant being shown
             console.log(element.id)
             var id = element.id.split("C")[1];
             document.getElementById(id).checked = true;
-
             document.getElementById("chrom_form").submit();
         }
         window.onload = function () {
@@ -203,7 +202,6 @@ In an accordion will the information about the variant being shown
                 var alt = graph.points[0].customdata[1]
                 var results = {{ results | tojson
             }}
-                console.log(graph)
                         var text = ""
             results.forEach(checkResult)
 
@@ -224,13 +222,13 @@ In an accordion will the information about the variant being shown
       <div class="accordion-body">
         `+ "<b>Chromosome: </b>" + result_dict["CHROM"] +
                         "<br><b>Position:</b> " + result_dict["POS"] +
-                        "<br><b>REF: </b> " + result_dict["REF"] +
-                        "<br><b>ALT: </b> " + result_dict["ALT"] +
-                        "<br><b>REF LENGTH: </b> " + result_dict["REF LENGTH"] +
-                        "<br><b>ALT LENGTH: </b> " + result_dict["ALT LENGTH"] +
+                        "<br><b>Ref: </b> " + result_dict["REF"] +
+                        "<br><b>Alt: </b> " + result_dict["ALT"] +
+                        "<br><b>Ref length: </b> " + result_dict["REF LENGTH"] +
+                        "<br><b>Alt length: </b> " + result_dict["ALT LENGTH"] +
                         "<br><b>Variant type:</b> " + result_dict["CLNVC"] +
                         "<br><b>Functional consequence:</b> " + result_dict["MC"] +
-
+                        "<br><b>Clinical significance:</b> " + result_dict["CLNSIG"] +
                         `</div>
     </div>
   </div>
@@ -244,44 +242,75 @@ In an accordion will the information about the variant being shown
       <div class="accordion-body">
         `+
                         "<b>Clinvar ID:</b> " + result_dict["ID"] +
-                        "<br><b>Variant sequence ontology:</b> " + result_dict["CLNVCSO"] +
-                        "<br><b>Gene ID:</b> " + result_dict["GENEINFO"] +
-                        "<br><b>Medgen ID:</b> " + result_dict["CLNDISDB"] +
+                        "<br><b>Variant type definition:</b> " + result_dict["so_info"]['description'] +
                         `</div>
     </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingFour">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false" aria-controls="panelsStayOpen-collapseFour">
-        MedGen Info
+  </div>`
+  if(result_dict["geneinfo"] !== undefined) {
+  text+= `<div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headinggenes">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapsegenes" aria-expanded="false" aria-controls="panelsStayOpen-collapseFive">
+        Gene annotation: ${result_dict["geneinfo"]['Full name'].charAt(0).toUpperCase() + result_dict["geneinfo"]['Full name'].slice(1)}
       </button>
     </h2>
-    <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingFour">
+    <div id="panelsStayOpen-collapsegenes" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headinggenes">
+      <div class="accordion-body">`+
+        "<b>Gene full name: </b>" + result_dict["geneinfo"]['Full name'].charAt(0).toUpperCase() + result_dict["geneinfo"]['Full name'].slice(1) +
+        "<br><b>Gene ID: </b>" + result_dict["geneinfo"]['Gene id'] +
+        "<br><b>Gene Symbol: </b>" + result_dict["geneinfo"]['Symbol'] +
+        "<br><b>Also known as: </b>" + result_dict["geneinfo"]['Also known as'] +
+        "<br><b>Gene type: </b>" + result_dict["geneinfo"]['Gene type'] +
+        "<br><b>Gene summary: </b>" + result_dict["geneinfo"]['Summary'] +
+        "<br><b>Result tissue: </b>" + result_dict["geneinfo"]['Result tissue'] +
+        "<br><b>Project title tissue: </b>" + result_dict["geneinfo"]['Project title tissue'] +
+        "<br><b>Project description tissue: </b>" + result_dict["geneinfo"]['Project description tissue'] +
+        "<br><b>Publication id tissue: </b>" + result_dict["geneinfo"]['Publication id tissue'] +
+        "<br><b>Pubchem: </b>" + result_dict["geneinfo"]['Pubchem'] +
+        "<br><b>Gene ontology functions: </b>" + result_dict["geneinfo"]['Gene ontology functions'] +
+        `</div>
+    </div>
+</div>
+  </div>`
+}
+if(result_dict["medgen_info"] !== undefined){
+  for (let i = 0; i < result_dict["medgen_info"].length; i++){
+      text+=  `<div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-heading${i}">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${i}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${i}">
+        MedGen: ${result_dict["medgen_info"][i]['title']}
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapse${i}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading${i}">
       <div class="accordion-body">`
-                        + "<b>Name: </b>" + result_dict["medgen_info"]['title']
-                        + "<br><b>Inheritance: </b>" + result_dict["medgen_info"]['name inheritance']
-                        + "<br><b>Description: </b> " + result_dict["medgen_info"]['description'] +
+                        + "<b>Name: </b>" + result_dict["medgen_info"][i]['title']
+                        + "<br><b>Inheritance: </b>" + result_dict["medgen_info"][i]['name inheritance']
+                        + "<br><b>Description: </b> " + result_dict["medgen_info"][i]['description'] +
                         `</div>
     </div>
-  </div>
+  </div>`
+  }
+}
+    if(result_dict["CLNSIG"] == "Uncertain significance" || result_dict["CLNSIG"] == "Not provided") {
+    text += `
     <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingFive">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFive" aria-expanded="false" aria-controls="panelsStayOpen-collapseFive">
+    <h2 class="accordion-header" id="panelsStayOpen-headingml">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseml" aria-expanded="false" aria-controls="panelsStayOpen-collapseml">
         Machine learning
       </button>
     </h2>
-    <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingFive">
-      <div class="accordion-body">`
-                        + "<b>ML prediction:</b> " + result_dict["ML prediction"]
+    <div id="panelsStayOpen-collapseml" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingml">
+      <div class="accordion-body">
+                        <b>Machine learning prediction:</b> `
                     if (parseFloat(result_dict["Probability 0"]) >= parseFloat(result_dict["Probability 1"])) {
-                        text += "<br><b>Probability benign:</b> " + result_dict["Probability 0"]
+                        text += "Benign<br><b>Probability:</b> " + Math.round(parseFloat(result_dict["Probability 0"]) * 100, 3) + "%";
                     } else {
-                        text += "<br><b>Probability pathogenic:</b> " + result_dict["Probability 1"]
+                        text += "Pathogenic<br><b>Probability:</b> " + Math.round(parseFloat(result_dict["Probability 1"]) * 100, 3) + "%";
                     } +
                         `</div>
     </div>
-</div>
-</div>`
+
+    </div>`}
+    `</div>`
 
 document.getElementById("results_textbox").innerHTML = text
 
@@ -291,7 +320,6 @@ document.getElementById("results_textbox").innerHTML = text
         </script>
     </div>
 </div><br>
-
 {% for key in disable_button_dict.keys() %}
 {% if disable_button_dict[key] == True %}
 <script>
@@ -312,14 +340,4 @@ document.getElementById("results_textbox").innerHTML = text
     }
 </script>
 </div>
-
-{% for key in disable_button_dict.keys() %}
-{% if disable_button_dict[key] == True %}
-<script>
-    document.getElementById("{{ key }}").disabled = true;
-    document.getElementById("{{ key }}").style.backgroundColor = "grey";
-    document.getElementById("{{ key }}").style.borderColor = "grey";
-</script>
-{% endif %}
-{% endfor %}
 {% endblock %}
