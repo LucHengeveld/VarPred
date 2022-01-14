@@ -291,11 +291,11 @@ In an accordion will the information about the variant being shown
     </h2>
     <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingFive">
       <div class="accordion-body">
-                        <b>ML prediction:</b> ` + result_dict["ML prediction"]
+                        <b>ML prediction:</b> `
                     if (parseFloat(result_dict["Probability 0"]) >= parseFloat(result_dict["Probability 1"])) {
-                        text += "<br><b>Probability benign:</b> " + result_dict["Probability 0"]
+                        text += "Benign<br><b>Probability benign:</b> " + result_dict["Probability 0"]
                     } else {
-                        text += "<br><b>Probability pathogenic:</b> " + result_dict["Probability 1"]
+                        text += "Pathogenic<br><b>Probability pathogenic:</b> " + result_dict["Probability 1"]
                     } +
                         `</div>
     </div>
