@@ -228,3 +228,11 @@ label#C1 {
 .btn-check:disabled+label {
     color: #6e6e6e;
 }
+
+.accordion a, a:hover, a:focus, a:active {
+    text-decoration: none !important;
+    color: #1c9434 !important;
+    padding: 0em !important;
+    display: inline !important;
+    font-size: inherit !important;
+}

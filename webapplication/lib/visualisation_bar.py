@@ -132,7 +132,7 @@ def variants(results):
                     medgen_info_list.append(medgen_info[mg_id])
                     results[i]["medgen_info"] = medgen_info[mg_id]
                 else:
-                    medgen_results = medgen_collection.find_one({"medgen id": mg_id})
+                    medgen_results = medgen_collection.find_one({"medgen_id": mg_id})
                     if medgen_results != None:
                         medgen_info[mg_id] = medgen_results
                         medgen_results.pop('_id', None)
@@ -145,7 +145,7 @@ def variants(results):
             if gene_id in gene_info.keys():
                 results[i]["geneinfo"] = gene_info[gene_id]
             else:
-                genes_results = genes_collection.find_one({"Gene id": gene_id})
+                genes_results = genes_collection.find_one({"Gene_id": gene_id})
                 if genes_results != None:
                     gene_info[gene_id] = genes_results
                     genes_results.pop('_id', None)
@@ -153,7 +153,6 @@ def variants(results):
 
         if results[i]['CLNVCSO'] != '':
             so_id = results[i]['CLNVCSO']
-            print(so_id)
             if so_id in so_info.keys():
                 results[i]["so_info"] = so_info[so_id]
             else:
