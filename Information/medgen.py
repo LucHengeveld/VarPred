@@ -3,10 +3,10 @@ import urllib
 
 
 def medgen_info(medgen_id):
-    """ With a MedGen ID it gets all the information of the MedGen NCBI page and filters the title, description,
-    external databases links, synonyms, inheritance, clinical features and conditions with this feature. For a few rare
-    cases, the MedGen ID is not right connected with the NCBI MedGen database. Then the MedGen UID will be used for
-    extracting the information.
+    """ With a MedGen ID it gets all the information of the MedGen NCBI page and filters the medgen id, NCBI link,
+    title, description, external databases links, synonyms, inheritance, clinical features and conditions with this
+    feature. For a few rare cases, the MedGen ID is not right connected with the NCBI MedGen database. Then the MedGen
+    UID will be used for extracting the information.
 
     Args:
         medgen_id: MedGen ID of the NCBI MedGen database.
