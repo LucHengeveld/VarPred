@@ -40,8 +40,11 @@ def medgen_info(medgen_id):
             result = information_string.split("=")
             for entry in result:
                 if 'description" content' in entry:
-                    description = result[result.index(entry) + 1].split("/>")[0].replace('"', "")
-                    if len(description) != 1:               # sometimes the description is on a different place
+                    try:
+                        description = result[result.index(entry) + 1].split("/>")[0].replace('"', "")
+                    except IndexError:
+                        description = f'Parsing went wrong, for more information see NCBI MedGen {medgen_id}'
+                    if len(description) != 1:               # sometimes there is no description
                         medgen_result["description"] = description.replace("\\", "").rstrip()
         if "<title>" in information_string:
             title = split_variable(information_string, 1, ">", 0, "(", medgen_id).rstrip()  # location title value
