@@ -1,3 +1,10 @@
 # created by virtualenv automatically
 *.vcf
 .idea/
+*.cfg
+*.json
+/venv/
+*.tsv
+*.gz
+*.md5
+/webapplication/lib/__pycache__/
