@@ -57,5 +57,5 @@ Webscraping of the 2 NCBI pages has to be run separately. The .JSON files are in
 
 ## Running webscraping script
 1. Go to the directory 'webscraping'.
-2. Run `python webscraping_ncbi.py location_of_clinvar_file`
+2. Run `python .\webscraping_ncbi.py location_of_clinvar_file`
    - **Important: This take approximately 2 days of running.**
