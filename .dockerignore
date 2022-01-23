@@ -7,3 +7,5 @@
 /database/
 /genescraper/
 /mongodb/
+/venv/
+*.p

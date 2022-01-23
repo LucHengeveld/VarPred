@@ -119,6 +119,7 @@ def variants(results):
                                                      "ALT": alt_list,
                                                      "REF_short": ref_short,
                                                      "ALT_short": alt_short}
+        # Get MedGen entries and add them to the final result
         if "MedGen" in results[i]['CLNDISDB']:
             medgen = results[i]['CLNDISDB'].split(",")
             medgen_id_list = []
@@ -128,18 +129,22 @@ def variants(results):
                     medgen_id = x.split(":")[1]
                     medgen_id_list.append(medgen_id)
             for mg_id in medgen_id_list:
+                # check if info was already retrieved
                 if mg_id in medgen_info.keys():
                     medgen_info_list.append(medgen_info[mg_id])
                     results[i]["medgen_info"] = medgen_info[mg_id]
                 else:
+                    # retrieve from database
                     medgen_results = medgen_collection.find_one({"medgen_id": mg_id})
                     if medgen_results != None:
                         medgen_info[mg_id] = medgen_results
+                        # remove given ID from MongoDB
                         medgen_results.pop('_id', None)
                         medgen_info_list.append(medgen_results)
             if medgen_results != None:
                 results[i]["medgen_info"] = medgen_info_list
-                
+
+        # Get gene annotations and add them to the results     
         if ":" in results[i]['GENEINFO']:
             gene_id = results[i]['GENEINFO'].split(":")[1]
             if gene_id in gene_info.keys():
@@ -151,6 +156,7 @@ def variants(results):
                     genes_results.pop('_id', None)
                     results[i]["gene_info"] = genes_results
 
+        # Get gene ontologies
         if results[i]['CLNVCSO'] != '':
             so_id = results[i]['CLNVCSO']
             if so_id in so_info.keys():
