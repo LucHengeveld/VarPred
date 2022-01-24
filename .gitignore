@@ -2,9 +2,10 @@
 *.vcf
 .idea/
 *.cfg
-*.json
 /venv/
 *.tsv
 *.gz
 *.md5
 /webapplication/lib/__pycache__/
+/webscraping/__pycache__
+/webscraping/change_clinvar_file/__pycache__

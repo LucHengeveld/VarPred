@@ -1,0 +1,42 @@
+[
+    {
+        "id": "SO:0001483",
+        "description": "SNVs are single nucleotide positions in genomic DNA at which different sequence alternatives exist."
+    },
+    {
+        "id": "SO:1000032",
+        "description": "A sequence alteration which included an insertion and a deletion, affecting 2 or more bases."
+    },
+    {
+        "id": "SO:1000035",
+        "description": "An insertion which derives from, or is identical in sequence to, nucleotides present at a known location in the genome."
+    },
+    {
+        "id": "SO:0000289",
+        "description": "A repeat_region containing repeat_units of 2 to 10 bp repeated in tandem."
+    },
+    {
+        "id": "SO:0000159",
+        "description": "The point at which one or more contiguous nucleotides were excised."
+    },
+    {
+        "id": "SO:0001059",
+        "description": "A sequence_alteration is a sequence_feature whose extent is the deviation from another sequence."
+    },
+    {
+        "id": "SO:1000036",
+        "description": "A continuous nucleotide sequence is inverted in the same position."
+    },
+    {
+        "id": "SO:0000667",
+        "description": "The sequence of one or more nucleotides added between two adjacent nucleotides in the sequence."
+    },
+    {
+        "id": "SO:0001743",
+        "description": "A sequence alteration whereby the copy number of a given region is less than the reference sequence."
+    },
+    {
+        "id": "SO:0001742",
+        "description": "A sequence alteration whereby the copy number of a given regions is greater than the reference sequence."
+    }
+]
