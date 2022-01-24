@@ -337,10 +337,10 @@ if(result_dict["medgen_info"] !== undefined){
         text+= "<br><b>Source inheritance: </b> " + result_dict["medgen_info"][i]['source inheritance']
         }
         // Generate list of clinical significance with for loop
-        if(result_dict["medgen_info"][i]['Clinical significance'] !== undefined){
+        if('Clinical significance' in result_dict["medgen_info"][i]){
             text+= "<br><b>Clinical significance: </b><ul>"
             for(let x = 0; x < Object.keys(result_dict["medgen_info"][i]['Clinical significance']).length; x++){
-                text+="<li><b>" + Object.keys(result_dict["medgen_info"][i]['Clinical significance'])[x]+": </b>" + +result_dict["medgen_info"][x]['Clinical significance'][Object.keys(result_dict["medgen_info"][i]['Clinical significance'])[x]]+ "</li>"
+                text+="<li><b>" + Object.keys(result_dict["medgen_info"][i]['Clinical significance'])[x]+": </b>" + result_dict["medgen_info"][i]['Clinical significance'][Object.keys(result_dict["medgen_info"][i]['Clinical significance'])[x]] + "</li>"
                 }
             text+="</ul>"
             }
