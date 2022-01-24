@@ -146,20 +146,3 @@ if __name__ == '__main__':
     write_results_to_json(results_medgen, 'medgen')
 
     print("Webscrapping successfully")
-
-
-
-    # gene_result = test()
-    # write_results_to_json(gene_result, 'gene_update')
-    # print("Start gene id's ophalen")
-    # result = gene_results(data)
-    # print("Gene id's zijn opgehaald")
-    # print("Wegschrijven naar json")
-    # write_results_to_json(result, 'gene')
-    # print("Weggeschreven naar json")
-    # print("Deze id's zijn mis gegaan")
-    # tmp.append("Test")
-    # print(tmp)
-    # now = datetime.now()
-    # current_time = now.strftime("%H:%M:%S")
-    # print("Current Time =", current_time)
