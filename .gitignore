@@ -9,3 +9,4 @@
 /webapplication/lib/__pycache__/
 /webscraping/__pycache__
 /webscraping/change_clinvar_file/__pycache__
+/database/variant*

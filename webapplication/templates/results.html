@@ -340,11 +340,19 @@ if(result_dict["medgen_info"] !== undefined){
         if('Clinical significance' in result_dict["medgen_info"][i]){
             text+= "<br><b>Clinical significance: </b><ul>"
             for(let x = 0; x < Object.keys(result_dict["medgen_info"][i]['Clinical significance']).length; x++){
-                text+="<li><b>" + Object.keys(result_dict["medgen_info"][i]['Clinical significance'])[x]+": </b>" + result_dict["medgen_info"][i]['Clinical significance'][Object.keys(result_dict["medgen_info"][i]['Clinical significance'])[x]] + "</li>"
+                text += "<b>" + Object.keys(result_dict["medgen_info"][i]['Clinical significance'])[x] + ":</b><br><ul>";
+                var splitted = result_dict["medgen_info"][i]['Clinical significance'][Object.keys(result_dict["medgen_info"][i]['Clinical significance'])[x]];
+                for (let j = 0; j < splitted.length; j++){
+                    var item = splitted[j]
+                    text+="<li><b>" + item.split(" ; ")[0] +": </b>" + item.split(" ; ")[1] + "</li>";
                 }
-            text+="</ul>"
+                text += "</ul>"
             }
-        text+= "<br><b>Conditions list: </b><a target='_blank' href='https://www.ncbi.nlm.nih.gov/medgen/?term=" + result_dict["medgen_info"][i]['medgen_id']+"#Conditions_with_this_feature'>"+result_dict["medgen_info"][i]['medgen_id']+ "</a></div></div></div>"
+            text+="</ul>"
+        } else {
+            text += "<br>"
+        }
+        text+= "<b>Conditions list: </b><a target='_blank' href='https://www.ncbi.nlm.nih.gov/medgen/?term=" + result_dict["medgen_info"][i]['medgen_id']+"#Conditions_with_this_feature'>"+result_dict["medgen_info"][i]['medgen_id']+ "</a></div></div></div>"
   }
 }
   if(result_dict["geneinfo"] !== undefined) {

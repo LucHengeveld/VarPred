@@ -7,7 +7,7 @@ Description: The webapplication visualises and annotates variants from a
 Authors: Furkan Sengül, Inge van Vugt, Mark de Korte, Teun van Dorp, Erik Ma
     and Luc Hengeveld.
 
-Last updated: 11-01-2022
+Last updated: 24-01-2022
 """
 
 # Imports the required packages for app.py

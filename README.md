@@ -55,6 +55,8 @@ While running VarPred on Windows we encountered a few issues:
 Webscraping of the 2 NCBI pages has to be run separately. The .JSON files are included in the docker setup. Only for updating the 
 .JSON files (NCBI Gene and Medgen pages) you need to run the script, which is located in the directory 'webscraping'.
 
+Newer MedGen JSON available in "/webscraping", however the layout has been changed, so it doesn't work with the current code.
+
 ## Running webscraping script
 1. Go to the directory 'webscraping'.
 2. Run `python .\webscraping_ncbi.py location_of_clinvar_file`
