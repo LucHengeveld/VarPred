@@ -2,7 +2,6 @@
 *.vcf
 .idea/
 *.cfg
-*.json
 /venv/
 *.tsv
 *.gz
