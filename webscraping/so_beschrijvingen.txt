@@ -1,0 +1,28 @@
+SO:0001627:A transcript variant occurring within an intron.
+SO:0001819:A sequence variant where there is no resulting change to the encoded amino acid.
+SO:0001583:A sequence variant, that changes one or more bases, resulting in a different amino acid sequence but where the length is preserved.
+SO:0001589:A sequence variant which causes a disruption of the translational reading frame, because the number of nucleotides inserted or deleted is not a multiple of three.
+SO:0001575:A splice variant that changes the 2 base pair region at the 5' end of an intron.
+SO:0001822:An inframe non synonymous variant that deletes bases from the coding sequence.
+SO:0001821:An inframe non synonymous variant that inserts bases into in the coding sequence.
+SO:0001587:A sequence variant whereby at least one base of a codon is changed, resulting in a premature stop codon, leading to a shortened polypeptide.
+SO:0001574:A splice variant that changes the 2 base region at the 3' end of an intron.
+SO:0001623:A UTR variant of the 5' UTR.
+SO:0001582:A codon variant that changes at least one base of the first codon of a transcript.
+SO:0001624:A UTR variant of the 3' UTR.
+SO:0001619:A transcript variant of a non coding RNA gene.
+SO:0001820:A coding sequence variant where the change does not alter the frame of the transcript.
+SO:0001578:A sequence variant where at least one base of the terminator codon (stop) is changed, resulting in an elongated transcript.
+SO:0002073:A position or feature within a sequence that is identical to the comparable position or feature of a specified reference sequence.
+SO:0002153:A variant that falls upstream of a transcript, but within the genic region of the gene due to alternately transcribed isoforms.
+SO:0002152:A variant that falls downstream of a transcript, but within the genic region of the gene due to alternately transcribed isoforms.
+SO:0001483:SNVs are single nucleotide positions in genomic DNA at which different sequence alternatives exist.
+SO:1000032:A sequence alteration which included an insertion and a deletion, affecting 2 or more bases.
+SO:0000289:A repeat_region containing repeat_units of 2 to 10 bp repeated in tandem.
+SO:1000035:An insertion which derives from, or is identical in sequence to, nucleotides present at a known location in the genome.
+SO:0001059:A sequence_alteration is a sequence_feature whose extent is the deviation from another sequence.
+SO:0000159:The point at which one or more contiguous nucleotides were excised.
+SO:1000036:A continuous nucleotide sequence is inverted in the same position.
+SO:0000667:The sequence of one or more nucleotides added between two adjacent nucleotides in the sequence.
+SO:0001743:A sequence alteration whereby the copy number of a given region is less than the reference sequence.
+SO:0001742:A sequence alteration whereby the copy number of a given regions is greater than the reference sequence.

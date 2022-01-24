@@ -1,0 +1,25 @@
+<!--
+This page shows the information about our company Varpred. In this page we will talk about the start-up of Varpred
+What our goals were and we did to achieve those goals
+-->
+
+<!-- Including header.html to the page -->
+{% extends 'header.html' %}
+{% block title %}About VarPred{% endblock %}
+{% block content %}
+
+    <!--   Container gives information about Varpred -->
+<div class="row container-adjustment">
+    <div class="col-sm-6">
+        <div class="p-3 mb-2 container rounded-top container-adjustment-about
+        grow">
+            <h2>About <img src="../static/VarPred_logo.png" alt="VarPred"
+                           width="100" height="50"></h2>
+        </div>
+        <div class="container bg-light">
+            <p> For now, we only support a clinical significance predictor and visualiser.
+    </div>
+    <img src="../static/Gebouw_binnenkant.jpg" alt="InsideVarPred"
+         class="col-sm-6 img-thumbnail">
+</div>
+{% endblock %}

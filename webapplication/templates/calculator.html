@@ -1,0 +1,62 @@
+<!--
+This page makes it possible for the user to submit their VCF file to us
+From then on the predictor will calculate the results by comparing it with the database trained by our machine learning module
+After the results being calculated, you will be prompt to the next page 'results.html'
+-->
+
+<!-- Including header.html to the page -->
+{% extends 'header.html' %}
+{% block title %}Calculator{% endblock %}
+{% block content %}
+
+<!-- The clinical significance predictor -->
+    <div class="container container-adjustment-info p-3 mb-2 border border-1 rounded-pill bg-light">
+        <h2>Clinical significance predictor:</h2>
+        <form action="{{ url_for('main') }}" method="POST"
+              enctype="multipart/form-data">
+            <div class="button-container">
+                <div class="button-group">
+                    <label>Enter the VCF file below:<br>
+                        <div class="mb-3">
+                            <input class="form-control" type="file" name="vcf_file" accept=".vcf">
+                        </div>
+                    </label><br>
+                </div>
+                <div class="button-group">
+<!-- Select the right version of the chromosome -->
+                    <label>
+                        <select name="reference_selector" class="reference_selector dropdown-text">
+                            <option value=37>GRCh37, hg19</option>
+                            <option value=38>GRCh38, hg38</option>
+                        </select>
+                    </label><br><br>
+                </div>
+            </div>
+            <button id="calculate" class="btn btn-primary btn-lg" onclick="main()"
+                    type="submit">Calculate results
+            </button>
+<!-- Gives error message if something goes wrong -->
+            <span id="error">{{ errormsg }}</span>
+        </form>
+    </div>
+
+<!-- Script -->
+    <script>
+        function main() {
+            changeTxt()
+            hideErrorMsg()
+        }
+
+        <!-- Changes the text to loading with a spinner when pressing on 'Calculate results' -->
+        function changeTxt() {
+            var calculate = document.getElementById("calculate")
+            calculate.innerHTML = '<span class=\"spinner-border spinner-border-sm\"></span> Loading...';
+        }
+
+        <!-- Hides error message when the right file is selected -->
+        function hideErrorMsg() {
+            var errorDiv = document.getElementById("error");
+            errorDiv.style.display = "none";
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,190 @@
+<!--
+This is a part of the code that is include in all of the other HTML pages
+This code includes the header like the title and the navagation bar and the footer for all pages
+ -->
+
+<!-- Beginning of the html code -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- External source used in web application -->
+    <link href="https://cdn.jsdelivr.net/gh/alphardex/aqua.css/dist/aqua.min.css"
+          rel="stylesheet" type="text/css">
+    <link href="../static/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet"
+          href="https://pro.fontawesome.com/releases/v5.11.2/css/all.css"
+          integrity="sha384-zrnmn8R8KkWl12rAZFt4yKjxplaDaT7/EUkKm7AovijfrQItFWR7O/JJn4DAa/gx"
+          crossorigin="anonymous">
+    <script src="../static/bootstrap.js"></script>
+    <link rel="stylesheet" href="../static/style.css"
+      xmlns="http://www.w3.org/1999/html">
+    <link rel="icon" href="../static/favicon.png" type="image/gif">
+
+<!-- Title gets fetched up with Flask from the different HTML pages -->
+    <TITLE> {% block title %}{% endblock %} </TITLE>
+
+</head>
+<body>
+<header>
+<!-- Navagation bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+                <a href="home.html"><img src="../static/VarPred_logo.png" alt="VarPred" width="100" height="40"></a>
+            <!-- Dropdown list toggle -->
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNavDropdown"
+                    aria-controls="navbarNavDropdown" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Dropdown list -->
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" role="tab"
+                           aria-controls="home" aria-selected="true"
+                           href="home.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="calculator.html"
+                           data-toggle="tab" role="tab" aria-controls="profile"
+                           aria-selected="false">Calculator</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"
+                           id="navbarDropdownMenuLink" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            About us
+                        </a>
+                        <ul class="dropdown-menu"
+                            aria-labelledby="navbarDropdownMenuLink">
+                            <li><a class="dropdown-item"
+                                   href="aboutvarpred.html">About VarPred</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="disclaimer.html">Disclaimer</a></li>
+                            <li><a class="dropdown-item" href="contact.html">Contact</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<!-- Here comes the main content of each page -->
+{% block content %}{% endblock %}
+<!-- Footer -->
+<footer class="text-center text-lg-start bg-light text-muted">
+    <!-- Section: Social media -->
+    <section
+            class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+        <!-- Left -->
+        <div class="me-5d-none d-lg-block">
+            <span>Get connected with us on social networks:</span>
+        </div>
+        <!-- Right -->
+        <div>
+            <a href="https://www.facebook.com/HANUniversity/" target="_blank" class="me-4 text-reset ">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://twitter.com/HANnl" target="_blank" class="me-4 text-reset">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://www.google.com/search?q=han+biocentre" target="_blank" class="me-4 text-reset">
+                <i class="fab fa-google"></i>
+            </a>
+            <a href="https://www.instagram.com/han.nl/" target="_blank" class="me-4 text-reset">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.linkedin.com/school/hogeschool-van-arnhem-en-nijmegen/" target="_blank" class="me-4 text-reset">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/LucHengeveld/Check-de-Test"
+               target="_blank" class="me-4 text-reset">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </section>
+    <!-- Section: General information -->
+    <section class="">
+        <div class="container text-center text-md-start mt-5">
+            <!-- Grid row -->
+            <div class="row mt-3">
+                <!-- Grid column -->
+                <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                    <!-- Content -->
+                    <h6 class="text-uppercase fw-bold mb-4">
+                        <i class="fas fa-gem me-3"></i>VarPred
+                    </h6>
+                    <p>
+                        "In medicine and psychology, clinical significance is
+                        the practical importance of a treatment effect—whether
+                        it has a real genuine, palpable, noticeable effect on
+                        daily life."
+                    </p>
+                </div>
+                <!-- Grid column -->
+                <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+                    <!-- Links -->
+                    <h6 class="text-uppercase fw-bold mb-4">
+                        About us
+                    </h6>
+                    <p>
+                        <a href="aboutvarpred.html"
+                           class="link-flash text-reset">About VarPred</a>
+                    </p>
+                    <p>
+                        <a href="disclaimer.html"
+                           class="link-flash text-reset">Disclaimer</a>
+                    </p>
+                    <p>
+                        <a href="contact.html" class="link-flash text-reset">Contact
+                            us</a>
+                    </p>
+                </div>
+                <!-- Grid column -->
+                <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+                    <!-- Links -->
+                    <h6 class="text-uppercase fw-bold mb-4">
+                        Useful links
+                    </h6>
+                    <p>
+                        <a href="calculator.html"
+                           class="link-flash text-reset">Calculator</a>
+                    </p>
+                    <p>
+                        <a href="https://en.wikipedia.org/wiki/Clinical_significance"
+                           target="_blank" class="link-flash text-reset">Clinical
+                            significance</a>
+                    </p>
+                </div>
+                <!-- Grid column -->
+                <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                    <!-- Contact info -->
+                    <h6 class="text-uppercase fw-bold mb-4">
+                        Contact
+                    </h6>
+                    <p><i class="fas fa-home me-3"></i> Laan van scheut 2,
+                        Nijmegen</p>
+                    <p>
+                        <i class="fas fa-envelope me-3"></i>
+                        info.hanbiocentre@han.nl
+                    </p>
+                    <p><i class="fas fa-phone me-3"></i> +31243539100</p>
+                    <p><i class="fas fa-print me-3"></i> +31243539100</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Copyright -->
+    <div class="text-center p-4"
+         style="background-color: rgba(0, 0, 0, 0.05);">
+        © 2021 Copyright:
+        <img src="../static/VarPred_logo.png" alt="VarPred" width="80">
+    </div>
+</footer>
+</body>
+</html>
