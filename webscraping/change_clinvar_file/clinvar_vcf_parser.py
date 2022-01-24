@@ -1,5 +1,5 @@
 import os
-import vcf
+import vcf      # PyVCF
 import warnings
 
 # This is the same python script as ML_scripts/clinvar_vcf_parser.py. Only changed the main to clinvar_parser and made
