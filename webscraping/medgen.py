@@ -23,6 +23,7 @@ def medgen_info(medgen_id):
     inheritance = False
     tlline = False
     wrong_id = False
+    new_medgen_id = ""
     tmp_list = []
     tmp_list_category = []
     tmp_dict_category = {}
@@ -142,8 +143,11 @@ def medgen_info(medgen_id):
             # gets new MedGen ID if link with NCBI MedGen database is not correct
             new_medgen_id = split_variable(information_string, 1, 'Select item', 0, '<', medgen_id).lstrip()
 
-    if wrong_id:
+    if wrong_id and new_medgen_id != "":                # New ID available
         return medgen_info(new_medgen_id)
+    elif wrong_id and new_medgen_id == "":              # No information available
+        medgen_result['no information'] = f'There is no information for MedGen ID: {medgen_id}'
+        return medgen_result
     else:
         return medgen_result
 
